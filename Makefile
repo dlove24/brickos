@@ -37,13 +37,18 @@ realclean:
 	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
 	rm -rf doc/html-c++ doc/html-c doc/rtf-c doc/rtf-c++ doc/rtf
 	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag  *.out
+	rm -f Doxyfile-c++.log Doxyfile-c++.rpt .Doxyfile-c++-doneflag 
+	$(MAKE) $(MFLAGS) -C doc clean
+	
 
 upgrade-doxygen:
 	doxygen -u Doxyfile-c 
 	doxygen -u Doxyfile-c++
 	doxygen -u Doxyfile
 
-# doc/html-c subdirectory
+#
+#  doc/html-c subdirectory
+#
 html-c: Doxyfile-c-report
 
 brickos-html-c-dist.tar.gz: html-c 
@@ -51,35 +56,57 @@ brickos-html-c-dist.tar.gz: html-c
 
 html-c-dist: brickos-html-c-dist.tar.gz
 
-Doxyfile-c.log:
-	doxygen Doxyfile-c >Doxyfile-c.log 2>&1
+Doxyfile-c.log: Doxyfile-c
+	doxygen $? >$@ 2>&1
 
 Doxyfile-c.rpt: Doxyfile-c.log
-	grep Warn Doxyfile-c.log | sed -e 's/^.*brickos\///' | cut -f1 -d: | sort | \
-	 uniq -c | sort -rn | tee Doxyfile-c.rpt
+	@grep Warn $? | sed -e 's/^.*brickos\///' | cut -f1 -d: | sort | \
+	 uniq -c | sort -rn | tee $@
 
 .Doxyfile-c-doneflag:  Doxyfile-c.rpt
-	@for FIL in `cat Doxyfile-c.rpt | cut -c9-99`; do \
+	@for FIL in `cat $? | cut -c9-99`; do \
 	  OUTFILE=`echo $$FIL | sed -e 's/[\/\.]/-/g'`.out; \
 	  echo "# FILE: $$OUTFILE" >$$OUTFILE; \
-	  grep "$$FIL" Doxyfile-c.rpt >>$$OUTFILE; \
+	  grep "$$FIL" $? >>$$OUTFILE; \
 	  grep "$$FIL" Doxyfile-c.log | grep Warn >>$$OUTFILE; \
 	done
 	@touch $@
 
-
 Doxyfile-c-report: .Doxyfile-c-doneflag
-	ls -ltr *.out
+	-ls -ltr *.out
 
+#
+#  doc/html-c++ subdirectory
+#
+html-c++: Doxyfile-c++-report
 
+brickos-html-c++-dist.tar.gz: html-c++
+	cd doc;tar --gzip -cvf $@ $?;mv $@ ..;cd -
 
+html-c++-dist: brickos-html-c++-dist.tar.gz
 
+Doxyfile-c++.log: 
+	doxygen  Doxyfile-c++ >$@ 2>&1
 
-# doc/html-c++ subdirectory
-html-c++:
-	doxygen Doxyfile-c++
+Doxyfile-c++.rpt: Doxyfile-c++.log
+	@grep Warn $? | sed -e 's/^.*brickos\///' | cut -f1 -d: | sort | \
+	uniq -c | sort -rn | tee $@
 
-# doc/html subdirectory
+.Doxyfile-c++-doneflag:  Doxyfile-c++.rpt
+	@for FIL in `cat Doxyfile-c++.rpt | cut -c9-99`; do \
+       OUTFILE=`echo $$FIL | sed -e 's/[\/\.]/-/g'`.out; \
+       echo "# FILE: $$OUTFILE" >$$OUTFILE; \
+       grep "$$FIL" Doxyfile-c++.rpt >>$$OUTFILE; \
+       grep "$$FIL" Doxyfile-c++.log | grep Warn >>$$OUTFILE; \
+    done
+	@touch $@
+
+Doxyfile-c++-report: .Doxyfile-c++-doneflag
+	-ls -ltr *.out
+
+#
+#  doc/html subdirectory
+#
 html-full:
 	doxygen Doxyfile
 
