@@ -1,5 +1,5 @@
 #!/bin/bash -p
-# $Id: configure,v 1.7 2002/10/23 20:33:48 stephmo Exp $
+# $Id: configure,v 1.8 2002/11/07 19:00:11 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
@@ -9,6 +9,12 @@
 # 21.10.02	-	Version 1.0	Updates	  S. Moraco
 #										stephen@debian.org
 #
+# 31.10.02  -  Version 1.0a Changed name seperation routine
+#                           to use dirname / basename to handle
+#                           'gcc' in pathname    M. Obenland
+#                           obenland@t-online.de
+#
+
 echo ""
 echo "Welcome to the brickOS Makefile configurator."
 echo "Attempting to find the Hitachi gcc compiler. (This may take some time.)"
@@ -67,7 +73,7 @@ done
 #
 if test -z "$HMSFULL"
 then
-  HMSFULL=`find / \( -name 'h8*gcc' -o -name 'h8*gcc.exe' \) -print`
+  HMSFULL=`find / -type f \( -name 'h8*gcc' -o -name 'h8*gcc.exe' \) -print`
 fi
 
 #
@@ -82,7 +88,10 @@ fi
 #
 # Toolprefix is full path and compiler name without 'gcc'
 #
-TOOLPREFIX=$(echo $HMSFULL | sed "s/gcc.*//")
+DIRNAME=`dirname $HMSFULL`
+BASENAME=`basename $HMSFULL`
+
+TOOLPREFIX=$DIRNAME/$(echo $BASENAME | sed "s/gcc.*//")
 
 echo " - Toolprefix = "$TOOLPREFIX
 
@@ -91,7 +100,7 @@ echo " - Toolprefix = "$TOOLPREFIX
 #   which means that CYGWIN or DJGPP toolset is being used
 #
 case "$HMSFULL" in
-*.exe) 
+*.exe)
 	   echo " - Found Cygwin/DJGPP system"
        SED_SFLAG=1
        EXT=.exe
@@ -100,7 +109,7 @@ case "$HMSFULL" in
 	   CFLG_PE='+'
 	   ;;
 
-*)     
+*)
 	   echo " - Found Linux/Unix system"
        SED_SFLAG=""
        EXT=""
@@ -111,7 +120,7 @@ case "$HMSFULL" in
 esac
 echo ""
 
-MAKEDEPEND="\$(CC) -M" 
+MAKEDEPEND="\$(CC) -M"
 BRICKOS_ROOT=`pwd`
 
 CURR_MAKEFILE=Makefile.common

@@ -1,3 +1,7 @@
+2002-11-07  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Adjusted configure to prevent false detect of directory as compiler
+
 2002-10-22  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * Converted Makefile.common and rest of makefiles to
@@ -298,4 +302,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.18 2002/10/23 06:56:35 stephmo Exp $
+$Id: ChangeLog,v 1.19 2002/11/07 19:00:10 stephmo Exp $
