@@ -242,9 +242,11 @@ static inline void dsound_system(unsigned nr) {
     dsound_play(dsound_system_sounds[nr]);
 }
 
-//! set duration of a 16th note in ms
-static inline void dsound_set_duration(unsigned duration) {
+//! set duration of a 16th note in ms; return the previous duration.
+static inline unsigned dsound_set_duration(unsigned duration) {
+  unsigned orig_duration = dsound_16th_ms;
   dsound_16th_ms=duration;
+  return orig_duration;
 }
 
 //! set duration of inter-note spacing (subtracted from note duration)

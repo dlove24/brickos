@@ -1,5 +1,7 @@
 2004-01-02  Henner Zeller <hzeller@users.sourceforge.net>
-  * Fixed #835433, #766169, #766168 
+
+  * Fixed Bugs #835433, #766169, #766168 
+  * Implement Feature Request #686495
   * add sem_timedwait() 
   * externalized atomic counting in atomic.[hc]; introduce new type atomic_t
   * semaphores and critical sections make use of atomic_t
@@ -350,4 +352,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.31 2004/01/03 23:11:29 hzeller Exp $
+$Id: ChangeLog,v 1.32 2004/01/04 00:32:27 hzeller Exp $

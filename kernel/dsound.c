@@ -67,7 +67,7 @@ static const note_t sys_beep[]={
 
 //! system sound data
 const note_t *dsound_system_sounds[]={
-  sys_beep
+	sys_beep
 };
     
 unsigned dsound_16th_ms;   	      	      	//!< length of 1/16 note in ms

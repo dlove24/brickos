@@ -63,6 +63,11 @@ extern char __bss_end;	//!< the end of the uninitialized data segment
 //! the high memory segment
 extern char __text_hi, __etext_hi;
 
+#if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
+static const note_t on_sound[]={{PITCH_G4, 1}, {PITCH_G5, 1}, {PITCH_END, 0}};
+static const note_t off_sound[]={{PITCH_C4, 1}, {PITCH_C3, 1}, {PITCH_END, 0}};
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Functions
@@ -70,6 +75,13 @@ extern char __text_hi, __etext_hi;
 ///////////////////////////////////////////////////////////////////////////////
 
 extern int main(int argc, char **argv);     //!< the user main()
+
+#if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
+static void onOffSound(note_t *snd) {
+	dsound_set_duration(40);
+	dsound_play(snd);
+}
+#endif
 
 //! show ON string
 extern inline void show_on(void) {
@@ -91,7 +103,13 @@ extern inline void show_on(void) {
 #ifndef CONF_LCD_REFRESH
   lcd_refresh();
 #endif
+#if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
+  onOffSound(on_sound);
+#endif
   delay(250);
+#if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
+  dsound_set_duration(DSOUND_DEFAULT_16th_ms);
+#endif
 }
 
 //! show OFF string
@@ -111,6 +129,9 @@ extern inline void show_off(void) {
 #endif
 #ifndef CONF_LCD_REFRESH
   lcd_refresh();
+#endif
+#if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
+  onOffSound(off_sound);
 #endif
 }
 

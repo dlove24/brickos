@@ -71,6 +71,7 @@
 #define CONF_CONIO                      //!< console
 #define CONF_ASCII                      //!< ascii console
 #define CONF_DSOUND                     //!< direct sound
+#define CONF_ON_OFF_SOUND               //!< sound on switch on/off
 #define CONF_DMOTOR                     //!< direct motor
 // #define CONF_DMOTOR_HOLD               //!< experimental: use hold mode PWM instead of coast mode.
 #define CONF_DSENSOR                    //!< direct sensor
