@@ -21,6 +21,7 @@
  *  Markus L. Noga. All Rights Reserved.
  *
  *  Contributor(s): Markus L. Noga <markus@noga.de>
+ *                  Henner Zeller <H.Zeller@acm.org> (sem_timedwait())
  */
 
 #ifndef __semaphore_h__

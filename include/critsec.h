@@ -22,7 +22,7 @@
  *  Portions created by Markus L. Noga are Copyright (C) 1999
  *  Markus L. Noga. All Rights Reserved.
  *
- *  Contributor(s): Joseph A. Woolley <jawoolley@users.sourceforge.net
+ *  Contributor(s): Joseph A. Woolley <jawoolley@users.sourceforge.net>
  */
 
 #if !defined(__critsec_h__)
