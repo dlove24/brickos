@@ -26,13 +26,13 @@ main(int argc,
      char **argv) 
 {
   Lamp myLite(Lamp::B);
-
-  unsigned char power = 0;
+  int power = 0;
+  
   myLite.on();
   while (power < 255) {
 	myLite.brightness(power);
 	sleep(1);
-	power += (256/16);
+	power += (256/8);
   }
   myLite.off();
   return 0;
