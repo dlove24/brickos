@@ -1,3 +1,16 @@
+2003-02-13  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Applied Patch 673995: Patch brickos 0.2.6.09 for *BSD
+
+2003-01-11  Ed Manlove <emanlove@users.sourceforge.net>
+
+  * Modified makedepend to $(MAKEDEPEND) in lib/*/Makefiles
+
+2002-12-13  Joseph A Woolley <jawoolley@users.sourceforge.net>
+
+  * Update system time so that motor controller is called every 1ms 
+    as in previous version
+
 2002-11-07  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * Adjusted configure to prevent false detect of directory as compiler
@@ -302,4 +315,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.19 2002/11/07 19:00:10 stephmo Exp $
+$Id: ChangeLog,v 1.20 2003/02/14 05:30:37 stephmo Exp $

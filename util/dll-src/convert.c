@@ -36,12 +36,15 @@
 #include <srecload.h>
 #include <lx.h>
 
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>
+#endif
 
 #define DEFAULT_STACK_SIZE    1024    //!< default program stack size
 #define RELOC_MAX           16384   //!< maximum number of relocations
 
 
-#if defined(__sun__) && defined(__svr4__) // Solaris
+#if (defined(__sun__) && defined(__svr4__)) || defined(BSD) // Solaris||BSD
 #undef HAVE_GETOPT_LONG
 #else
 #define HAVE_GETOPT_LONG 1

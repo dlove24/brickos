@@ -71,6 +71,10 @@
   #include <windows.h>
 #endif
 
+#if (defined(__unix__) || defined(unix)) && !defined(USG)
+#include <sys/param.h>
+#endif
+
 #include <sys/lnp.h>
 #include <sys/lnp-logical.h>
 
@@ -106,7 +110,7 @@ typedef enum {
   CMDlast     	      	//!< ?
 } packet_cmd_t;
 
-#if defined(__sun__) && defined(__svr4__)	// Solaris
+#if (defined(__sun__) && defined(__svr4__)) || defined(BSD)	// Solaris||BSD
 #undef HAVE_GETOPT_LONG
 #else
 #define HAVE_GETOPT_LONG 1

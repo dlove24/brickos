@@ -7,6 +7,7 @@ Our Next Release (work pending):
 News for upcoming brickos-1.0.0: 
 --------------------------------------------------
 * install/uninstall targets added to Makefiles
+* patches filed to date, now applied
 * API doc generation now in Makefiles
 * LNP Parser for RCX firmware protocol op-codes based on work fm Zhengrong Zang
 * dll: NEW -dn or --delete=n option deletes a program from memory
