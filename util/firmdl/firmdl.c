@@ -143,8 +143,8 @@ int srec_load (char *name, unsigned char *image, int maxlen, unsigned short *sta
 
     /* Open file */
     if ((file = fopen(name, "r")) == NULL) {
-	fprintf(stderr, "%s: failed to open\n", name);
-	exit(1);
+		fprintf(stderr, "%s: ERROR- failed to open %s\n", progname, name);
+		exit(1);
     }
 
     /* Clear image to zero */
@@ -389,6 +389,8 @@ int main (int argc, char **argv)
 	    "      --tty=TTY    assume tower connected to TTY\n"
 #if defined(_WIN32)
 	    "      --tty=usb    assume tower connected to USB\n"
+#else
+	    "                   (if device name contains \"usb\", use USB mode\n"
 #endif
 	    "  -h, --help       display this help and exit\n"
 	    ;
@@ -417,6 +419,17 @@ int main (int argc, char **argv)
 		fprintf(stderr, "Hary Mahesan - USB IR Tower Mode.\n");
 	tty = "\\\\.\\legotower1"; // Set the correct usb tower if you have more than one (unlikely).
     }
+#elif defined(LINUX) || defined(linux)
+    /* If the tty string contains "usb", e.g. /dev/usb/lego0, we */
+    /* assume it is the USB tower.  If you use something else that doesn't */
+    /* have "usb" in the device name, link it.  /dev/usb/lego0 is the */
+    /* name of the dirver installed by LegoUSB */
+    /* (http://legousb.sourceforge.net) */
+    if (strstr(tty,"usb") !=0) {
+       tty_usb=1;
+       if (__comm_debug)
+	 fprintf(stderr, "P.C. Chan & Tyler Akins - USB IR Tower Mode for Linux.\n");
+    }   
 #endif
 
     if (use_fast && (tty_usb==0)) { //For now, run USB only at 2400bps (slow mode).
