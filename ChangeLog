@@ -1,3 +1,9 @@
+2002-10-22  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Converted Makefile.common and rest of makefiles to
+    support the new ./configure utility
+  * Use of ./configure is now required
+
 2002-10-16  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * Move Makefile.kernel into boot/Makefile (was only consumer)
@@ -292,4 +298,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.17 2002/10/17 05:06:45 stephmo Exp $
+$Id: ChangeLog,v 1.18 2002/10/23 06:56:35 stephmo Exp $

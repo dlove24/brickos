@@ -32,7 +32,43 @@ of use:
 	 After install, you are ready to start.  Rather than our describing 
 	 how to do this let's walk thru a quick example...
 
-	            ZZZZZZZZZZZZZZZ nore to do ZZZZZZZZZZZZZZZZZZ
+To start with a prebuilt brickOS:
+
+- Utilities, libraries, legOS kernel and demos have all been installed.
+- Copy the /usr/[local/]share/doc/brickos/examples/demo/ directory contents to
+  a directory of your choosing. (If you wish to use c++ copy the files 
+  from the demo/c++ subdirectory, instead.)
+- Type 'make' in this new directory to compile the demos.
+- The utilities are already in your PATH. Set RCXTTY if you use a non-
+  standard port for the IR tower.  [example: 'export RCXTTY=/dev/ttyS1']
+- Use firmdl3 to download /usr/[local/]lib/brickos/brickOS.srec to your RCX.
+- Type "dll demo/helloworld.lx" (where demo is the directory in which you
+  just made the demos). If all is well, it should be automatically
+  relocated and downloaded into program slot 0. Press the RUN key to 
+  run. The program stops automatically.
+- Type "dll -p1 demo/rover.lx" to transmit another demo to program slot 1.
+  Use the PRGM key to select the desired program. Try RUN.
+- NOTE: A 'make realclean' will remove all built files.
+
+- Stop your program with the RUN or ON/OFF key. Programs are preserved over
+  ON/OFF now.  Press ON/OFF and PRGM simultaneously to erase legOS.
+  
+
+For your own projects,
+
+- Make a directory in a location of your choosing (you may wish to make
+  a ~/brickOS directory and place your projects below there).
+- Copy 'Makefile' from the /usr/[local/]share/doc/brickos/examples directory 
+  to this new directory.
+- Put your main routine into myproject.c. (or myproject.C if using C++)
+- If you need more source files, add them in the Makefile.
+- type "make myproject.lx && dll myproject.lx" to build and then download 
+  your new code. (Remember to use -pN to select specific program slot)
+
+In case you are wondering, dll is short for dynamic linker and loader.
+
+You can get good help at: http://lugnet.com/robotics/rcx/legos/ should
+you need to.
 
 ------------------------------------------------------------------------------
                      End of FILE: README.use
