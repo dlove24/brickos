@@ -60,8 +60,8 @@ pchain_t *priority_head;                        //!< head of task priority chain
 tdata_t td_single;                              //!< single task data
 tdata_t *ctid;                                  //!< ptr to current task data
 
-unsigned int nb_tasks;                          //!< number of tasks
-unsigned int nb_system_tasks;                   //!< number of system (kernel) tasks
+volatile unsigned int nb_tasks;                 //!< number of tasks
+volatile unsigned int nb_system_tasks;          //!< number of system (kernel) tasks
 
 sem_t task_sem;                                 //!< task data structure protection
 
