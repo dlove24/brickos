@@ -68,12 +68,12 @@ public:
    * Turn the Lamp on
    * \return Nothing
    */
-  const void on() const { direction(fwd); }
+  const void on() const { direction(::fwd); }
   /**
    * Turn the Lamp off
    * \return Nothing
    */
-  const void off() const { direction(std::off); }
+  const void off() const { direction(::off); }
   /**
    * Set the power to the lamp
    * \param level the desired power setting specifying the intensity of the light. 

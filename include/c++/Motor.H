@@ -113,7 +113,7 @@ public:
   *  \return nothing
   *  \todo describe what brake means
   */
-  const void brake() const { direction(std::brake); }
+  const void brake() const { direction(::brake); }
   /**
   *  set the motor to brake and delay return
   *  \param duration time in mSec to delay before returning
@@ -126,7 +126,7 @@ public:
   *  this disables power and the motor coasts to a stop
   *  \return nothing
   */
-  const void off() const { direction(std::off); }
+  const void off() const { direction(::off); }
 
 private:
   void (*ms)(unsigned char speed);		//!< current velocity setting for this motor instance

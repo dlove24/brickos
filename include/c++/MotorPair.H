@@ -72,12 +72,12 @@ public:
   ///  set the direction of our two motors
   ///  \param dir one of the MotorDirection values
   void direction(const MotorDirection dir) const { 
-    if (dir == std::fwd) {
-      mLeft.direction(std::fwd); 
-      mRight.direction(std::rev); 
-    } else if (dir == std::rev) {
-      mLeft.direction(std::rev); 
-      mRight.direction(std::fwd); 
+    if (dir == ::fwd) {
+      mLeft.direction(::fwd); 
+      mRight.direction(::rev); 
+    } else if (dir == ::rev) {
+      mLeft.direction(::rev); 
+      mRight.direction(::fwd); 
     } else {
       mLeft.direction(dir); 
       mRight.direction(dir); 
@@ -85,48 +85,48 @@ public:
   }
 
   ///  move forward
-  void forward() const { direction(std::fwd); }
+  void forward() const { direction(::fwd); }
 
   ///  move reverse
-  void reverse() const { direction(std::rev); }
+  void reverse() const { direction(::rev); }
 
   ///  stop without coasting
   void brake() const { 
-    mLeft.direction(std::brake); 
-    mRight.direction(std::brake); 
+    mLeft.direction(::brake); 
+    mRight.direction(::brake); 
   }
 
   ///  stop but allow coasting
   void off() const { 
-    mLeft.direction(std::off); 
-    mRight.direction(std::off); 
+    mLeft.direction(::off); 
+    mRight.direction(::off); 
   }
 
   ///  turn left about the center of the robot
   ///  \note both motors in the pair are turning
   void left() const { 
-    mLeft.direction(std::fwd); 
-    mRight.direction(std::fwd); 
+    mLeft.direction(::fwd); 
+    mRight.direction(::fwd); 
   }
 
   ///  turn left about the left wheel of the robot
   ///  \note the left motor is brake'd while the right motor is turning
   void pivotLeft() const { 
     mLeft.brake(); 
-    mRight.direction(std::rev); 
+    mRight.direction(::rev); 
   }
 
   ///  turn right about the center of the robot
   ///  \note both motors in the pair are turning
   void right() const { 
-    mLeft.direction(std::rev); 
-    mRight.direction(std::rev); 
+    mLeft.direction(::rev); 
+    mRight.direction(::rev); 
   }
 
   ///  turn right about the right wheel of the robot
   ///  \note the right motor is brake'd while the left motor is turning
   void pivotRight() const { 
-    mLeft.direction(std::fwd); 
+    mLeft.direction(::fwd); 
     mRight.brake(); 
   }
 
