@@ -149,36 +149,36 @@ void dm_shutdown(void) {
 ** Define non-inline versions to display arrows
 */
 
-const void motor_a_dir(MotorDirection dir)
+void motor_a_dir(MotorDirection dir)
 {
   dm_a.dir = dm_a_pattern[dir];
   dlcd_hide(LCD_A_LEFT);
   dlcd_hide(LCD_A_RIGHT);
-  if (dir == fwd)
+  if (dir == fwd || dir == brake)
     dlcd_show(LCD_A_RIGHT);
-  else if (dir == rev)
+  else if (dir == rev || dir == brake)
     dlcd_show(LCD_A_LEFT);
 }
 
-const void motor_b_dir(MotorDirection dir)
+void motor_b_dir(MotorDirection dir)
 {
   dm_b.dir = dm_b_pattern[dir];
   dlcd_hide(LCD_B_LEFT);
   dlcd_hide(LCD_B_RIGHT);
-  if (dir == fwd)
+  if (dir == fwd || dir == brake)
     dlcd_show(LCD_B_RIGHT);
-  else if (dir == rev)
+  else if (dir == rev || dir == brake)
     dlcd_show(LCD_B_LEFT);
 }
 
-const void motor_c_dir(MotorDirection dir)
+void motor_c_dir(MotorDirection dir)
 {
   dm_c.dir = dm_c_pattern[dir];
   dlcd_hide(LCD_C_LEFT);
   dlcd_hide(LCD_C_RIGHT);
-  if (dir == fwd)
+  if (dir == fwd || dir == brake)
     dlcd_show(LCD_C_RIGHT);
-  else if (dir == rev)
+  else if (dir == rev || dir == brake)
     dlcd_show(LCD_C_LEFT);
 }
 

@@ -1,4 +1,4 @@
-/*! \file   kmain.c
+/*! \file kmain.c
     \brief  Main kernel loop
     \author Markus L. Noga <markus@noga.de>
  */
@@ -66,7 +66,7 @@ extern char __bss, __bss_end;
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-extern int main(int argc, char **argv);	    //! the user main()
+extern int main(int argc, char **argv);     //! the user main()
 
 
 //! show ON string
@@ -89,6 +89,7 @@ extern inline void show_on(void) {
 #ifndef CONF_LCD_REFRESH
   lcd_refresh();
 #endif
+  delay(250);
 }
 
 //! show OFF string
@@ -198,11 +199,11 @@ void kmain(void)
 #ifdef CONF_DKEY
     while((c=dkey_multi) & KEY_ONOFF)
       if(c&KEY_PRGM)
-	rom_reset();
+  rom_reset();
 #else
     while (PRESSED(dbutton(), BUTTON_ONOFF))
       if (PRESSED(dbutton(), BUTTON_PROGRAM))
-	rom_reset();
+  rom_reset();
 #endif
 
 #ifdef CONF_PROGRAM

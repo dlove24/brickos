@@ -1,5 +1,5 @@
 /*! \file   lnp-logical.c
-    \brief  legOS networking protocol logical layer
+    \brief  link networking protocol logical layer
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -51,11 +51,11 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-static const unsigned char *tx_ptr;	//!< ptr to next byte to transmit
-static const unsigned char *tx_verify;	//!< ptr to next byte to verify
-static const unsigned char *tx_end;	//!< ptr to byte after last
+static const unsigned char *tx_ptr; //!< ptr to next byte to transmit
+static const unsigned char *tx_verify;  //!< ptr to next byte to verify
+static const unsigned char *tx_end; //!< ptr to byte after last
 
-volatile signed char tx_state;		//!< flag: transmission state
+volatile signed char tx_state;    //!< flag: transmission state
 
 //! when to allow next transmission
 /*! transmit OK -> wait some time to grant others bus access
@@ -63,10 +63,10 @@ volatile signed char tx_state;		//!< flag: transmission state
     receive     -> reset timeout to default value.
 */
 
-static time_t allow_tx;       	      	//!< time to allow new transmission
+static time_t allow_tx;                 //!< time to allow new transmission
 
 #ifdef CONF_TM
-static sem_t tx_sem;       	      	//!< transmitter access semaphore
+static sem_t tx_sem;                //!< transmitter access semaphore
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ void tx_core(void) {
 
 //! shutdown IR port
 void lnp_logical_shutdown(void) {
-  S_CR =0;				// everything off
+  S_CR =0;        // everything off
   carrier_shutdown();
   lnp_logical_range(0);
 
@@ -205,7 +205,7 @@ void lnp_logical_shutdown(void) {
 #endif
 }
 
-//! initialize legOS networking protocol logical layer (IR port).
+//! initialize link networking protocol logical layer (IR port).
 /*! initially set to low range.
 */
 void lnp_logical_init(void) {
@@ -226,10 +226,10 @@ void lnp_logical_init(void) {
 
   // carrier setup
   //
-  rom_port4_ddr |= 1;			// port 4 bit 0 output
+  rom_port4_ddr |= 1;     // port 4 bit 0 output
   PORT4_DDR = rom_port4_ddr;
   carrier_init();
-  rom_port5_ddr = 4;			// init p5ddr, for now
+  rom_port5_ddr = 4;      // init p5ddr, for now
   PORT5_DDR = rom_port5_ddr;
 
   // IRQ handler setup
@@ -273,12 +273,12 @@ int lnp_logical_write(const void* buf,size_t len) {
 
   lnp_timeout_reset();
 
-  tx_verify=tx_ptr=buf;	    	        	// what to transmit
+  tx_verify=tx_ptr=buf;                 // what to transmit
   tx_end=buf+len;
 
   tx_state=TX_ACTIVE;
-  S_SR&=~(SSR_TRANS_EMPTY | SSR_TRANS_END);	// clear flags
-  S_CR|=SCR_TRANSMIT | SCR_TX_IRQ | SCR_TE_IRQ;	// enable transmit & irqs
+  S_SR&=~(SSR_TRANS_EMPTY | SSR_TRANS_END); // clear flags
+  S_CR|=SCR_TRANSMIT | SCR_TX_IRQ | SCR_TE_IRQ; // enable transmit & irqs
 
   wait_event(write_complete,0);
 
@@ -288,9 +288,9 @@ int lnp_logical_write(const void* buf,size_t len) {
     tmp=LNP_WAIT_TXOK;
   else
     tmp=LNP_WAIT_COLL + ( ((unsigned char) 0x0f) &
-			  ( ((unsigned char) len)+
-			    ((unsigned char*)buf)[len-1]+
-			    ((unsigned char) sys_time)    ) );
+        ( ((unsigned char) len)+
+          ((unsigned char*)buf)[len-1]+
+          ((unsigned char) sys_time)    ) );
   allow_tx=sys_time+tmp;
 
 

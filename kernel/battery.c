@@ -21,7 +21,7 @@
  *  Markus L. Noga. All Rights Reserved.
  *
  *  Contributor(s): Markus L. Noga <markus@noga.de>
- *		    Paolo Masetti  <paolo.masetti@itlug.org>
+ *        Paolo Masetti  <paolo.masetti@itlug.org>
  */
 
 #include <sys/irq.h>
@@ -36,8 +36,8 @@
 //
 ///////////////////////////////////////////////////////////////////////
 #ifdef CONF_BATTERY_INDICATOR
-unsigned int battery_refresh_counter = 0;	//!< counter for lcd refresh in ms
-unsigned int battery_refresh_period  = 2000;	//!< LCD refresh period in ms
+unsigned int battery_refresh_counter = 0; //!< counter for lcd refresh in ms
+unsigned int battery_refresh_period  = 2000;  //!< LCD refresh period in ms
 #endif
 
 ///////////////////////////////////////////////////////////////////////
@@ -53,20 +53,21 @@ int get_battery_mv()
 }
 
 #ifdef CONF_BATTERY_INDICATOR
-
+// battery indicator handed by kernel task when CONF_TM
+#ifndef CONF_TM
 //! battery indicator handler, called from system timer interrupt
 #ifdef CONF_RCX_COMPILER
 void battery_refresh(void) {
-#else
+#else // CONF_RCX_COMPILER
 HANDLER_WRAPPER("battery_refresh","battery_refresh_core");
 void battery_refresh_core(void) {
-#endif
+#endif // CONF_RCX_COMPILER
     int bmv = get_battery_mv();
 
     if (bmv > BATTERY_NORMAL_THRESHOLD_MV)
-	dlcd_hide(LCD_BATTERY_X);
+  dlcd_hide(LCD_BATTERY_X);
     else if (bmv > BATTERY_LOW_THRESHOLD_MV)
-	dlcd_show(LCD_BATTERY_X);
+  dlcd_show(LCD_BATTERY_X);
 }
-
-#endif
+#endif // CONF_TM
+#endif // CONF_BATTERY_INDICATOR

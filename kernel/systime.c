@@ -1,4 +1,4 @@
-/*! \file   systime.c
+/*! \file systime.c
     \brief  system time services
     \author Markus L. Noga <markus@noga.de>
 */
@@ -27,11 +27,11 @@
 /*
  *  2000.05.01 - Paolo Masetti <paolo.masetti@itlug.org>
  *
- *	- Added battery indicator handler
+ * - Added battery indicator handler
  *
  *  2000.08.12 - Rossz Vámos-Wentworth <rossw@jps.net>
  *
- *	- Added idle shutdown handler
+ * - Added idle shutdown handler
  *
  */
 
@@ -68,7 +68,7 @@ volatile time_t sys_time;
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef CONF_TM
-unsigned char tm_timeslice;                     //!< task time slice
+volatile unsigned char tm_timeslice;            //!< task time slice
 volatile unsigned char tm_current_slice;        //!< current time remaining
 
 void* tm_switcher_vector;                       //!< pointer to task switcher
@@ -93,7 +93,7 @@ __asm__("
 .global _systime_handler
 .global _systime_tm_return
 _systime_handler:
-		; r6 saved by ROM
+               ; r6 saved by ROM
 
                 push r0                         ; both motors & task
                                                 ; switcher need this reg.
@@ -119,72 +119,88 @@ _systime_handler:
 #endif
 
 #ifdef CONF_DSOUND
-      	"
-	      	jsr _dsound_handler   	      	; call sound handler
-"
+        "
+                jsr _dsound_handler             ; call sound handler
+        "
 #endif
 
 #ifdef CONF_LNP
-      	"
-	      	mov.w @_lnp_timeout_counter,r6	; check LNP timeout counter
-		subs #0x1,r6
-		mov.w r6,r6    	      	      	; subs doesn't change flags!
-		bne sys_noreset
-    	      	  jsr _lnp_integrity_reset
-		  mov.w @_lnp_timeout,r6      	; reset timeout
+        "
+                mov.w @_lnp_timeout_counter,r6  ; check LNP timeout counter
+                subs #0x1,r6
+                mov.w r6,r6                     ; subs doesn't change flags!
+                bne sys_noreset
+                
+                  jsr _lnp_integrity_reset
+                  mov.w @_lnp_timeout,r6        ; reset timeout
 
-    sys_noreset:mov.w r6,@_lnp_timeout_counter
-	"
+              sys_noreset:
+                mov.w r6,@_lnp_timeout_counter
+        "
 #endif
 
 #ifdef CONF_DKEY
-      	"     	jsr _dkey_handler
-"
+        "
+                jsr _dkey_handler
+        "
 #endif
 
+#ifndef CONF_TM
 #ifdef CONF_BATTERY_INDICATOR
-      	"
-	       mov.w @_battery_refresh_counter,r6
-	       subs #0x1,r6
-	       bne batt_norefresh
-		 jsr _battery_refresh
-		 mov.w @_battery_refresh_period,r6
-batt_norefresh:mov.w r6,@_battery_refresh_counter
-"
+        "
+                mov.w @_battery_refresh_counter,r6
+                subs #0x1,r6
+                bne batt_norefresh
+
+                  jsr _battery_refresh
+                  mov.w @_battery_refresh_period,r6
+
+              batt_norefresh:
+                mov.w r6,@_battery_refresh_counter
+        "
+#endif
 #endif
 
 #ifdef CONF_AUTOSHUTOFF
-      	"
-		mov.w	@_auto_shutoff_counter,r6
-		subs	#0x1,r6
-		bne	auto_notshutoff
-		  jsr	_autoshutoff_check
-		  mov.w	@_auto_shutoff_period,r6
-auto_notshutoff:
-		mov.w	r6,@_auto_shutoff_counter
-"
+        "
+                mov.w @_auto_shutoff_counter,r6
+                subs  #0x1,r6
+                bne auto_notshutoff
+
+                  jsr _autoshutoff_check
+                  mov.w @_auto_shutoff_period,r6
+                  
+              auto_notshutoff:
+                  mov.w r6,@_auto_shutoff_counter
+        "
 #endif
 
 #ifdef CONF_VIS
-	"
-	       mov.b @_vis_refresh_counter,r6l
-	       dec r6l
-	       bne vis_norefresh
-		jsr _vis_handler
-	       mov.b @_vis_refresh_period,r6l
-vis_norefresh: mov.b r6l,@_vis_refresh_counter
-"
+        "
+                mov.b @_vis_refresh_counter,r6l
+                dec r6l
+                bne vis_norefresh
+                
+                  jsr _vis_handler
+                  mov.b @_vis_refresh_period,r6l
+                  
+              vis_norefresh:
+                mov.b r6l,@_vis_refresh_counter
+        "
 #endif
 
 #ifdef CONF_LCD_REFRESH
-      	"
-	       mov.b @_lcd_refresh_counter,r6l
-	       dec r6l
-	       bne lcd_norefresh
-	         jsr _lcd_refresh_next_byte
-    	       mov.b @_lcd_refresh_period,r6l
-lcd_norefresh:mov.b r6l,@_lcd_refresh_counter
-"
+        "
+                mov.b @_lcd_refresh_counter,r6l
+                dec r6l
+                bne lcd_norefresh
+                
+                  jsr _lcd_refresh_next_byte
+                  mov.b @_lcd_refresh_period,r6l
+                  
+              lcd_norefresh:
+                mov.b r6l,@_lcd_refresh_counter
+        "
 #endif
 
 #ifdef CONF_TM
@@ -195,19 +211,20 @@ lcd_norefresh:mov.b r6l,@_lcd_refresh_counter
 
                   mov.w @_tm_switcher_vector,r6
                   jsr @r6                       ; call task switcher
-_systime_tm_return:
-                  mov.b @_tm_timeslice,r6l      ; new timeslice
+                  
+              _systime_tm_return:
+                mov.b @_tm_timeslice,r6l        ; new timeslice
 
-   sys_noswitch:mov.b r6l,@_tm_current_slice
+              sys_noswitch:
+                mov.b r6l,@_tm_current_slice
         "
 #endif
         "
                 pop r0
-
-		bclr	#3,@0x91:8		; reset compare A IRQ flag
-
-		rts
-	");
+                bclr  #3,@0x91:8                ; reset compare A IRQ flag
+                rts
+        "
+);
 
 
 //! initialize system timer
@@ -215,13 +232,13 @@ _systime_tm_return:
     motors turned off
 */
 void systime_init(void) {
-  systime_shutdown();			// shutdown hardware
+  systime_shutdown();                           // shutdown hardware
 
-  sys_time=0l;                          // init timer
+  sys_time=0l;                                  // init timer
 
 #ifdef CONF_TM
   tm_current_slice=tm_timeslice=TM_DEFAULT_SLICE;
-  tm_switcher_vector=&rom_dummy_handler; // empty handler
+  tm_switcher_vector=&rom_dummy_handler;        // empty handler
 #endif
 
 #ifdef CONF_DMOTOR
@@ -234,7 +251,7 @@ void systime_init(void) {
   T_CSR =TCSR_OCA | TCSR_RESET_ON_A;
   T_CR  =TCR_CLOCK_32;
   T_OCR&=~TOCR_OCRB;
-  T_OCRA =500;
+  T_OCRA=500;
 
   ocia_vector=&systime_handler;
   T_IER|=TIER_ENABLE_OCA;
@@ -244,7 +261,7 @@ void systime_init(void) {
 /*! will also stop task switching and motors.
 */
 void systime_shutdown(void) {
-  T_IER&=~TIER_ENABLE_OCA;		// unhook compare A IRQ
+  T_IER&=~TIER_ENABLE_OCA;    // unhook compare A IRQ
 }
 
 #ifdef CONF_TM
@@ -259,7 +276,7 @@ void systime_set_switcher(void* switcher) {
 /*! \param slice the timeslice. must be at least 5ms.
 */
 void systime_set_timeslice(unsigned char slice) {
-  if(slice>5) {                        // some minimum value
+  if(slice>5) {                    // some minimum value
     tm_timeslice=slice;
     if(tm_current_slice>tm_timeslice)
       tm_current_slice=tm_timeslice;

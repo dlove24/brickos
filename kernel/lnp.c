@@ -1,5 +1,5 @@
 /*! \file   lnp.c
-    \brief  legOS networking protocol
+    \brief  link networking protocol
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -26,17 +26,17 @@
 /*
  *  2000.05.01 - Paolo Masetti <paolo.masetti@itlug.org>
  *
- *	- IR lcd now reflect IR mode (near/far)
+ *  - IR lcd now reflect IR mode (near/far)
  *
  *  2001.09.10 - Zhengrong Zang <mikezang@iname.com>
  *
- *	- Remote control buttons
- *	- Standard firmware async message
+ *  - Remote control buttons
+ *  - Standard firmware async message
  *
  *  2002.04.23 - Ted Hess <thess@kitschensync.net>
  *
- *	- Integrate Ross Crawford/Zhengrong Zang remote control message parser
- *	  and RCX op-code dispatcher
+ *  - Integrate Ross Crawford/Zhengrong Zang remote control message parser
+ *    and RCX op-code dispatcher
  *
  */
 
@@ -163,13 +163,13 @@ __asm__("
 _lnp_checksum_copy:
     ; r0: dest, r1: data, r2: length;
 
-    add.w r0,r2		; r2: end
-    mov.b #0xff,r3l	; r3l: a
+    add.w r0,r2   ; r2: end
+    mov.b #0xff,r3l ; r3l: a
 
 0:
-    mov.b @r1+,r3h	; r3h = *data++
-    add.b r3h,r3l	; a += r3h
-    mov.b r3h,@r0	; *dest++ = r3h
+    mov.b @r1+,r3h  ; r3h = *data++
+    add.b r3h,r3l ; a += r3h
+    mov.b r3h,@r0 ; *dest++ = r3h
     adds  #1,r0
     cmp.w r0,r2
     bne   0b
@@ -251,31 +251,31 @@ void lnp_receive_packet(const unsigned char *data) {
   // only handle non-degenerate packets in boot protocol 0xf0
   //
   switch(header) {
-    case 0xf0:	      // raw integrity layer packet, no addressing.
-  	  intgh = lnp_integrity_handler;
-  	  if(intgh) {
+    case 0xf0:        // raw integrity layer packet, no addressing.
+      intgh = lnp_integrity_handler;
+      if(intgh) {
 #ifdef CONF_AUTOSHUTOFF
-    		shutoff_restart();
+        shutoff_restart();
 #endif
         intgh(data,length);
       }
       break;
 
-    case 0xf1:	      // addressing layer.
+    case 0xf1:        // addressing layer.
       if(length>2) {
-    		unsigned char dest=*(data++);
+        unsigned char dest=*(data++);
 
-    		if(lnp_hostaddr == (dest & LNP_HOSTMASK)) {
-    		  unsigned char port=dest & LNP_PORTMASK;
-    		  addrh = lnp_addressing_handler[port];
-    		  if(addrh) {
-       			unsigned char src=*(data++);
+        if(lnp_hostaddr == (dest & LNP_HOSTMASK)) {
+          unsigned char port=dest & LNP_PORTMASK;
+          addrh = lnp_addressing_handler[port];
+          if(addrh) {
+            unsigned char src=*(data++);
 #ifdef CONF_AUTOSHUTOFF
-    		    shutoff_restart();
+            shutoff_restart();
 #endif
-    		    addrh(data,length-2,src);
-    		  }
-    		}
+            addrh(data,length-2,src);
+          }
+        }
       }
 
   } // switch(header)
@@ -298,31 +298,31 @@ void lnp_integrity_byte(unsigned char b) {
       //
       if(((b & 0xf8) == 0xf0) || (b == 0x55)) {
 #ifdef CONF_VIS
-    		if (lnp_logical_range_is_far()) {
-    		  dlcd_show(LCD_IR_UPPER);
-    		  dlcd_show(LCD_IR_LOWER);
-    		} else {
-    		  dlcd_hide(LCD_IR_UPPER);
-    		  dlcd_show(LCD_IR_LOWER);
-    		}
+        if (lnp_logical_range_is_far()) {
+          dlcd_show(LCD_IR_UPPER);
+          dlcd_show(LCD_IR_LOWER);
+        } else {
+          dlcd_hide(LCD_IR_UPPER);
+          dlcd_show(LCD_IR_LOWER);
+        }
 #ifndef CONF_LCD_REFRESH
-    		lcd_refresh();
+        lcd_refresh();
 #endif
 #endif
-    		// Init checksum
-    		lnp_checksum_init( chk );
+        // Init checksum
+        lnp_checksum_init( chk );
     
-    		// switch on protocol header
-    		if (b == 0x55) {
+        // switch on protocol header
+        if (b == 0x55) {
 #if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
-    			// 0x55 is header for standard firmware message
-	        lnp_integrity_state = LNPwaitRMH1;
+          // 0x55 is header for standard firmware message
+          lnp_integrity_state = LNPwaitRMH1;
 #else
-    			lnp_integrity_reset();
+          lnp_integrity_reset();
 #endif
-    		}	else {
-  			  lnp_integrity_state++;
-  	  	}
+        } else {
+          lnp_integrity_state++;
+        }
       }
       break;
 
@@ -333,17 +333,17 @@ void lnp_integrity_byte(unsigned char b) {
 
     case LNPwaitData:
       if(bytesRead==endOfData)
-	lnp_integrity_state++;
+  lnp_integrity_state++;
       break;
 
     case LNPwaitCRC:
       if(b==chk)
-	lnp_receive_packet(buffer);
+  lnp_receive_packet(buffer);
       lnp_integrity_reset();
-	  break;
+    break;
 
 #if defined(CONF_RCX_PROTOCOL) || defined (CONF_RCX_MESSAGE)
-	// state machine to handle remote
+  // state machine to handle remote
     case LNPwaitRMH1:
     case LNPwaitRMH2:
       // waiting for header bytes
@@ -374,7 +374,7 @@ void lnp_integrity_byte(unsigned char b) {
       if ( (unsigned char)~b == lnp_rcx_temp0 )
         lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitRB1:
@@ -386,7 +386,7 @@ void lnp_integrity_byte(unsigned char b) {
       if ( (unsigned char)~b == lnp_rcx_temp1 )
         lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitRC:
@@ -394,27 +394,27 @@ void lnp_integrity_byte(unsigned char b) {
       if ( b == lnp_rcx_checksum )
         lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitRCI:
       // if checksum valid and remote handler has been installed, call remote handler
-	  if ( b == (unsigned char)~lnp_rcx_checksum) {
+    if ( b == (unsigned char)~lnp_rcx_checksum) {
 #if defined(CONF_RCX_MESSAGE)
-		 // if a message, set message number and exit
+     // if a message, set message number and exit
      if (lnp_rcx_temp1 & 0x07)
      {
         lnp_rcx_message = (lnp_rcx_temp1 > 2) ? 3 : lnp_rcx_temp1;
      } 
-		 else
+     else
 #endif
-		 {
+     {
         // Invoke remote handler if any
         lnp_remote_handler_t rmth = lnp_remote_handler;
         if (rmth)
           rmth( (lnp_rcx_temp0<<8)+lnp_rcx_temp1 );
         }
-  	  }
+      }
       // reset state machine when done
       lnp_integrity_reset();
       break;
@@ -427,7 +427,7 @@ void lnp_integrity_byte(unsigned char b) {
       if ( b == lnp_rcx_msg_op[ lnp_integrity_state-LNPwaitMH3 ] )
         lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitMN:
@@ -439,7 +439,7 @@ void lnp_integrity_byte(unsigned char b) {
       if ( (unsigned char)~b == lnp_rcx_temp0 )
         lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitMC:
@@ -448,14 +448,14 @@ void lnp_integrity_byte(unsigned char b) {
       if (b == lnp_rcx_temp1)
          lnp_integrity_state++;
       else
-    		lnp_integrity_reset();
+        lnp_integrity_reset();
       break;
 
     case LNPwaitMCC:
       // set message variable if it is valid message
       if ( (unsigned char)~b == lnp_rcx_temp1 )
-    		lnp_rcx_message = lnp_rcx_temp0;
-  	  // reset state machine
+        lnp_rcx_message = lnp_rcx_temp0;
+      // reset state machine
       lnp_integrity_reset();
       break;
 #endif
@@ -515,7 +515,7 @@ void lnp_timeout_set(unsigned short timeout) {
 }
 
 //! Initialise protocol handlers
-/*! Adressing port 0 is reserved for the legOS program handler.
+/*! Adressing port 0 is reserved for the program handler.
 */
 void lnp_init(void) {
   int k;
@@ -547,7 +547,7 @@ wakeup_t msg_received(wakeup_t m) {
  */
 int send_msg(unsigned char msg)
 {
-	int	r;
+  int r;
 
 #ifndef CONF_HOST
 #ifdef CONF_TM

@@ -21,7 +21,7 @@
  *  Markus L. Noga. All Rights Reserved.
  *
  *  Contributor(s): Markus L. Noga <markus@noga.de>
- *		    Rossz Vámos-Wentworth <rossw@jps.net>
+ *        Rossz Vámos-Wentworth <rossw@jps.net>
  */
 
 #include <sys/irq.h>
@@ -29,21 +29,21 @@
 #include <sys/timeout.h>
 
 #ifdef CONF_AUTOSHUTOFF
-volatile unsigned int auto_shutoff_counter = 0;		// current count - used by the system timer
-unsigned int auto_shutoff_period = 1000;	// milliseconds between shutoff checks
-unsigned int auto_shutoff_secs = DEFAULT_SHUTOFF_TIME;	// seconds of idle to auto shutoff
-volatile unsigned int auto_shutoff_elapsed = 0;		// idle seconds elapsed
-volatile unsigned int idle_powerdown = 0;		// true if a auto-shutoff should occur
+volatile unsigned int auto_shutoff_counter = 0;   // current count - used by the system timer
+unsigned int auto_shutoff_period = 1000;  // milliseconds between shutoff checks
+unsigned int auto_shutoff_secs = DEFAULT_SHUTOFF_TIME;  // seconds of idle to auto shutoff
+volatile unsigned int auto_shutoff_elapsed = 0;   // idle seconds elapsed
+volatile unsigned int idle_powerdown = 0;   // true if a auto-shutoff should occur
 
 void shutoff_restart(void) {
-	auto_shutoff_elapsed=0;
-	auto_shutoff_counter=auto_shutoff_period;
+  auto_shutoff_elapsed=0;
+  auto_shutoff_counter=auto_shutoff_period;
 }
 
 void shutoff_init(void) {
-//	auto_shutoff_secs = DEFAULT_SHUTOFF_TIME;
-	auto_shutoff_elapsed=0;
-	idle_powerdown = 0;
+//  auto_shutoff_secs = DEFAULT_SHUTOFF_TIME;
+  auto_shutoff_elapsed=0;
+  idle_powerdown = 0;
 }
 
 #ifdef CONF_RCX_COMPILER
@@ -52,13 +52,17 @@ void autoshutoff_check(void) {
 HANDLER_WRAPPER("autoshutoff_check","autoshutoff_check_core");
 void autoshutoff_check_core(void) {
 #endif
-	if (nb_tasks <= NUM_SYSTEM_TASKS) {
-		auto_shutoff_elapsed++;
-		if (auto_shutoff_elapsed > auto_shutoff_secs)
-			idle_powerdown = 1;
-	}
-	 else
-		shutoff_restart();
+#ifdef CONF_TM
+  if (nb_tasks <= nb_system_tasks) {
+#endif // CONF_TM
+    auto_shutoff_elapsed++;
+    if (auto_shutoff_elapsed > auto_shutoff_secs)
+      idle_powerdown = 1;
+#ifdef CONF_TM
+  }
+   else
+    shutoff_restart();
+#endif // CONF_TM
 }
 
 #endif

@@ -20,8 +20,8 @@
 /*
  *  2002.04.23 - Ted Hess <thess@kitschensync.net>
  *
- *	- Integrated into legOS 0.2.6. Added lr_startup(), lr_shutdown()
- *	  Release input buffer while processing keys
+ *  - Integrated into legOS 0.2.6. Added lr_startup(), lr_shutdown()
+ *    Release input buffer while processing keys
  *
  */
 
@@ -50,7 +50,7 @@ unsigned int lr_data;      // lnp data byte
 int lr_dataready = 0;      // lr_data valid?
 
 lr_handler_t lr_handler;   // the user event handler
-pid_t lr_pid;			// Button dispatch thread
+tid_t lr_tid;     // Button dispatch thread
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -119,11 +119,11 @@ int lr_thread(int argc, char *argv[]) {
   unsigned int lr_keys;
   while(1) {
     wait_event(&lr_waitdata,0);
-  	// Snatch input before calling user handler
-  	lr_keys = lr_data;
-  	// Have local copy of input data, allow buffer to refill
-  	lr_dataready = 0;
-  	// Call user handler
+    // Snatch input before calling user handler
+    lr_keys = lr_data;
+    // Have local copy of input data, allow buffer to refill
+    lr_dataready = 0;
+    // Call user handler
     lr_process(lr_keys);
   }
   return 0;
@@ -146,7 +146,7 @@ void lr_startup()
   lr_handler = NULL;
 
   // Start watcher thread, then tell lnp where we want remote data to go
-  lr_pid = execi(&lr_thread,0,0,PRIO_HIGHEST,DEFAULT_STACK_SIZE);
+  lr_tid = execi(&lr_thread,0,0,PRIO_HIGHEST,DEFAULT_STACK_SIZE);
   lr_init();
 
   return;
@@ -155,14 +155,14 @@ void lr_startup()
 //! Shutdown protocol handler and terminate thread?
 void lr_shutdown()
 {
-	// Disconnect protocol handler
-	lnp_remote_set_handler(LNP_DUMMY_REMOTE);
-	lr_set_handler(LR_DUMMY_HANDLER);
+  // Disconnect protocol handler
+  lnp_remote_set_handler(LNP_DUMMY_REMOTE);
+  lr_set_handler(LR_DUMMY_HANDLER);
 
-	// terminate thread
-	kill(lr_pid);
+  // terminate thread
+  kill(lr_tid);
 
-	return;
+  return;
 }
 
-#endif	// CONF_LR_HANDLER
+#endif  // CONF_LR_HANDLER

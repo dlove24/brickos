@@ -1,4 +1,4 @@
-/*! \file   tm.c
+/*! \file tm.c
     \brief  Task management
     \author Markus L. Noga <markus@noga.de>
     
@@ -43,6 +43,7 @@
 #ifdef CONF_VIS
 # include <sys/lcd.h>
 # include <conio.h>
+# include <sys/battery.h>
 #endif
 
 #define fatal(a)
@@ -54,15 +55,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-pchain_t *priority_head;		//!< head of process priority chain
+pchain_t *priority_head;                        //!< head of task priority chain
 
-pdata_t pd_single;			//!< single process process data
-pdata_t *pd_idle;			//!< idle proces
-pdata_t *cpid; 			      	//!< ptr to current process data
+tdata_t td_single;                              //!< single task data
+tdata_t *ctid;                                  //!< ptr to current task data
 
-unsigned nb_tasks;		      	//!< number of tasks
+unsigned int nb_tasks;                          //!< number of tasks
+unsigned int nb_system_tasks;                   //!< number of system (kernel) tasks
 
-sem_t task_sem;       	      	      	//!< task data structure protection
+sem_t task_sem;                                 //!< task data structure protection
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -70,10 +71,13 @@ sem_t task_sem;       	      	      	//!< task data structure protection
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+extern unsigned char tm_timeslice;
+extern int get_battery_mv();
+
 #if 0
 void integrity_check(void) {
   pchain_t *prio=priority_head;
-  pdata_t *pd;
+  tdata_t *td;
   
   if(prio->prev!=NULL) {  fatal("ERR10");  }
   
@@ -82,15 +86,15 @@ void integrity_check(void) {
       if(prio->next->prev!=prio) { fatal("ERR11"); }
       if(prio->next->priority>prio->priority) { fatal("ERR12"); }
     }
-    pd=prio->cpid;
+    td=prio->ctid;
     do {
-      if(pd==NULL) { fatal("ERR13"); }
-      if(pd->priority!=prio) { fatal("ERR14"); }
-      if(pd->next->prev != pd) { fatal("ERR15"); }
-      if(pd->prev->next != pd) { fatal("ERR16"); }
+      if(td==NULL) { fatal("ERR13"); }
+      if(td->priority!=prio) { fatal("ERR14"); }
+      if(td->next->prev != td) { fatal("ERR15"); }
+      if(td->prev->next != td) { fatal("ERR16"); }
       
-      pd=pd->next;
-    } while(pd!=prio->cpid);
+      td=td->next;
+    } while(td!=prio->ctid);
     
     prio=prio->next;
   } while(prio);
@@ -111,176 +115,160 @@ _tm_switcher:
       ; r6 saved by ROM
       ; r0 saved by system timer handler
 
-      mov.w	r1,@-r7			; save registers
-      mov.w	r2,@-r7		
-      mov.w	r3,@-r7		
-      mov.w	r4,@-r7		
-      mov.w	r5,@-r7		
+      mov.w r1,@-r7                             ; save registers
+      mov.w r2,@-r7 
+      mov.w r3,@-r7 
+      mov.w r4,@-r7 
+      mov.w r5,@-r7 
 
-      mov.w	r7,r0			; pass sp
+      mov.w r7,r0                               ; pass sp
 
-      jsr	_tm_scheduler		; call scheduler
+      jsr _tm_scheduler                         ; call scheduler
 
-_tm_switcher_return:		
-      mov.w	r0,r7			; set new sp
+_tm_switcher_return:    
+      mov.w r0,r7                               ; set new sp
 
-      mov.w	@r7+,r5
-      mov.w	@r7+,r4
-      mov.w	@r7+,r3
-      mov.w	@r7+,r2
-      mov.w	@r7+,r1
+      mov.w @r7+,r5
+      mov.w @r7+,r4
+      mov.w @r7+,r3
+      mov.w @r7+,r2
+      mov.w @r7+,r1
 
       ; r0 will be restored by system timer handler
       ; r6 will be restored by ROM
 
-      rts				; return to new task
+      rts                                       ; return to new task
 ");
 
 
-//! the process scheduler
+//! the task scheduler
 /*! \param old_sp current task's current stack pointer
-    \return    new task's current stack pointer
+    \return  new task's current stack pointer
   
     actual context switches performed by tm_switcher (assembler wrapper)
 */
 size_t *tm_scheduler(size_t *old_sp) {
-  pdata_t  *next; 			      	// next process to execute
+  tdata_t  *next;                               // next task to execute
   pchain_t *priority;
   wakeup_t tmp;
   
-#ifdef CONF_VIS
-  static unsigned char sequence=0;
-
-#ifdef CONF_TM_DEBUG
-  if(dkey & KEY_VIEW) {
-    cputw( *(old_sp + SP_RETURN_OFFSET ) );
-    lcd_refresh();
-  }
-#endif
-  // Animate user tasks only?
-  if(nb_tasks > NUM_SYSTEM_TASKS) {
-    sequence++;
-    if(sequence==10) {
-      lcd_show(man_run);
-#ifndef CONF_LCD_REFRESH
-      lcd_refresh();
-#endif
-    } else if(sequence==20) {
-      lcd_show(man_stand);
-      sequence=0;
-#ifndef CONF_LCD_REFRESH
-      lcd_refresh();
-#endif
-    }
-  }
-#endif	// CONF_VIS
-  
   if(sem_trywait(&task_sem)) {
-    // process is manipulating task data structures
+    // task is manipulating task data structures
     // let it complete
     return old_sp;
   }
     
-  priority=cpid->priority;
-  switch(cpid->pstate) {
-    case P_ZOMBIE:
-      if(cpid->next!=cpid) {
-	// remove from chain for this priority level
-	//
+  priority=ctid->priority;
+  switch(ctid->tstate) {
+  case T_ZOMBIE:
+    if(ctid->next!=ctid) {
+      // remove from chain for this priority level
+      //
 
-	priority->cpid  =cpid->prev;
-	cpid->next->prev=cpid->prev;
-	cpid->prev->next=cpid->next;
-      } else {
-	// remove priority chain for this priority level
-	//
+      priority->ctid  =ctid->prev;
+      ctid->next->prev=ctid->prev;
+      ctid->prev->next=ctid->next;
+    } else {
+      // remove priority chain for this priority level
+      //
 
-	if(priority->next)
-	  priority->next->prev = priority->prev;
-	if(priority->prev)
-	  priority->prev->next = priority->next;
-	else
-	  priority_head = priority->next;
-	free(priority);
+      if(priority->next)
+        priority->next->prev = priority->prev;
+      if(priority->prev)
+        priority->prev->next = priority->next;
+      else
+        priority_head = priority->next;
+      free(priority);
+    }
+      
+    // We're on that stack frame being freed right now,
+    // but nobody can interrupt us anyways.
+    //
+    free(ctid->stack_base);                     // free stack
+    free(ctid);                                 // free task data
+
+    //
+    // FIXME: exit code?
+    //
+
+    if ((ctid->tflags & T_KERNEL)==T_KERNEL)
+      --nb_system_tasks;
+
+    switch(--nb_tasks) {
+    case 1:
+#ifdef CONF_TM_DEBUG    
+      if((priority_head->ctid->tflags & T_IDLE)==0) {
+        // last task is not the idle task
+        fatal("ERR00");
       }
-
-      // We're on that stack frame being freed right now,
-      // but nobody can interrupt us anyways.
-      //
-      free(cpid->stack_base);	        // free stack
-      free(cpid);		        // free process data
-
-      //
-      // FIXME: exit code?
-      //
-
-      switch(--nb_tasks) {
-	case 1:
-  	  // only the idle process remains
-	  if(priority_head->cpid!=pd_idle) {
-	    fatal("ERR00");
-	  }
-	  *((pd_idle->sp_save) + SP_RETURN_OFFSET ) = (size_t) &exit;
-	  pd_idle->pstate=P_SLEEPING;
-	  break;
-	  
-	case 0:
-	  // the last process has been removed
-	  // -> stop switcher, go single tasking
-	  
-    	  systime_set_switcher(&rom_dummy_handler);
-	  cpid=&pd_single;
-	  
-	  sem_post(&task_sem);
-	  return cpid->sp_save;
-      }
+#endif // CONF_TM_DEBUG
+      // only the idle task remains
+      *((priority_head->ctid->sp_save) + SP_RETURN_OFFSET ) = (size_t) &exit;
+      priority_head->ctid->tstate=T_SLEEPING;
       break;
+    
+    case 0:
+      // the last task has been removed
+      // -> stop switcher, go single tasking
+    
+      systime_set_switcher(&rom_dummy_handler);
+      ctid=&td_single;
+    
+      sem_post(&task_sem);
+      return ctid->sp_save;
+    }
+    break;
 
-    case P_RUNNING:
-      cpid->pstate=P_SLEEPING;
-      // no break
+  case T_RUNNING:
+    ctid->tstate=T_SLEEPING;
+    // no break
 
-    case P_WAITING:
-      cpid->sp_save=old_sp;
+  case T_WAITING:
+    ctid->sp_save=old_sp;
   }
 
 
-  // find next process willing to run
-  //	
+  // find next task willing to run
+  //  
   priority=priority_head;
-  next=priority->cpid->next;
+  next=priority->ctid->next;
   while(1) {
-    if(next->pstate==P_SLEEPING)
+    if(next->tstate==T_SLEEPING)
       break;
     
-    if(next->pstate==P_WAITING) {
+    if(next->tstate==T_WAITING) {
       tmp = next->wakeup(next->wakeup_data);
       if( tmp != 0) {
-	next->wakeup_data = tmp;
-	break;
+        next->wakeup_data = tmp;
+        break;
       }
     }
     
-    if(next == priority->cpid) {
+    if(next == priority->ctid) {
       // if we've scanned the whole chain,
       // go to next priority
       
       if(priority->next != NULL) 
-	priority = priority->next;
+        priority = priority->next;
+#ifdef CONF_TM_DEBUG        
       else {
-	// FIXME: idle task has died
-	//        this is a severe error.
-      	fatal("ERR01");
+        // FIXME: idle task has died
+        //        this is a severe error.
+        fatal("ERR01");
       }
-      next=priority->cpid->next;
+#else
+      else
+        priority = priority_head;
+#endif
+      next=priority->ctid->next;
     } else
       next=next->next;
   }
-  cpid=next->priority->cpid=next;	// execute next process
-  cpid->pstate=P_RUNNING;
+  ctid=next->priority->ctid=next;               // execute next task
+  ctid->tstate=T_RUNNING;
 
   sem_post(&task_sem);
-  return cpid->sp_save;
+  return ctid->sp_save;
 }
 
 //! yield the rest of the current timeslice
@@ -292,23 +280,23 @@ __asm__("
 .globl _yield
 .align 1
 _yield:
-      stc     ccr,r0h		      ; to fake an IRQ, we have to
-      push    r0		      ; store the registers
-      orc     #0x80,ccr               ; disable interrupts
+      stc ccr,r0h                               ; to fake an IRQ, we have to
+      push    r0                                ; store the registers
+      orc #0x80,ccr                             ; disable interrupts
 
-      push    r6                      ; store r6
+      push    r6                                ; store r6
 
-      mov.w   #0x04d4,r0              ; store rom return addr
+      mov.w #0x04d4,r0                          ; store rom return addr
       push    r0
 
-      push    r0                      ; store r0 (destroyed by call.)
+      push    r0                                ; store r0 (destroyed by call.)
 
-      mov.w   #_systime_tm_return,r0  ; store systime return addr
+      mov.w #_systime_tm_return,r0              ; store systime return addr
       push    r0
 
-      jmp @_tm_switcher               ; call task switcher
+      jmp @_tm_switcher                         ; call task switcher
 ");
-	
+  
 
 //! the idle task
 /*! infinite sleep instruction to conserve power.
@@ -321,87 +309,143 @@ _tm_idle_task:
       sleep
       bra _tm_idle_task
 ");
-			
+
+#ifdef CONF_VIS
+//! the man task
+/*! infinite loop; when program running, update the man (stand/run)
+*/
+int tm_man_task(int argc, char **argv)
+{
+  int state=0;
+
+  while(1) {
+    if(nb_tasks > nb_system_tasks) state ^= 1; else state=0;
+    lcd_show(state == 0 ? man_stand : man_run);
+#ifndef CONF_LCD_REFRESH
+    lcd_refresh();
+#endif // CONF_LCD_REFRESH
+    msleep(500);
+  }
+}
+#endif // CONF_VIS
+
+#ifdef CONF_BATTERY_INDICATOR
+//! the battery task
+/*! updates the battery low indicator when necessary
+*/
+int tm_battery_task(int argc, char **argv) {
+  int bmv;
+
+  while(1) {
+    bmv=get_battery_mv();
+
+    if(bmv>BATTERY_NORMAL_THRESHOLD_MV)
+      dlcd_hide(LCD_BATTERY_X);
+    else if(bmv<BATTERY_LOW_THRESHOLD_MV)
+      dlcd_show(LCD_BATTERY_X);
+
+    msleep(2000);
+  }
+}
+#endif // CONF_BATTERY_INDICATOR
+
 //! init task management
 /*! called in single tasking mode before task setup.
 */
 void tm_init(void) {
-   // no tasks right now.
-   //
-   nb_tasks=0;
-   priority_head=NULL;
-   sem_init(&task_sem,0,1);
+  tdata_t* td_idle;
+
+  // no tasks right now.
+  //
+  nb_tasks=0;
+  nb_system_tasks=0;
+  priority_head=NULL;
+  sem_init(&task_sem,0,1);
    
-   // the single tasking context
-   //
-   pd_single.pstate=P_RUNNING;
-   cpid=&pd_single;
+  // the single tasking context
+  //
+  td_single.tstate=T_RUNNING;
+  ctid=&td_single;
 
-   // the idle process is an institution
-   //	
-   pd_idle=(pdata_t*)execi(&tm_idle_task,0,NULL,0,IDLE_STACK_SIZE);
+  // the idle task is an institution
+  //  
+  td_idle=(tdata_t*)execi(&tm_idle_task,0,NULL,0,IDLE_STACK_SIZE);
+  td_idle->tflags |= T_IDLE;
 
-   systime_set_timeslice(TM_DEFAULT_SLICE);
-}	
+#ifdef CONF_VIS
+  execi(&tm_man_task, 0, NULL, 1, IDLE_STACK_SIZE);
+#endif // CONF_VIS
+
+#ifdef CONF_BATTERY_INDICATOR
+  execi(&tm_battery_task, 0, NULL, 1, IDLE_STACK_SIZE);
+#endif // CONF_BATTERY_INDICATOR
+
+  systime_set_timeslice(TM_DEFAULT_SLICE);
+} 
 
 
 //! start task management 
 /*! called in single tasking mode after task setup
 */
 void tm_start(void) {
-  disable_irqs();			// no interruptions, please
+  disable_irqs();                               // no interruptions, please
 
   systime_set_switcher(&tm_switcher);
-  yield();				// go!
+  yield();                                      // go!
 
-  enable_irqs();			// restored state would 
-					// disallow interrupts
+  enable_irqs();                                // restored state would 
+                                                // disallow interrupts
 }
 
 //! execute a memory image.
 /*! \param code_start start address of code to execute
-    \param argc       first argument passed, normally number of strings in argv
-    \param argv       second argument passed, normally pointer to argument pointers.
-    \param priority   new task's priority
-    \param stack_size stack size for new process
-    \return -1: fail, else pid.
+    \param argc first argument passed, normally number of strings in argv
+    \param argv second argument passed, normally pointer to argument pointers.
+    \param priority new task's priority
+    \param stack_size stack size for new task
+    \return -1: fail, else tid.
     
     will return to caller in any case.
 */
-pid_t execi(int (*code_start)(int,char**),int argc, char **argv,
+tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
             priority_t priority,size_t stack_size) {
-  pdata_t *pd;
-  pchain_t *pchain, *ppchain;	// for traversing priority chain
-  pchain_t *newpchain;      	// for allocating new priority chain
-  size_t *sp;
+  pchain_t *pchain, *ppchain; // for traversing priority chain
   int freepchain=0;
   
   // get memory
   //
-  // task & stack area belong to parent process
+  // task & stack area belong to parent task
   // they aren't freed by mm_reaper()
   //
-  if((pd=malloc(sizeof(pdata_t)))==NULL)	
-    return -1;
-  if((sp=malloc(stack_size))==NULL) {
-    free(pd);
-    return -1;
-  }
   // avoid deadlock of memory and task semaphores
   // by preallocation.
-  if((newpchain=malloc(sizeof(pchain_t)))==NULL) {
-    free(pd);
+  
+  tdata_t *td=malloc(sizeof(tdata_t));
+  size_t *sp=malloc(stack_size);
+  
+  // for allocating new priority chain
+  pchain_t *newpchain=malloc(sizeof(pchain_t));
+
+  if (td == NULL || sp == NULL || newpchain == NULL)
+  {
+    free(td);
     free(sp);
+    free(newpchain);
     return -1;
   }
   
-  pd->pflags = 0;
+  td->tflags = 0;
   if ((size_t)code_start < (size_t)&mm_start)
-    pd->pflags |= T_KERNEL;
+  {
+    td->tflags |= T_KERNEL;
+    nb_system_tasks++;
+  }
+  else
+    td->tflags |= T_USER;
 
-  pd->stack_base=sp;		// these we know already.
+  td->stack_base=sp;                  // these we know already.
 
-  sp+=(stack_size>>1);		// setup initial stack
+  sp+=(stack_size>>1);                // setup initial stack
 
   // when main() returns a value, it passes it in r0
   // as r0 is also the register to pass single int arguments by
@@ -413,38 +457,38 @@ pid_t execi(int (*code_start)(int,char**),int argc, char **argv,
   // systime_handler and the ROM routine can fill the 
   // right values on startup.
 
-  *(--sp)=(size_t) code_start;	// entry point    < these two are for
-  *(--sp)=0;			// ccr            < rte in ROM
-  *(--sp)=0;			// r6             < pop r6 in ROM
+  *(--sp)=(size_t) code_start;        // entry point   < these two are for
+  *(--sp)=0;                          // ccr           < rte in ROM
+  *(--sp)=0;                          // r6        < pop r6 in ROM
   *(--sp)=(size_t)
-          &rom_ocia_return;	// ROM return     < rts in systime_handler
+          &rom_ocia_return;           // ROM return < rts in systime_handler
 
-  *(--sp)=(size_t) argc;        // r0             < pop r0 in systime handler
+  *(--sp)=(size_t) argc;              // r0       < pop r0 in systime handler
   *(--sp)=(size_t)              
-          &systime_tm_return;   // systime return < rts in tm_switcher
+          &systime_tm_return;         // systime return < rts in tm_switcher
 
-  *(--sp)=(size_t) argv;	// r1..r5	  < pop r1..r5 in tm_switcher
+  *(--sp)=(size_t) argv;              // r1..r5 < pop r1..r5 in tm_switcher
   *(--sp)=0;
   *(--sp)=0;
   *(--sp)=0;
   *(--sp)=0;
 
-  pd->sp_save=sp;		// save sp for tm_switcher
-  pd->pstate=P_SLEEPING;	// task is waiting for execution
-  pd->parent=cpid;		// set parent
+  td->sp_save=sp;                     // save sp for tm_switcher
+  td->tstate=T_SLEEPING;              // task is waiting for execution
+  td->parent=ctid;                    // set parent
 
   sem_wait(&task_sem);
 
   ppchain=NULL;
-  for(	pchain = priority_head;
-	  pchain != NULL && (pchain->priority) > priority;
-	  ppchain = pchain, pchain = pchain->next
-	  );
+  for(  pchain = priority_head;
+    pchain != NULL && (pchain->priority) > priority;
+    ppchain = pchain, pchain = pchain->next
+  );
   if(pchain==NULL || pchain->priority!=priority) {
     // make new chain
     //
     newpchain->priority=priority;
-    newpchain->cpid=pd;
+    newpchain->ctid=td;
 
     newpchain->next=pchain;
     if(pchain)
@@ -457,16 +501,16 @@ pid_t execi(int (*code_start)(int,char**),int argc, char **argv,
 
     // initial queue setup
     //
-    pd->prev=pd->next=pd;
-    pd->priority=newpchain;
+    td->prev=td->next=td;
+    td->priority=newpchain;
   } else {
     // add at back of queue
     //
-    pd->priority=pchain;
-    pd->prev=pchain->cpid->prev;
-    pd->next=pchain->cpid;
-    pd->next->prev=pd->prev->next=pd;
-    freepchain=1;   // free superfluous pchain.
+    td->priority=pchain;
+    td->prev=pchain->ctid->prev;
+    td->next=pchain->ctid;
+    td->next->prev=td->prev->next=td;
+    freepchain=1; // free superfluous pchain.
   }
   nb_tasks++;
   
@@ -475,7 +519,7 @@ pid_t execi(int (*code_start)(int,char**),int argc, char **argv,
   if(freepchain)
     free(newpchain);
   
-  return (pid_t) pd;		// pid = (pid_t) &pdata_t_struct
+  return (tid_t) td;                  // tid = (tid_t) &tdata_t_struct
 }
 
 
@@ -485,36 +529,29 @@ pid_t execi(int (*code_start)(int,char**),int argc, char **argv,
     FIXME: for now, scrap the code.
 */
 void exit(int code) {
-  enable_irqs();				// just in case...
-  if (!(cpid->pflags & T_KERNEL))
+  enable_irqs();                                // just in case...
+  if (!(ctid->tflags & T_KERNEL))
     mm_reaper();
-  cpid->pstate=P_ZOMBIE;
-  // Last man standing
-#ifdef CONF_VIS
-  lcd_show(man_stand);
-#ifndef CONF_LCD_REFRESH
-  lcd_refresh();
-#endif
-#endif
+  ctid->tstate=T_ZOMBIE;
   // Yield till dead
   while(1)
     yield();
 }
 
 
-//! suspend process until wakeup function is non-null
+//! suspend task until wakeup function is non-null
 /*! \param wakeup the wakeup function. called in task scheduler context.
     \param data argument passed to wakeup function by scheduler
     \return return value passed on from wakeup
 */
 wakeup_t wait_event(wakeup_t (*wakeup)(wakeup_t),wakeup_t data) {
-  cpid->wakeup     =wakeup;
-  cpid->wakeup_data=data;
-  cpid->pstate     =P_WAITING;
+  ctid->wakeup     =wakeup;
+  ctid->wakeup_data=data;
+  ctid->tstate     =T_WAITING;
 
   yield();
 
-  return cpid->wakeup_data;
+  return ctid->wakeup_data;
 }
 
 
@@ -522,13 +559,24 @@ wakeup_t wait_event(wakeup_t (*wakeup)(wakeup_t),wakeup_t data) {
 /*! \param data time to wakeup encoded as a wakeup_t
 */
 static wakeup_t tm_sleep_wakeup(wakeup_t data) {
-	return ((time_t)data)<=sys_time;
+  time_t remaining = ((time_t)data) - sys_time;
+
+  if (((time_t)data)<=sys_time)
+  {
+    tm_timeslice = TM_DEFAULT_SLICE;
+    return -1;
+  }
+
+  if (remaining < tm_timeslice)
+    tm_timeslice = remaining;
+
+  return 0;
 }
 
 //! delay execution allowing other tasks to run.
 /*! \param msec sleep duration in milliseconds
-   \return number of milliseconds left if interrupted, else 0.
-   \bug interruptions not implemented.
+    \return number of milliseconds left if interrupted, else 0.
+    \bug interruptions not implemented.
  */
 unsigned int msleep(unsigned int msec)
 {
@@ -542,8 +590,8 @@ unsigned int msleep(unsigned int msec)
 
 //! delay execution allowing other tasks to run.
 /*! \param sec sleep duration in seconds
-   \return number of seconds left if interrupted, else 0.
-   \bug interruptions not implemented.
+    \return number of seconds left if interrupted, else 0.
+    \bug interruptions not implemented.
  */
 unsigned int sleep(unsigned int sec)
 {
@@ -552,27 +600,31 @@ unsigned int sleep(unsigned int sec)
 }
 
 
-//! kill a process
-/*! \param pid must be valid process ID, or undefined behaviour will result!
+//! kill a task
+/*! \param tid must be valid process ID, or undefined behaviour will result!
 */
-void kill(pid_t pid) {
-  pdata_t *pd=(pdata_t*) pid;
-  if(pd==cpid)
+void kill(tid_t tid) {
+  tdata_t *td=(tdata_t*) tid;
+  if(td==ctid)
     exit(-1);
   else {
     // when the task is switched to the next time,
     // make it exit immediatlely.
     
     sem_wait(&task_sem);
-    *( (pd->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
-    pd->pstate=P_SLEEPING;		// in case it's waiting.
+    *( (td->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
+    td->tstate=T_SLEEPING;    // in case it's waiting.
     sem_post(&task_sem);
   }
 }
 
 void killall(priority_t prio) {
   pchain_t *pchain;
-  pdata_t  *pd;
+  tdata_t *td;
+  tflags_t flags = T_KERNEL | T_IDLE;
+  
+  if (prio == PRIO_HIGHEST)
+    flags = T_IDLE;
 
   sem_wait(&task_sem);
 
@@ -583,19 +635,18 @@ void killall(priority_t prio) {
     pchain=pchain->next;
 
   while(pchain!=NULL) {
-    pd=pchain->cpid;
+    td=pchain->ctid;
     do {
-      if(pd!=cpid && pd!=pd_idle) {
-	// kill it
-	//
-	*( (pd->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
-        pd->pstate=P_SLEEPING;		// in case it's waiting.
+      if((td!=ctid) && ((td->tflags & flags) == 0)) {
+        // kill it
+        //
+        *( (td->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
+        td->tstate=T_SLEEPING;    // in case it's waiting.
       }
-      pd=pd->next;
-    } while(pd!=pchain->cpid);
+      td=td->next;
+    } while(td!=pchain->ctid);
     pchain=pchain->next;
-  }    
-
+  }  
   sem_post(&task_sem);
 }
 

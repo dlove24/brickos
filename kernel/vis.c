@@ -1,5 +1,5 @@
 /*! \file   vis.c
-    \brief  visualization of legOS state
+    \brief  visualization of BrickOS state
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -67,7 +67,7 @@ void vis_core(void) {
 #endif
 
 #ifdef CONF_PROGRAM
-  if(nb_tasks <= NUM_SYSTEM_TASKS) {    	      	  // show only while program not running.
+  if(nb_tasks <= nb_system_tasks) {    	      	  // show only while program not running.
     if(program_valid(cprog))
       cputc_hex_0(cprog+1);
     else
