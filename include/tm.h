@@ -31,7 +31,9 @@
 
 #ifdef  __cplusplus
 extern "C" {
-#endif
+#endif // __cplusplus
+
+#ifdef CONF_TM
 
 #include <mem.h>
 
@@ -130,8 +132,18 @@ typedef struct _tdata_t tdata_t;
  */
 typedef size_t tid_t;
 
+//! test to see if task has been asked to shutdown
+/*! Check task shutdown flag.  If set, the task should shutdown
+ *  as soon as possible.  If clear, continue running.
+ */
+#define shutdown_requested() ((ctid->tflags & T_SHUTDOWN) != 0)
+extern tdata_t *ctid;
+#else // CONF_TM
+#define shutdown_requested() (0)
+#endif // CONF_TM
+
 #ifdef  __cplusplus
 }
-#endif
+#endif // __cplusplus
 
 #endif

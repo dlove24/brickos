@@ -21,7 +21,7 @@
 #include <c++/Sound.H>
 #include <conio.h>
 #include <unistd.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 int 
 main(int argc, 

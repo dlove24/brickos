@@ -17,7 +17,7 @@
 #include <c++/Sound.H>
 #include <conio.h>
 #include <unistd.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 //
 // This is a simple example of a two motor rover which moves forward for

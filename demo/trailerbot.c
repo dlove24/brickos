@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <dmotor.h>
 #include <dsensor.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 /*
  * Physical characteristics of the robot.

@@ -19,7 +19,7 @@
 #include <c++/TouchSensor.H>
 #include <conio.h>
 #include <unistd.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 // This program reads the touch sensor and displays the hex value on
 /// the display every 10 ms

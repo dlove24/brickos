@@ -36,7 +36,7 @@
 #include <dmotor.h>
 #include <dsound.h>
 #include <conio.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 //

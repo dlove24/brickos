@@ -105,9 +105,6 @@ extern size_t *tm_scheduler(size_t *old_sp);
 */
 extern int tm_idle_task(int,char**);
 
-#define shutdown_requested() ((ctid->tflags & T_SHUTDOWN) != 0)
-#else // CONF_TM
-#define shutdown_requested() (0)
 #endif	// CONF_TM
 
 #ifdef  __cplusplus

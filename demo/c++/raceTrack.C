@@ -20,7 +20,7 @@
 #include <c++/LightSensor.H>
 #include <conio.h>
 #include <unistd.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 //
 // This is a naive example of a rover which follows a dark line

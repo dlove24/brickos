@@ -4,7 +4,7 @@
 #if defined(CONF_DSOUND)
 
 #include <dsound.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 //! "wir sind die roboter" theme by Kraftwerk
 static const note_t robots[] = { 

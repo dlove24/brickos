@@ -3,7 +3,7 @@
 #include <config.h>
 #if defined(CONF_DSOUND)
 #include <dsound.h>
-#include <sys/tm.h>
+#include <tm.h>
 
 /*array of notes that make up the refrain*/
 /*of Devil with a Blue Dress*/

@@ -19,7 +19,7 @@
 #if defined(CONF_DMOTOR)
 
 #include <unistd.h>		// for the sleep() func.
-#include <sys/tm.h>		// for the shutdown_requested() func.
+#include <tm.h>			// for the shutdown_requested() func.
 
 #include <c++/Lamp.H>
 
