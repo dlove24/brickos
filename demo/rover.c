@@ -25,6 +25,9 @@
  *
  *  Contributor(s): Markus L. Noga <markus@noga.de>
  */
+ 
+#include <config.h>
+#if defined(CONF_DSENSOR) && defined(CONF_DMOTOR)
 
 #include <conio.h>
 #include <unistd.h>
@@ -92,3 +95,10 @@ wakeup_t sensor_press_wakeup(wakeup_t data) {
 	return SENSOR_1<0xf000 || SENSOR_3<0xf000;
 }
 
+#else
+#warning rover.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning rover demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // CONF_DSENSOR, CONF_DMOTOR

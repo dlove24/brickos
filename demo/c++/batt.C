@@ -13,6 +13,9 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DSENSOR)
+
 #include <c++/Battery.H>
 #include <conio.h>
 #include <unistd.h>
@@ -34,3 +37,11 @@ main(int argc,
   }
   return 0;
 }
+
+#else
+#warning batt.C requires CONF_DSENSOR
+#warning batt demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // CONF_DSENSOR

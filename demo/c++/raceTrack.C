@@ -13,6 +13,9 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DMOTOR) && defined(CONF_DSENSOR)
+
 #include <c++/MotorPair.H>
 #include <c++/LightSensor.H>
 #include <conio.h>
@@ -58,3 +61,13 @@ main(int argc,
   }
   return 0;
 }
+#else // CONF_DMOTOR && CONF_DSENSOR
+#warning raceTrack.C requires CONF_DMOTOR && CONF_DSENSOR
+#warning raceTrack demo will do nothing
+int 
+main(int argc, 
+     char **argv) 
+{
+  return 0;
+}
+#endif // CONF_DMOTOR && CONF_DSENSOR

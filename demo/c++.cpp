@@ -63,6 +63,7 @@ public:
   }
 };
 
+#ifdef CONF_DSOUND
 //! An implementation using sound.
 class SoundState : public StateChanger {
 public:
@@ -73,6 +74,7 @@ public:
   void disable() {
   }
 };
+#endif // CONF_DSOUND
 
 void StateChanger::onOff() {
   setState(1);
@@ -88,9 +90,11 @@ int main(int argc, char **argv) {
   s->onOff();
   delete s;
 
+#ifdef CONF_DSOUND
   s=new SoundState;
   s->onOff();
   delete s;
+#endif // CONF_DSOUND
 
   return 0;
 }

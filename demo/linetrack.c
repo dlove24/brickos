@@ -31,6 +31,9 @@
  *  Contributor(s): Markus L. Noga <markus@noga.de>
  */
 
+#include <config.h>
+#if defined(CONF_DSENSOR) && defined(CONF_DMOTOR)
+
 #include <conio.h>
 #include <unistd.h>
 
@@ -99,3 +102,10 @@ int main(int argc, char *argv[]) {
   
   return 0;
 }
+#else
+#warning linetrack.c requires CONF_DSENSOR && CONF_DMOTOR
+#warning linetrack demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // defined(CONF_DSENSOR) && defined(CONF_DMOTOR)

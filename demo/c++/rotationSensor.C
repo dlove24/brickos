@@ -13,6 +13,9 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
+
 #include <c++/RotationSensor.H>
 #include <conio.h>
 #include <unistd.h>
@@ -32,3 +35,13 @@ main(int argc,
   }
   return 0;
 }
+#else
+#warning rotationSensor.C requires CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning rotationSensor.C demo will do nothing.
+int
+main(int argc,
+		 char **argv)
+{
+  return 0;
+}
+#endif // defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)

@@ -15,6 +15,9 @@
 
 // This program beeps once a second
 
+#include <config.h>
+#if defined(CONF_DSOUND)
+
 #include <c++/Sound.H>
 #include <conio.h>
 #include <unistd.h>
@@ -33,3 +36,13 @@ main(int argc,
   
   return 0;
 }
+#else // CONF_DSOUND
+#warning sound.C requires CONF_DSOUND
+#warning sound demo will do nothing
+int 
+main(int argc, 
+     char **argv) 
+{
+  return 0;
+}
+#endif // CONF_DSOUND

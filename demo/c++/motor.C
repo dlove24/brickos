@@ -13,6 +13,9 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DMOTOR)
+
 #include <c++/Motor.H>
 #include <c++/Sound.H>
 #include <conio.h>
@@ -35,7 +38,9 @@ main(int argc,
   cputs ("Med");
   m.speed((m.max + m.min) / 2);
   m.reverse();
+#ifdef CONF_DSOUND
   Sound::beep();
+#endif // CONF_DSOUND
   sleep(1);
   cputs ("Slow");
   m.speed(m.min);
@@ -44,3 +49,14 @@ main(int argc,
   
   return 0;
 }
+
+#else // CONF_DMOTOR
+#warning motor.C requires CONF_DMOTOR
+#warning motor demo will do nothing
+int 
+main(int argc, 
+     char **argv) 
+{
+  return 0;
+}
+#endif // CONF_DMOTOR

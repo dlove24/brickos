@@ -1,6 +1,9 @@
 /* trailerbot.c */
 /* learns to "back up" a trailer without jack-knifing.*/
 
+#include <config.h>
+#if defined(CONF_DMOTOR) && defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
+
 #include <conio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -567,7 +570,10 @@ int main(int argc, char **argv)
   cls();
   return 0;
 }
-
-
-
-
+#else
+#warning trailerbot.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning trailerbot demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // defined(CONF_DMOTOR) && defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)

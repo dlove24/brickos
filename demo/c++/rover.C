@@ -24,6 +24,8 @@
 // 5 times.
 //
 
+#if defined(CONF_DMOTOR)
+
 int 
 main(int argc, 
      char **argv) 
@@ -33,7 +35,9 @@ main(int argc,
   for (int i = 0; i < 10; ++i) {
     if (i % 2) {
       m.forward();
+#ifdef CONF_DSOUND
       Sound::beep();
+#endif // CONF_DSOUND
       cputs ("FWD");
     } else {
       m.reverse();
@@ -47,3 +51,10 @@ main(int argc,
   
   return 0;
 }
+#else
+#warning rover.C requires CONF_DMOTOR
+#warning rover demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // CONF_DMOTOR

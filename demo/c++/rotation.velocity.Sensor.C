@@ -13,14 +13,15 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_VELOCITY)
+
 #include <c++/RotationSensor.H>
 #include <conio.h>
 #include <unistd.h>
 
 // This program reads the rotation sensor and displays the hex value on
 /// the display every 10 ms
-
-
 int 
 main(int argc, 
      char **argv) 
@@ -37,3 +38,13 @@ main(int argc,
   }
   return 0;
 }
+#else
+#warning rotation.velocity.Sensor.C requires CONF_DSENSOR, CONF_DSENSOR_VELOCITY
+#warning rotation.velocity.Sensor.C demo will do nothing.
+int
+main(int argc,
+		 char **argv)
+{
+	return 0;
+}
+#endif // defined(CONF_DSENSOR) && defined(CONF_DSENSOR_VELOCITY)

@@ -13,6 +13,9 @@
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
 
+#include <config.h>
+#if defined(CONF_DSENSOR)
+
 #include <c++/TemperatureSensor.H>
 #include <conio.h>
 #include <unistd.h>
@@ -33,3 +36,13 @@ main(int argc,
   }
   return 0;
 }
+#else // CONF_DSENSOR
+#warning temperatureSensor.C requires CONF_DSENSOR
+#warning temperatureSensor demo will do nothing
+int 
+main(int argc, 
+     char **argv) 
+{
+	return 0;
+}
+#endif // CONF_DSENSOR

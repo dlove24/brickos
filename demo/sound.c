@@ -1,5 +1,7 @@
 /*sound.c*/
 
+#include <config.h>
+#if defined(CONF_DSOUND)
 #include <dsound.h>
 
 /*array of notes that make up the refrain*/
@@ -56,7 +58,6 @@ static const note_t devil[] = {
   { PITCH_END, 0 }
 };
 
-    
 int main(int argc,char *argv[]) {
   
   /*The default makes this a really, really slow song*/
@@ -72,4 +73,10 @@ int main(int argc,char *argv[]) {
 
   return 0;
 }
-
+#else
+#warning sound.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning sound demo will do nothing
+int main(int argc, char *argv[]) {
+  return 0;
+}
+#endif // CONF_DSOUND
