@@ -140,7 +140,7 @@ extern tdata_t *ctid;
 //! task id type
 /*! In effect, the kernel simply typecasts *tdata_t to tid_t.
  */
-typedef size_t tid_t;
+typedef signed int tid_t;
 
 #ifdef  __cplusplus
 }

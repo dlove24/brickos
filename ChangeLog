@@ -1,6 +1,8 @@
 2004-01-25  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-  * Applied Patches: #747434, #766164
+  * Applied Patch: #747434 - configure now uses sh vs. bash
+  * Applied Patch: #766164 - cast away asm 'const' for gcc-3.x
+  * Fixed Bug #612161 - adjusted tid_t to signed return value
   * Adjusted configure to work with new Debian Tool-chain
   * Removed multi-line use in #error in boot/config.h
 
@@ -358,4 +360,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.33 2004/01/25 08:17:51 stephmo Exp $
+$Id: ChangeLog,v 1.34 2004/01/25 08:53:21 stephmo Exp $
