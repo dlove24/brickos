@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.20 2004/01/25 21:33:58 hzeller Exp $
+###  $Id: Makefile.common,v 1.21 2004/01/25 22:02:17 hzeller Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -35,7 +35,7 @@ pkgexampledir = $(pkgdocdir)/examples
 #
 #  BEGIN-configuration insert (do not remove this line)
 # -------------------------------------------------------
-TOOLPREFIX=/usr/h8300-hitachi-hms/bin/h8300-hitachi-hms-
+TOOLPREFIX=
 SED_SFLAG=
 EXT=
 CC=cc
@@ -90,7 +90,7 @@ CWARN =-Wall
 CINC  =-I$(BRICKOS_ROOT)/include -I$(BRICKOS_ROOT)/include/lnp -I.
 
 CFLAGS=$(COPT) $(CWARN) $(CINC) $(CDEFINES)
-CXXFLAGS=-DCXX -fno-exceptions $(CFLAGS)
+CXXFLAGS=-DCXX -fno-rtti -fno-exceptions $(CFLAGS)
 
 ##
 ## older options
