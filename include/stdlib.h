@@ -49,7 +49,7 @@ extern "C" {
  *  to zero.
  *  \param nmemb the number of members to allocate
  *  \param size the size (in bytes) of each member to be allocated
- *  \return a pointer to the allocated memory
+ *  \return a pointer to the allocated memory (or NULL if failed)
  *
  *  NOTE: the memory is set to zero.
  *
@@ -59,9 +59,10 @@ extern void *calloc(size_t nmemb, size_t size);
 //! allocate and return pointer to uninitialized memory
 /*! malloc()  allocates  {size}  bytes of memory and returns a pointer to it.
  *  \param size the number of bytes of memory to be allocated
- *  \return a pointer to the allocated memory
+ *  \return a pointer to the allocated memory (or NULL if failed)
  *
  *  NOTE: The memory is not set to zero.
+ *  \bug multiplication overflow is not detected
  */
 extern void *malloc(size_t size);
 
