@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.5 2002/10/15 06:55:24 stephmo Exp $
+###  $Id: Makefile,v 1.6 2002/10/16 14:47:18 stephmo Exp $
 ###  FILE: demo/Makefile - make the C Language Demo Programs
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -26,7 +26,7 @@ all clean realclean depend::
 
 depend:: .depend
 
-install:
+install uninstall:
 	@# nothing to do here but do it silently
 
 #  NOTE: --format=1 is not supported on Linux ([ce]tags in emacs2[01] packages)

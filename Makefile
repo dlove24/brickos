@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.13 2002/10/15 22:03:45 stephmo Exp $
+###  $Id: Makefile,v 1.14 2002/10/16 14:47:18 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -24,7 +24,7 @@ export BRICKOS_ROOT=$(shell cd . && pwd)/
 # 
 SUBDIRS=util lib boot demo doc
 
-all install::
+all install uninstall::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) -C $$i $@ || exit 2 ; done
 
 depend tag clean realclean::
@@ -35,10 +35,6 @@ realclean:: clean
 
 doc docs-install::
 	$(MAKE) $(MFLAGS) -C doc $@
-
-uninstall::
-	$(MAKE) $(MFLAGS) -C boot $@
-	$(MAKE) $(MFLAGS) -C util $@
 
 
 #  API generation support using Doxygen
