@@ -1,4 +1,5 @@
 #!/bin/bash -p
+# $Id: configure,v 1.3 2002/10/22 16:25:08 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
