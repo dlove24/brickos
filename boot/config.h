@@ -37,6 +37,7 @@
 #define CONF_TM                         //!< task management
 #define CONF_AUTOSHUTOFF                //!< power down after x min of inactivity
 //#define CONF_TM_DEBUG                   //!< view key shows current instruction pointer
+#define CONF_SETJMP			//!< non local goto
 #define CONF_SEMAPHORES                 //!< POSIX semaphores
 #define CONF_CRITICAL_SECTIONS          //!< Critical Section support
 #define CONF_PROGRAM                    //!< dynamic program loading support

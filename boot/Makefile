@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.13 2002/10/23 17:42:43 stephmo Exp $
+###  $Id: Makefile,v 1.14 2003/02/14 05:40:51 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -11,7 +11,7 @@ KERNEL=brickOS
 KSOURCES=kmain.c mm.c systime.c tm.c semaphore.c conio.c lcd.c \
 	 lnp-logical.c lnp.c remote.c program.c vis.c battery.c\
          timeout.c dkey.c dmotor.c dsensor.c dsound.c swmux.c\
-         critsec.c
+         critsec.c setjmp.c
 
 KERNEL_TARGETS = $(KERNEL).srec \
                  $(KERNEL).lds
