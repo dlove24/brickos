@@ -92,6 +92,9 @@ __asm__("
 .align 1
 .global _clock_handler
         _clock_handler:
+                mov.w #0x5a07,r6                ; reset wd timer to 6
+                mov.w r6,@0xffa8
+
                 mov.w @_sys_time+2,r6           ; lower 8 bits
                 add.b #0x1,r6l                  ; inc lower 4 bits
                 addx  #0x0,r6h                  ; add carry to top 4 bits
@@ -102,8 +105,6 @@ __asm__("
                   addx  #0x0,r6h                ; add carry to top 4 bits
                   mov.w r6,@_sys_time
               sys_nohigh: 
-                mov.w #0x5a06,r6                ; reset wd timer to 6
-                mov.w r6,@0xa8
                 rts
        ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
@@ -347,13 +348,21 @@ void systime_set_timeslice(unsigned char slice) {
  *  unmatched (lower 16bits could overflow and reset to
  *  0, while upper 16bits were already read)
  */
-time_t get_system_up_time(void) {
-  time_t time_a=sys_time;
-  time_t time_b=sys_time;
-  // if time_b is less than time_a then time_b contains
-  // a corrupt time value, return time_a instead.
-  if (time_a < time_b) return time_b;
-  else return time_a;
-}
+extern time_t get_system_up_time(void);
+__asm__("
+.text
+.align 1
+.global _get_system_up_time
+_get_system_up_time:
+    push  r2
+  try_again:
+    mov.w @_sys_time+2, r1
+    mov.w @_sys_time,   r0
+    mov.w @_sys_time+2, r2
+    cmp   r2, r1
+    bne try_again
+    pop   r2
+    rts
+");
 
 #endif // CONF_TIME
