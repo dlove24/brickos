@@ -1,5 +1,5 @@
 #!/bin/bash -p
-# $Id: configure,v 1.8 2002/11/07 19:00:11 stephmo Exp $
+# $Id: configure,v 1.9 2004/01/25 04:34:52 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
@@ -27,11 +27,13 @@ echo ""
 #   known PATHs in which h8*gcc may be found
 TOOL_PATH[0]="/usr/local/bin";
 TOOL_PATH[1]="/usr/h8300-hitachi-hms/bin";
-TOOL_PATH[2]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
+TOOL_PATH[2]="/usr/bin";
+TOOL_PATH[3]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
 
 #   known PREFIXs of h8*gcc
 TOOL_PREFIX[0]="h8300-hms-";
 TOOL_PREFIX[1]="h8300-hitachi-hms-";
+TOOL_PREFIX[2]="h8300hms-";
 
 HMSFULL=""
 pathIndex=0
@@ -43,6 +45,7 @@ do
   while test $prefixIndex -lt ${#TOOL_PREFIX[*]}
   do
     GCCBASE="${TOOL_PATH[$pathIndex]}/${TOOL_PREFIX[$prefixIndex]}gcc"
+    #echo "(DBG)Testing GCCBASE=[$GCCBASE]"
     #  for each suffix (.exe and empty str), do...
     for EXT in ".exe" ""
     do
