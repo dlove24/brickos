@@ -172,7 +172,7 @@ SHOW_INCLUDE_FILES     = NO
 # comments  will behave just like the Qt-style comments (thus requiring an 
 # explict @brief command for a brief description.
 
-JAVADOC_AUTOBRIEF      = NO
+JAVADOC_AUTOBRIEF      = YES
 
 # If the DETAILS_AT_TOP tag is set to YES then Doxygen 
 # will output the detailed description near the top, like JavaDoc.
@@ -427,7 +427,7 @@ REFERENCES_RELATION    = YES
 # of all compounds will be generated. Enable this if the project 
 # contains a lot of classes, structs, unions or interfaces.
 
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 
 # If the alphabetical index is enabled (see ALPHABETICAL_INDEX) then 
 # the COLS_IN_ALPHA_INDEX tag can be used to specify the number of columns 
@@ -473,8 +473,8 @@ HTML_HEADER            = doc/html/header.htm
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard footer.
 
-#HTML_FOOTER            = doc/html/the-footer
-HTML_FOOTER            = doc/html/footer.htm
+#HTML_FOOTER            = doc/html/footer.htm
+HTML_FOOTER            = doc/html/footer-no-sf.htm
 
 # The HTML_STYLESHEET tag can be used to specify a user defined cascading 
 # style sheet that is used by each HTML page. It can be used to 
