@@ -69,7 +69,7 @@ MotorState dm_a,                  //!< motor A state
 extern void dm_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
-.text
+.section .text.hi
 .align 1
 .global _dm_handler
 _dm_handler:
@@ -88,36 +88,39 @@ _dm_handler:
                 ; motor A
                 
                 mov.w   @_dm_a,r0
-                add.b   r0h,r0l                 ; add delta to sum
+		add.b	#1,r0h			; maps 255 to 256
+		dec.b	r0h
+                addx.b	r0h,r0l                 ; add delta to sum
                 bcc     dm0                     ; sum overflow?
 		  mov.b	@_dm_a+2,r6h            ; -> output drive pattern
 		  xor.b	r6h,r6l
             dm0:mov.b   r0l,@_dm_a+1            ; save sum
-                                                ; (clears overflow flag)
 
                 ; motor B
                 
                 mov.w   @_dm_b,r0
-                add.b   r0h,r0l                 ; add delta to sum
+		add.b	#1,r0h			; maps 255 to 256
+		dec.b	r0h
+                addx.b	r0h,r0l                 ; add delta to sum
                 bcc     dm1                     ; sum overflow?
 		  mov.b	@_dm_b+2,r6h            ; -> output drive pattern
 		  xor.b	r6h,r6l
             dm1:mov.b   r0l,@_dm_b+1            ; save sum
-                                                ; (clears overflow flag)
 
                 ; motor C
                 
                 mov.w   @_dm_c,r0
-                add.b   r0h,r0l                 ; add delta to sum
+		add.b	#1,r0h			; maps 255 to 256
+		dec.b	r0h
+                addx.b	r0h,r0l                 ; add delta to sum
                 bcc     dm2                     ; sum overflow?
 		  mov.b	@_dm_c+2,r6h            ; -> output drive pattern
 		  xor.b	r6h,r6l
             dm2:mov.b   r0l,@_dm_c+1            ; save sum
-                                                ; (clears overflow flag)
 
 		; driver chip
                   
-		mov.b	r6l,@_motor_controller	; output motor waveform
+		mov.b	r6l,@_motor_controller:8	; output motor waveform
 		
 		rts		
 	");

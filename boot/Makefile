@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.15 2003/02/16 04:08:48 stephmo Exp $
+###  $Id: Makefile,v 1.16 2003/02/16 20:43:49 markril Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -139,7 +139,7 @@ $(KERNEL).coff: $(KOBJECTS)
 
 # how to build srec kernel (for download)
 %.srec: %.coff %.map
-	$(OBJCOPY) -I coff-h8300 -O srec $(NEED_ZERO_PADDING) --change-section-address .text.hi=0x$(shell grep ___bss$$ $*.map | cut -f1 -d" ") $*.coff $*.srec
+	$(OBJCOPY) -I coff-h8300 -O srec $(NEED_ZERO_PADDING) $*.coff $*.srec
 	chmod a-x $*.srec
 
 # how to make map files

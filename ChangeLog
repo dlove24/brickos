@@ -1,3 +1,11 @@
+2003-02-16  Mark Riley <markril@users.sourceforge.net>
+
+  * Improvements to high memory Patch 638513
+  * Improved motor handler to allow full speed operation.  Previously,
+    every 256ms the outputs would float for 1ms when setting the motor
+    speed to maximum: motor_a_speed(MAX_SPEED)
+  * Moved motor handler to high memory
+
 2003-02-13  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * Applied Patches.  For more detail on each, see the closed
@@ -324,4 +332,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.25 2003/02/16 04:08:48 stephmo Exp $
+$Id: ChangeLog,v 1.26 2003/02/16 20:43:48 markril Exp $

@@ -16,11 +16,10 @@ MEMORY {
   ram      : o = 0x8000, l = 0x6f30
   lcddata  : o = 0xef30, l = 0x0020   /* display memory */
   ram2     : o = 0xef50, l = 0x00b0
-  motor    : o = 0xff80, l = 0x0010   /* memory-mapped motor controller */
-  ram3     : o = 0xf000, l = 0x0d70
+  ram3     : o = 0xf002, l = 0x0b7e
   romdata  : o = 0xfd80, l = 0x0040   /* port shadows, interrupt vectors */
   ram4     : o = 0xfe00, l = 0x0100
-    
+
   eight    : o = 0xff00, l = 0x0100
 }
 
@@ -75,12 +74,6 @@ SECTIONS {
     __edata = . ;
   } > ram
 
-  .text.hi : {
-    ___text_hi = . ;
-    *(.text.hi)
-    ___etext_hi = . ;
-  } > ram3
-
   .bss : {
     ___bss     = . ;
     _bss_start = . ; 
@@ -90,6 +83,12 @@ SECTIONS {
     _mm_start  = ALIGN(2) ;    /* start memory management here */
     _end       = ALIGN(2) ;  
   } >ram
+
+  .text.hi : AT (_bss_start) {
+    ___text_hi = . ;
+    *(.text.hi)
+    ___etext_hi = . ;
+  } > ram3
 
   .lcddata : {
     _display_memory =  0xef43 - 0xef30 ; 
@@ -136,10 +135,6 @@ SECTIONS {
 
   } > romdata
 
-  .motor : {
-    _motor_controller = 0 ;
-  } > motor
-  
   .stack : {
     _stack = . ; 
     *(.stack)
@@ -147,6 +142,10 @@ SECTIONS {
 
   .eight : {
     *(.eight)
+
+    /* memory-mapped motor controller */    
+
+    _motor_controller = 0x80 ;
 
     /* on-chip module registers (relative to 0xff00) */
 
