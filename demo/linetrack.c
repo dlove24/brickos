@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 #else
-#warning linetrack.c requires CONF_DSENSOR && CONF_DMOTOR
+#warning linetrack.c requires CONF_DSENSOR and CONF_DMOTOR
 #warning linetrack demo will do nothing
 int main(int argc, char *argv[]) {
   return 0;

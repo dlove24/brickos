@@ -573,7 +573,7 @@ int main(int argc, char **argv)
 }
 
 #else
-#warning trailerbot.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning trailerbot.c requires CONF_DMOTOR, CONF_DSENSOR, and CONF_DSENSOR_ROTATION
 #warning trailerbot demo will do nothing
 int main(int argc, char *argv[]) {
   return 0;

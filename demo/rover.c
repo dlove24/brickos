@@ -99,7 +99,7 @@ wakeup_t sensor_press_wakeup(wakeup_t data) {
 }
 
 #else
-#warning rover.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning rover.c requires CONF_DMOTOR and CONF_DSENSOR
 #warning rover demo will do nothing
 int main(int argc, char *argv[]) {
   return 0;

@@ -75,7 +75,7 @@ int main(int argc,char *argv[]) {
   return 0;
 }
 #else
-#warning sound.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning sound.c requires CONF_DSOUND which is not set
 #warning sound demo will do nothing
 int main(int argc, char *argv[]) {
   return 0;
