@@ -46,6 +46,11 @@ upgrade-doxygen:
 # doc/html-c subdirectory
 html-c: Doxyfile-c-report
 
+brickos-html-c-dist.tar.gz: html-c 
+	cd doc;tar --gzip -cvf $@ $?;mv $@ ..;cd -
+
+html-c-dist: brickos-html-c-dist.tar.gz
+
 Doxyfile-c.log:
 	doxygen Doxyfile-c >Doxyfile-c.log 2>&1
 
