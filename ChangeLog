@@ -4,8 +4,10 @@
     - added build/install of all docs as targets separate
 	  from normal brickOS build/install
 	- enabled 'make tag' from top Makefile
-  * install of headers and brickOS itself is all that remains
+  * Install of headers and brickOS itself is all that remains
     to be done in next make update
+  * Merge util/Makefile.common into top Makefile.common
+    - rework util/ Makefiles to use top Makefile.common
 
 2002-10-11  Joseph A Woolley <jawoolley@users.sourceforge.net>
 
@@ -283,4 +285,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.12 2002/10/15 07:08:00 stephmo Exp $
+$Id: ChangeLog,v 1.13 2002/10/15 07:09:38 stephmo Exp $
