@@ -1,0 +1,113 @@
+#!/bin/bash -p
+#
+# Generator for brickOS host-OS-dependend Makefile variables
+#
+# 15.10.02	-	Version 1.0		M. Obenland
+#										obenland@t-online.de
+#
+# 21.10.02	-	Version 1.0	Updates	  S. Moraco
+#										stephen@debian.org
+#
+echo "Welcome to the brickOS Makefile configurator."
+echo "Attempting to find the Hitachi gcc compiler. (This may take some time.)"
+echo ""
+
+#
+#  check for known files in known locations, first,
+#    so can avoid expensive search
+#
+#  (known PATHs in which h8*gcc may be found)
+TOOL_PATH[0]="/usr/local/bin";
+TOOL_PATH[1]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
+TOOL_PATH[2]="/usr/h8300-hitachi-hms/bin";
+
+HMSFULL=""
+index=0
+#  for each path, do...
+while test $index -lt ${#TOOL_PATH[*]}
+do
+  GCCBASE="${TOOL_PATH[$index]}/h8300-hitachi-hms-gcc"
+  #  for each suffix (.exe and empty str), do...
+  for EXT in ".exe" "";
+  do
+    GCCFSPEC="${GCCBASE}$EXT"
+    if test -f "$GCCFSPEC"
+    then
+      HMSFULL="$GCCFSPEC"
+      break;  #  have answer, exit inner loop
+    fi
+  done
+  if test -n "$HMSFULL"
+  then
+    break;  #  have answer, exit outer loop
+  fi
+  index="`expr $index + 1`";  #  increment our index
+done
+
+#
+#  if didn't find in expected location...
+#   search filesystem for full name of hitachi gcc compiler and path
+#
+if test -z "$HMSFULL"
+then
+  HMSFULL=`find / \( -name 'h8*gcc' -o -name 'h8*gcc.exe' \) -print`
+fi
+
+#
+# if no compiler is found, exit
+#
+if test -z "$HMSFULL"
+then
+   echo "No hitachi gcc compiler found, please install compiler and try again."
+   exit 1
+fi
+
+#
+# Toolprefix is full path and compiler name without 'gcc'
+#
+TOOLPREFIX=$(echo $HMSFULL | sed "s/gcc.*//")
+
+echo " - Toolprefix = "$TOOLPREFIX
+#
+# look for .brickOS subdir in home dir, create it if not found
+#
+RCDIR=$HOME/.brickos
+VARS_FSPEC="$RCDIR/Makefile.vars"
+if ! test -d "$RCDIR"
+then
+  echo " - BrickOS hidden directory not found, creating it..."
+  mkdir "$RCDIR"
+  if ! test -d "$RCDIR"
+  then
+     echo "ERROR- Failed to create [$RCDIR]"
+     exit 2
+  fi
+fi
+
+rm -f $VARS_FSPEC # delete it first to make sure we have no permissions problems
+
+echo "TOOLPREFIX=\"$TOOLPREFIX\"" >$VARS_FSPEC
+
+#
+#  look for .exe in the compiler name. This indicates Windows environment
+#   which means that CYGWIN or DJGPP toolset is being used
+#
+case "$HMSFULL" in
+*.exe) echo " - Found Cygwin/DJGPP system" ;
+       echo "SED_SFLAG=1" >> $VARS_FSPEC ;
+       echo "EXT=.exe" >> $VARS_FSPEC ;
+       echo "CC=gcc" >> $VARS_FSPEC ;
+       echo "CFLAGS+=-D_WIN32" >> $VARS_FSPEC ;;
+
+*)     echo " - Found Linux system" ;
+       echo "SED_SFLAG=" >> $VARS_FSPEC ;
+       echo "EXT=" >> $VARS_FSPEC ;
+       echo "CC=cc" >> $VARS_FSPEC ;
+       echo "CFLAGS=-O2 -Wall" >> $VARS_FSPEC ;;
+esac
+
+echo "MAKEDEPEND=\$(CC) -M" >> $VARS_FSPEC;
+BRICKOS_ROOT=`pwd`
+echo "BRICKOS_ROOT=\"${BRICKOS_ROOT}\"" >> $VARS_FSPEC;
+
+exit 0
