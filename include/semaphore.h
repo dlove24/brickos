@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 #include <config.h>
+#include <time.h> /* time_t */
 
 #ifdef CONF_SEMAPHORES
 
@@ -73,6 +74,29 @@ extern inline int sem_init(sem_t * sem, int pshared, unsigned int value)
  *  wait for the semaphore.
 */
 extern int sem_wait(sem_t * sem);
+
+/**
+ * Wait for semaphore (blocking with timeout).
+ *
+ * sem_timedwait() suspends the calleing task until either the semaphore
+ * pointed to by {sem} has non-zero count or the given absolute timeout
+ * passed. Note the timeout is an ABSOLUTE time not relative (yes the standard
+ * is that stupid); so if you want a relative waiting time, call the
+ * function with <code>get_system_up_time() + relativeTime</code>.
+ *
+ * If the semaphore reached a non-zero count its value is then atomically
+ * decreased.
+ *
+ * @param sem a pointer to the semaphore on which to wait
+ * @param abs_timeout the absolute timeout of this operation. If the
+ *        semaphore cannot be locked up to this time, this function returns.
+ * @return 0 if the semaphore could successfully be locked; -1 if the
+ *         timeout has been reached.
+ * @note in IEEE 1003.1, the timeout is passed as a struct timeval not
+ *       a time_t.
+ */
+extern int sem_timedwait(sem_t * sem,
+			 const time_t abs_timeout);
 
 //! Try a wait for semaphore (non-blocking)
 /*! sem_trywait() is a non-blocking variant of sem_wait().  If the

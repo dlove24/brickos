@@ -70,6 +70,46 @@ int sem_wait(sem_t * sem) {
 	return 0;
 }
 
+struct timeout_sem_data {
+	sem_t  *sem;
+	time_t abs_timeout;
+};
+
+static wakeup_t sem_event_timeout_wait(wakeup_t data) {
+	struct timeout_sem_data *tsem = 
+		(struct timeout_sem_data*) ((unsigned)data);
+	
+	// we're called by the scheduler, therefore in an IRQ handler,
+	// so no worrying about IRQs.
+	//
+	if (*tsem->sem) {
+		(*tsem->sem)--;
+		return 1;			// sem!=0 -> wakeup
+	}
+	
+	if (tsem->abs_timeout <= get_system_up_time()) {
+		return 2;                       // timeout reached -> wakeup
+	}
+
+	return 0;
+}
+
+int sem_timedwait(sem_t *sem,
+		  const time_t abs_timeout) {
+	struct timeout_sem_data data;
+	data.sem = sem;
+	data.abs_timeout = abs_timeout;
+	
+	if (sem_trywait(sem)) {
+		if (wait_event(sem_event_timeout_wait, 
+			       (wakeup_t) ((unsigned) &data)) != 1) {
+			return -1; // timeout reached.
+		}
+	}
+	return 0;
+}
+
+
 //! non-blocking check on a semaphore
 /*! \param sem a valid semaphore
 

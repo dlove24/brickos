@@ -45,7 +45,7 @@ extern "C" {
  *  \param argc the count of arguments passed (0 if none)
  *  \param argv an array of pointers each pointing to an argument (NULL if none)
  *  \param priority the priority at which to run this task
- *  \param stack_size the amount of memory to allocate to this task for its call stack
+ *  \param stack_size the amount of memory in bytes to allocate to this task for its call stack
  *  \return -1 if failed to start, else tid (task-id)
  */
 extern tid_t execi(int (*code_start) (int, char **), int argc, char **argv,
