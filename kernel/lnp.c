@@ -149,26 +149,26 @@ unsigned char lnp_checksum_copy( unsigned char *dest,
   return a;
 }
 #else
-__asm__("
-.text
-_lnp_checksum_copy:
-    ; r0: dest, r1: data, r2: length;
-
-    add.w r0,r2   ; r2: end
-    mov.b #0xff,r3l ; r3l: a
-
-0:
-    mov.b @r1+,r3h  ; r3h = *data++
-    add.b r3h,r3l ; a += r3h
-    mov.b r3h,@r0 ; *dest++ = r3h
-    adds  #1,r0
-    cmp.w r0,r2
-    bne   0b
-
-    sub.w r0,r0
-    mov.b r3l,r0l
-    rts
-  ");
+__asm__(
+	".text\n"
+	"_lnp_checksum_copy:\n"
+	";; r0: dest, r1: data, r2: length;\n"
+	
+	"    add.w r0,r2         ; r2: end \n"
+	"    mov.b #0xff,r3l     ; r3l: a  \n"
+	
+	"0:\n"
+	"    mov.b @r1+,r3h      ; r3h = *data++ \n"
+	"    add.b r3h,r3l       ; a += r3h      \n"
+	"    mov.b r3h,@r0       ; *dest++ = r3h \n"
+	"    adds  #1,r0 \n"
+	"    cmp.w r0,r2 \n"
+	"    bne   0b \n"
+	
+	"    sub.w r0,r0 \n"
+	"    mov.b r3l,r0l \n"
+	"    rts \n"
+	);
 #endif
 
 //! send a LNP integrity layer packet of given length
