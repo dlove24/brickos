@@ -60,10 +60,10 @@ pchain_t *priority_head;                        //!< head of task priority chain
 tdata_t td_single;                              //!< single task data
 tdata_t *ctid;                                  //!< ptr to current task data
 
-volatile unsigned int nb_tasks;               //!< number of tasks
+volatile unsigned int nb_tasks;                 //!< number of tasks
 volatile unsigned int nb_system_tasks;          //!< number of system (kernel) tasks
 
-sem_t task_sem;                               //!< task data structure protection
+sem_t task_sem;                                 //!< task data structure protection
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -141,7 +141,7 @@ _tm_switcher_return:
 
 
 //! the task scheduler
-/*! \param old_sp current task's current stack pointer
+/*! \param   old_sp current task's current stack pointer
     \return  new task's current stack pointer
   
     actual context switches performed by tm_switcher (assembler wrapper)
@@ -284,21 +284,21 @@ __asm__("
 .globl _yield
 .align 1
 _yield:
-      stc			ccr,r0h                      	    ; to fake an IRQ, we have to
-      push    r0                                ; store the registers
-      orc			#0x80,ccr                      	  ; disable interrupts
+      stc     ccr,r0h                ; to fake an IRQ, we have to
+      push    r0                     ; store the registers
+      orc     #0x80,ccr              ; disable interrupts
 
-      push    r6                                ; store r6
+      push    r6                     ; store r6
 
-      mov.w		#0x04d4,r0                        ; store rom return addr
+      mov.w   #0x04d4,r0             ; store rom return addr
       push    r0
 
-      push    r0                                ; store r0 (destroyed by call.)
+      push    r0                     ; store r0 (destroyed by call.)
 
-      mov.w		#_systime_tm_return,r0            ; store systime return addr
+      mov.w   #_systime_tm_return,r0 ; store systime return addr
       push    r0
 
-      jmp 		@_tm_switcher                  	  ; call task switcher
+      jmp     @_tm_switcher          ; call task switcher
 ");
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
 
@@ -397,7 +397,7 @@ void tm_init(void) {
 /*! (called in single tasking mode after task setup)
 */
 void tm_start(void) {
-  disable_irqs();                             // no interruptions, please
+  disable_irqs();                               // no interruptions, please
 
   systime_set_switcher(&tm_switcher);
   yield();                                      // go!
@@ -537,11 +537,11 @@ tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
   return (tid_t) td;                  // tid = (tid_t) &tdata_t_struct
 }
 
-
 //! exit task, returning code
 /*! \param code The return code
  
-    FIXME: for now, scrap the code.
+    \todo save return code; temporarily?
+    \bug  ignores return code.
 */
 void exit(int code) {
   enable_irqs();                                // just in case...
@@ -553,11 +553,10 @@ void exit(int code) {
     yield();
 }
 
-
 //! suspend task until wakeup function is non-null
 /*! \param wakeup the wakeup function. called in task scheduler context.
     \param data argument passed to wakeup function by scheduler
-    \return return value passed on from wakeup
+    \return return value passed on from wakeup, 0 if exits prematurely
 */
 wakeup_t wait_event(wakeup_t (*wakeup)(wakeup_t),wakeup_t data) {
   ctid->wakeup     =wakeup;
@@ -568,7 +567,6 @@ wakeup_t wait_event(wakeup_t (*wakeup)(wakeup_t),wakeup_t data) {
 
   return ctid->wakeup_data;
 }
-
 
 //! wakeup function for sleep
 /*! \param data time to wakeup encoded as a wakeup_t
@@ -591,12 +589,12 @@ static wakeup_t tm_sleep_wakeup(wakeup_t data) {
 //! delay execution allowing other tasks to run.
 /*! \param msec sleep duration in milliseconds
     \return number of milliseconds left if interrupted, else 0.
-    \bug interruptions not implemented.
  */
 unsigned int msleep(unsigned int msec)
 {
 #if defined(CONF_TIME) && defined(CONF_TM)
-  (void) wait_event(&tm_sleep_wakeup, sys_time + MSECS_TO_TICKS(msec));
+  if (wait_event(&tm_sleep_wakeup, sys_time + MSECS_TO_TICKS(msec)) == 0)
+    return (MSECS_TO_TICKS(msec) - sys_time);
 #else
   delay(msec);
 #endif
@@ -606,26 +604,30 @@ unsigned int msleep(unsigned int msec)
 //! delay execution allowing other tasks to run.
 /*! \param sec sleep duration in seconds
     \return number of seconds left if interrupted, else 0.
-    \bug interruptions not implemented.
  */
 unsigned int sleep(unsigned int sec)
 {
-  msleep(1000*sec);
-  return 0;
+  return msleep(1000*sec)/1000;
 }
 
+//! request that the specified task shutdown as soon as possible.
+/*! \param tid id of the task to be shutdown
+ */
 void shutdown_task(tid_t tid) {
   tdata_t *td=(tdata_t*) tid;
   td->tflags |= T_SHUTDOWN;
 }
 
+//! request that tasks with any of the specified flags shutdown.
+/*! \param flags T_USER to shutdown user tasks, T_USER | T_KERNEL for all tasks
+ */
 void shutdown_tasks(tflags_t flags) {
   pchain_t* pchain;
   tdata_t* td;
   
   if (sem_wait(&task_sem) == -1)
     return;
-    
+ 
   pchain = priority_head;
   while (pchain != NULL) {
     td = pchain->ctid;
@@ -638,7 +640,7 @@ void shutdown_tasks(tflags_t flags) {
       td = td->next;
     } while (td != pchain->ctid);
     pchain = pchain->next;
-  }  
+  } 
   sem_post(&task_sem);
 }
 
