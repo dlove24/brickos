@@ -90,7 +90,7 @@ int lx_read(lx_t *lx,const unsigned char *filename) {
 #else
   int i,rc,fd=open(filename,O_RDONLY);
 #endif
-  unsigned char buffer[6];
+  unsigned char buffer[8];
   unsigned short tmp;
     
   if(fd<0)
@@ -98,7 +98,7 @@ int lx_read(lx_t *lx,const unsigned char *filename) {
   
   // check ID
   //
-  ASSURED_READ(fd,buffer,6);
+  ASSURED_READ(fd,buffer,8);
   if(strcmp(buffer,"brickOS")) {
     close(fd);
     return -1;
