@@ -36,7 +36,7 @@ extern "C" {
 #include "../critsec.h"
 
 #if defined(CONF_TM)
-extern unsigned char kernel_critsec_count;
+extern volatile unsigned char kernel_critsec_count;
 extern int locked_increment(unsigned char* count);
 extern int locked_decrement(unsigned char* count);
 #define INITIALIZE_KERNEL_CRITICAL_SECTION() kernel_critsec_count=0
