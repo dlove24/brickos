@@ -1,5 +1,8 @@
 /*! \file   include/stdlib.h
     \brief  Interface: reduced standard C library
+
+	This file describes the public programming interface for 
+	memory management services and random number services
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -45,13 +48,14 @@ extern "C" {
 
 //! allocate and return pointer to initialized memory
 /*! calloc() allocates memory for an array of {nmemb} elements of {size} bytes
- *  each and returns a pointer to the allocated memory.  The memory is  set
- *  to zero.
+ *  each and returns a pointer to the allocated memory.  The memory is filled
+ *  with zero values.
  *  \param nmemb the number of members to allocate
  *  \param size the size (in bytes) of each member to be allocated
  *  \return a pointer to the allocated memory (or NULL if failed)
  *
- *  NOTE: the memory is set to zero.
+ *  NOTE: content of the returned memory is initialized by this routine
+ *  \bug multiplication overflow (elements * size) is not detected
  *
  */
 extern void *calloc(size_t nmemb, size_t size);
@@ -61,8 +65,7 @@ extern void *calloc(size_t nmemb, size_t size);
  *  \param size the number of bytes of memory to be allocated
  *  \return a pointer to the allocated memory (or NULL if failed)
  *
- *  NOTE: The memory is not set to zero.
- *  \bug multiplication overflow is not detected
+ *  NOTE: content of the returned memory is not initialized by this routine
  */
 extern void *malloc(size_t size);
 
@@ -76,7 +79,20 @@ extern void *malloc(size_t size);
  */
 extern void free(void *ptr);
 
+//! generate a random number
+/*! The random() function returns successive pseudo-random numbers 
+ *  \return a random number in the range from 0 to RAND_MAX
+ */
 extern long int random(void);
+//! seed the random number generator
+/*! The srandom() function sets its argument as the seed for a new sequence
+ *  of pseudo-random integers to be returned by random().  These  sequences
+ *  are  repeatable  by  calling srandom() with the same seed value.  If no
+ *  seed value is provided, the random() function is  automatically  seeded
+ *  with a value of 1.
+ *  \param seed 
+ *  \return Nothing
+ */
 extern void srandom(unsigned int seed);
 
 #ifdef  __cplusplus

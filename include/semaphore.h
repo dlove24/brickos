@@ -69,8 +69,8 @@ extern inline int sem_init(sem_t * sem, int pshared, unsigned int value)
  *   pointed to by {sem} has non-zero count. It  then  atomically
  *   decreases the semaphore count.
  *  \param sem a pointer to the semaphore on which to wait
- *  \return ????
- *  \todo lookup this return value then fix this doc.
+ *  \return 0 if wait returned immediately, EAGAIN if task did have to 
+ *  wait for the semaphore.
 */
 extern int sem_wait(sem_t * sem);
 
@@ -92,8 +92,7 @@ extern int sem_trywait(sem_t * sem);
  *  pointed to by {sem}.  This function  never  blocks  and  can
  *  safely be used in asynchronous signal handlers.
  *  \param sem a pointer to the semaphore to be signaled
- *  \return ????
- *  \todo lookup this return value then fix this doc.
+ *  \return (always returns 0)
 */
 extern int sem_post(sem_t * sem);
 
@@ -110,11 +109,10 @@ extern inline int sem_getvalue(sem_t * sem, int *sval)
 /*! sem_destroy()  destroys  a  semaphore  object,  freeing  the
  *  resources  it  might hold. 
  *  \param sem a pointer to the semaphore to be destroyed
- *  \return ????
+ *  \return (always returns 0)
  *
  *  NOTE: No tasks should be waiting on
  *  the semaphore at the time sem_destroy is  called.
- *  \todo lookup this return value then fix this doc.
 */
 extern inline int sem_destroy(sem_t * sem)
 {

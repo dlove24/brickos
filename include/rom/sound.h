@@ -43,7 +43,8 @@ extern "C" {
 //! play one of the system sounds.
 /*! \param nr - the number of the system sound to be played
  *  \return Nothing
- *  \todo lookup the numbers and place a table here in the documentation
+ *  NOTE: the system beep sound (#0) is the only system sound
+ *   implemented at this time.
  *  \bug FIXME: register clobbers
 */
 extern inline void sound_system(unsigned nr)
