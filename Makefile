@@ -37,15 +37,39 @@ realclean:
 	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
 	rm -f doc/html/*.html doc/html/*.gif doc/html/*.css doc/html/*.js doc/html/*.dot
 	rm -rf doc/html-c++ doc/html-c doc/rtf-c doc/rtf-c++ doc/rtf
+	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag  *.out
 
 upgrade-doxygen:
-	doxygen -u Doxyfile-c
+	doxygen -u Doxyfile-c 
 	doxygen -u Doxyfile-c++
 	doxygen -u Doxyfile
 
 # doc/html-c subdirectory
-html-c:
-	doxygen Doxyfile-c
+html-c: Doxyfile-c-report
+
+Doxyfile-c.log:
+	doxygen Doxyfile-c >Doxyfile-c.log 2>&1
+
+Doxyfile-c.rpt: Doxyfile-c.log
+	grep Warn Doxyfile-c.log | sed -e 's/^.*brickos\///' | cut -f1 -d: | sort | \
+	 uniq -c | sort -rn | tee Doxyfile-c.rpt
+
+.Doxyfile-c-doneflag:  Doxyfile-c.rpt
+	@for FIL in `cat Doxyfile-c.rpt | cut -c9-99`; do \
+	  OUTFILE=`echo $$FIL | sed -e 's/[\/\.]/-/g'`.out; \
+	  echo "# FILE: $$OUTFILE" >$$OUTFILE; \
+	  grep "$$FIL" Doxyfile-c.rpt >>$$OUTFILE; \
+	  grep "$$FIL" Doxyfile-c.log | grep Warn >>$$OUTFILE; \
+	done
+	@touch $@
+
+
+Doxyfile-c-report: .Doxyfile-c-doneflag
+	ls -ltr *.out
+
+
+
+
 
 # doc/html-c++ subdirectory
 html-c++:

@@ -107,8 +107,9 @@ _lcd_number:
        ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
-//! set/clear single bit convenience macros.
+//! set single bit convenience macro
 #define set(b)  __asm__ __volatile__("bset %0,@0xbb:8" : : "i"(b));
+//! clear single bit convenience macro
 #define clr(b)  __asm__ __volatile__("bclr %0,@0xbb:8" : : "i"(b));
 
 //! generate the necessary delay for the i2c bus.
@@ -222,6 +223,9 @@ static void lcd_write_data(unsigned char *data, unsigned char len)
 void lcd_refresh_next_byte(void)
 #else
 HANDLER_WRAPPER("lcd_refresh_next_byte", "lcd_refresh_next_byte_core");
+//! alternate name for the refresh next byte routine
+/*! \todo find a better description for this
+*/
 void lcd_refresh_next_byte_core(void)
 #endif
 {

@@ -32,8 +32,8 @@
 //
 ///////////////////////////////////////////////////////////////////////
 
-#define NULL		((void*)0)	// null pointer
+#define NULL		((void*)0)	//!< null pointer value
 
-typedef unsigned	size_t;		// data type for memory sizes
+typedef unsigned	size_t;		//!< data type for memory sizes
 
 #endif

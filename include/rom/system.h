@@ -63,6 +63,7 @@ extern inline void power_init(void) {
 //! erases BrickOS, returning control to ROM.
 extern void reset(void) __attribute__((noreturn));
 
+//! turns off interrupts, then issues reset.
 extern inline void rom_reset(void) __attribute__((noreturn));
 extern inline void rom_reset(void) {
   disable_irqs();

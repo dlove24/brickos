@@ -46,18 +46,20 @@ extern "C" {
 //! time type
 /*! \bug This is a 32 bit value which will overflow after
     49.7 days of continuous operation.
- */
+*/
 typedef unsigned long time_t;
 
 //
 // time & related stuff
 //
 
-#define TICK_IN_MS	1	// timer tick in ms
-#define TICKS_PER_SEC	1000	// how many per second?
+//! timer tick in ms
+#define TICK_IN_MS	1
+//! number of mS tics in 1Sec
+#define TICKS_PER_SEC	1000
 
-#define SECS_TO_TICKS(a)  ((a)*TICKS_PER_SEC)	// conversion functions
-#define MSECS_TO_TICKS(a) ((a)/TICK_IN_MS)
+#define SECS_TO_TICKS(a)  ((a)*TICKS_PER_SEC)	//!< conv. Sec's to TICKs
+#define MSECS_TO_TICKS(a) ((a)/TICK_IN_MS)		//!< conv. mSec's to TICKs
 
 ///////////////////////////////////////////////////////////////////////
 //

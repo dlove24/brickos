@@ -46,6 +46,7 @@ unsigned int battery_refresh_period  = 2000;  //!< LCD refresh period in ms
 //
 ///////////////////////////////////////////////////////////////////////
 
+//! return the approximate battery voltage (in milliVolts)
 #if defined(CONF_DSENSOR)
 int get_battery_mv()
 {

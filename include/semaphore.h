@@ -40,9 +40,9 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef unsigned char sem_t;                    //!< the semaphore type
+typedef unsigned char sem_t;                    //!< the semaphore data-type
 
-#define EAGAIN  0xffff                          //!< an error code
+#define EAGAIN  0xffff                          //!< the error code
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -50,46 +50,55 @@ typedef unsigned char sem_t;                    //!< the semaphore type
 //
 ///////////////////////////////////////////////////////////////////////
 
-//
-//  sem_init initializes the semaphore object  pointed  to  by
-//  sem.   The count associated with the semaphore is set ini-
-//  tially to value.
-//
-//  The pshared argument is ignored.
-//
+//! Initialize a semaphore
+/*! sem_init() initializes the semaphore object  pointed  to  by
+ *  {sem} by setting its internal count to {value}
+ *  \param sem a pointer to the semaphore to be initialized
+ *  \param value the initial value for count
+ *  \param pshared (this argument is ignored)
+ *  \return (always 0)
+*/
 extern inline int sem_init(sem_t * sem, int pshared, unsigned int value)
 {
   *sem = (sem_t) value;
   return 0;
 }
 
-//
-//  sem_wait  suspends  the calling task until the semaphore
-//  pointed to by sem has non-zero count. It  then  atomically
-//  decreases the semaphore count.
-//
+//! Wait for semaphore (blocking)
+/*!  sem_wait()  suspends  the calling task until the semaphore
+ *   pointed to by {sem} has non-zero count. It  then  atomically
+ *   decreases the semaphore count.
+ *  \param sem a pointer to the semaphore on which to wait
+ *  \return ????
+ *  \todo lookup this return value then fix this doc.
+*/
 extern int sem_wait(sem_t * sem);
 
-//
-//  sem_trywait is a non-blocking variant of sem_wait.  If the
-//  semaphore pointed to by sem has non-zero count, the  count
-//  is   atomically decreased  and  sem_trywait  immediately
-//  returns 0.  If the semaphore count  is  zero,  sem_trywait
-//  immediately returns with error EAGAIN.
-//
-//  this is IRQ handler safe.
-//
+//! Try a wait for semaphore (non-blocking)
+/*! sem_trywait() is a non-blocking variant of sem_wait().  If the
+ *  semaphore pointed to by {sem} has non-zero count, the  count
+ *  is   atomically decreased  and  sem_trywait  immediately
+ *  returns 0.  If the semaphore count  is  zero,  sem_trywait
+ *  immediately returns with error EAGAIN.
+ *  \param sem a pointer to the semaphore on which to attempt a wait
+ *  \return 0 if decremented the semaphore or EAGAIN if can't
+ *
+ *  NOTE: this is IRQ handler safe.
+*/
 extern int sem_trywait(sem_t * sem);
 
-//
-//  sem_post  atomically  increases the count of the semaphore
-//  pointed to by sem.  This function  never  blocks  and  can
-//  safely be used in asynchronous signal handlers.
-//
+//! Post a semaphore
+/*! sem_post()  atomically  increases the count of the semaphore
+ *  pointed to by {sem}.  This function  never  blocks  and  can
+ *  safely be used in asynchronous signal handlers.
+ *  \param sem a pointer to the semaphore to be signaled
+ *  \return ????
+ *  \todo lookup this return value then fix this doc.
+*/
 extern int sem_post(sem_t * sem);
 
 //
-//! get the semaphore value
+//! Get the semaphore value
 //
 extern inline int sem_getvalue(sem_t * sem, int *sval)
 {
@@ -97,11 +106,16 @@ extern inline int sem_getvalue(sem_t * sem, int *sval)
   return 0;
 }
 
-//
-//  sem_destroy  destroys  a  semaphore  object,  freeing  the
-//  resources  it  might hold. No tasks should be waiting on
-//  the semaphore at the time sem_destroy is  called.
-//
+//! We're done with the semaphore, destroy it 
+/*! sem_destroy()  destroys  a  semaphore  object,  freeing  the
+ *  resources  it  might hold. 
+ *  \param sem a pointer to the semaphore to be destroyed
+ *  \return ????
+ *
+ *  NOTE: No tasks should be waiting on
+ *  the semaphore at the time sem_destroy is  called.
+ *  \todo lookup this return value then fix this doc.
+*/
 extern inline int sem_destroy(sem_t * sem)
 {
   return 0;

@@ -139,9 +139,11 @@ typedef enum {
 //
 ///////////////////////////////////////////////////////////////////////
 
-// g++ warns about __asm__ __volatile__. we define the problem away.
-// the CXX symbol is predefined in the Makefile
-//
+/*! g++ warns about __asm__ __volatile__. we define the problem away.
+ *   the CXX symbol is predefined in the Makefile
+ *   \todo (when move to g++ 3.x) determine if this is still the case 
+ *   and fix this if not...
+*/
 #ifdef CXX
 #define ASMVOLATILE
 #else

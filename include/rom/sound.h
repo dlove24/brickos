@@ -40,11 +40,12 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-//
-// FIXME: register clobbers
-//
-
 //! play one of the system sounds.
+/*! \param nr - the number of the system sound to be played
+ *  \return Nothing
+ *  \todo lookup the numbers and place a table here in the documentation
+ *  \bug FIXME: register clobbers
+*/
 extern inline void sound_system(unsigned nr)
 {
   __asm__ __volatile__(
@@ -59,9 +60,9 @@ extern inline void sound_system(unsigned nr)
 }
 
 //! is a sound playing?
-/*! \return  0=no, else yes
- */
-extern inline int sound_playing()
+/*!  \return  T/F where T means a sound is playing
+*/
+extern inline int sound_playing(void)
 {
   unsigned rc;
   __asm__ __volatile__(

@@ -56,15 +56,15 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////
 
 //
-// the raw sensors
+//!< the raw sensors
 //
-#define SENSOR_1	AD_C	//!< Sensor 1
-#define SENSOR_2	AD_B	//!< Sensor 2
-#define SENSOR_3	AD_A	//!< Sensor 3
+#define SENSOR_1	AD_C	//!< Sensor on input pad 1
+#define SENSOR_2	AD_B	//!< Sensor on input pad 2
+#define SENSOR_3	AD_A	//!< Sensor on input pad 3
 #define BATTERY		AD_D	//!< Battery sensor
 
 //
-// active light sensor: estimated raw values
+//!< active light sensor: estimated raw values
 //
 #define LIGHT_RAW_BLACK 0xffc0	//!< active light sensor raw black value
 #define LIGHT_RAW_WHITE 0x5080	//!< active light sensor raw white value
@@ -80,17 +80,17 @@ extern "C" {
 //
 // processed active light sensor
 //
-#define LIGHT_1     LIGHT(SENSOR_1)
-#define LIGHT_2     LIGHT(SENSOR_2)
-#define LIGHT_3     LIGHT(SENSOR_3)
+#define LIGHT_1     LIGHT(SENSOR_1)		//!< light sensor on input 1
+#define LIGHT_2     LIGHT(SENSOR_2)		//!< light sensor on input 2
+#define LIGHT_3     LIGHT(SENSOR_3)		//!< light sensor on input 3
 
 #ifdef CONF_DSENSOR_ROTATION
 //
 // processed rotation sensor
 //
-#define ROTATION_1  (ds_rotations[2])
-#define ROTATION_2  (ds_rotations[1])
-#define ROTATION_3  (ds_rotations[0])
+#define ROTATION_1  (ds_rotations[2])	//!< rotation sensor on input 1	
+#define ROTATION_2  (ds_rotations[1])	//!< rotation sensor on input 2	
+#define ROTATION_3  (ds_rotations[0])	//!< rotation sensor on input 3	
 #endif
 
 #ifdef CONF_DSENSOR_VELOCITY
@@ -108,13 +108,13 @@ extern "C" {
 
 //  Processed touch sensors
 //
-#define TOUCH_1     TOUCH(SENSOR_1)
-#define TOUCH_2     TOUCH(SENSOR_2)
-#define TOUCH_3     TOUCH(SENSOR_3)
+#define TOUCH_1     TOUCH(SENSOR_1)		//!< touch sensor on input 1
+#define TOUCH_2     TOUCH(SENSOR_2)		//!< touch sensor on input 2
+#define TOUCH_3     TOUCH(SENSOR_3)		//!< touch sensor on input 3
 
 
-#define ds_scale(x)   ((unsigned int)(x)>>6)
-#define ds_unscale(x) ((unsigned int)(x)<<6)
+#define ds_scale(x)   ((unsigned int)(x)>>6)	//!< mask off bottom 6 bits
+#define ds_unscale(x) ((unsigned int)(x)<<6)	//!< leave room for bottom 6 bits
 
 ///////////////////////////////////////////////////////////////////////
 //

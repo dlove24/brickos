@@ -43,10 +43,36 @@ extern "C" {
 // See the Linux man pages for details.
 //
 
+//! allocate and return pointer to initialized memory
+/*! calloc() allocates memory for an array of {nmemb} elements of {size} bytes
+ *  each and returns a pointer to the allocated memory.  The memory is  set
+ *  to zero.
+ *  \param nmemb the number of members to allocate
+ *  \param size the size (in bytes) of each member to be allocated
+ *  \return a pointer to the allocated memory
+ *
+ *  NOTE: the memory is set to zero.
+ *
+ */
 extern void *calloc(size_t nmemb, size_t size);
 
+//! allocate and return pointer to uninitialized memory
+/*! malloc()  allocates  {size}  bytes of memory and returns a pointer to it.
+ *  \param size the number of bytes of memory to be allocated
+ *  \return a pointer to the allocated memory
+ *
+ *  NOTE: The memory is not set to zero.
+ */
 extern void *malloc(size_t size);
 
+//! return the allocated memory to memory management.
+/*! free() frees the memory space pointed to by {ptr}, which must  have  been
+ *  returned by a previous call to malloc(), or calloc().  Other-
+ *  wise, or  if  free(ptr)  has  already  been  called  before,  undefined
+ *  behaviour occurs.  If ptr is NULL, no operation is performed.
+ *  \param ptr a pointer to previously allocated memory
+ *  \return Nothing
+ */
 extern void free(void *ptr);
 
 extern long int random(void);

@@ -48,9 +48,16 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////
 
 #ifndef CONF_HOST
-//! set IR transmitter range
-/*! \param far 0: short range, 1: long range
-    toggles port 4 bit 0
+//! Set the IR transmitter range
+/*! Configure the INFRARED transmitter power
+ *  \param far:  0: sets short range, 1: sets long range
+ *  \return Nothing
+ *
+ *  NOTE1: this setting remains in effect until changed or 
+ *  the RCX power is turned off.
+ *
+ *  NOTE2: toggles port 4 bit 0
+ *  \todo determine what clears this and then correct NOTE1
 */
 extern inline void lnp_logical_range(int far) {
   if(far)
@@ -59,21 +66,29 @@ extern inline void lnp_logical_range(int far) {
     *((char*)&PORT4) |=1;
 }
 
-//! return IR transmitter range
-extern inline int lnp_logical_range_is_far() {
+//! Test the IR transmitter range setting
+/*! Determine if the INFRARED transmitter power is set to long range
+ *  \return T/F where TRUE means transmitter is set to long range
+*/
+extern inline int lnp_logical_range_is_far(void) {
   return !(*((char*)&PORT4)&1);
 }
 #endif
 
-//
-// write to IR port, blocking.
-// return code: 0 if OK, else collision
-//
+//! Write buffer to IR port
+/*! Write {len} chars (starting at {buf}) to IR port.  
+ * \param buf pointer to array of chars to be written
+ * \param len number of chars in array (to be written)
+ * \return 0 if OK, else collision
+ *
+ *  NOTE: doesn't return until all are written
+ *  (blocking write)
+*/
 extern int lnp_logical_write(const void *buf,size_t len);
 
-//
-// flush input buffer.
-//
+//! Empty the IR receive buffer.
+/*!  \return Nothing
+*/
 extern void lnp_logical_fflush(void);
 
 #endif  // CONF_LNP

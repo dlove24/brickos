@@ -46,15 +46,20 @@ typedef volatile unsigned char tflags_t;                 //!< task flags type
 
 typedef unsigned char priority_t;               //!< task priority type
 
+//! The lowest possible task priority
 #define PRIO_LOWEST        1
+//! The priority of most tasks
 #define PRIO_NORMAL       10
+//! The highest possible task priority
 #define PRIO_HIGHEST      20
 
 typedef unsigned long wakeup_t;                 //!< wakeup data area type
 
 //
-// task states
-//
+//! task states
+/*! \todo the following comments on the defined may cause problems in
+ * when used in macros/expressions, etc.  FixEm?
+*/
 
 #define T_DEAD      0                           //!< dead and gone, stack freed
 #define T_ZOMBIE    1                           //!< terminated, cleanup pending
@@ -63,7 +68,7 @@ typedef unsigned long wakeup_t;                 //!< wakeup data area type
 #define T_RUNNING   4                           //!< running
 
 //
-// task flags
+//! task flags
 //
 
 #define T_KERNEL  	(1 << 0)                    //!< kernel task
