@@ -46,6 +46,7 @@
 
 #include <sys/lnp-logical.h>
 #include <sys/irq.h>
+#include <stdlib.h>
 
 #ifdef CONF_VIS
 #include <dlcd.h>
@@ -63,17 +64,6 @@
 // Variables
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifndef CONF_HOST
-#ifdef CONF_TM
-
-#include <semaphore.h>
-
-//!< transmit buffer use semaphore
-static sem_t buf_sem;
-
-#endif
-#endif
 
 //! LNP host address (may be changed by dll utility --node=a option)
 //! Default vaule in config.h may be overidden at compile type
@@ -99,8 +89,9 @@ volatile lnp_integrity_handler_t lnp_integrity_handler;
 */
 volatile lnp_addressing_handler_t lnp_addressing_handler[LNP_PORTMASK+1];
 
-//! the LNP transmit buffer
-static unsigned char lnp_buffer[256+3];
+#if !defined(CONF_MM)
+static char lnp_buffer[260];
+#endif // CONF_MM
 
 #if defined(CONF_RCX_PROTOCOL)
 //! remote handler
@@ -184,29 +175,20 @@ _lnp_checksum_copy:
 /*! \return 0 on success.
 */
 int lnp_integrity_write(const unsigned char *data,unsigned char length) {
-
-  unsigned char c;
   int r;
-
-#ifndef CONF_HOST
-#ifdef CONF_TM
-	if (sem_wait(&buf_sem) == -1)
-		return 0;
-#endif
-#endif
-
-  c = lnp_checksum_copy( lnp_buffer+2, data, length);
-  lnp_checksum_step( c, lnp_buffer[0]=0xf0 );
-  lnp_checksum_step( c, lnp_buffer[1]=length );
-  lnp_buffer[length+2] = c;
-
-  r = lnp_logical_write(lnp_buffer,length+3);
-  
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  sem_post(&buf_sem);
-#endif
-#endif
+#if defined(CONF_MM)
+  char* buffer_ptr = malloc(length+3);
+#else // CONF_MM
+  char* buffer_ptr = lnp_buffer;
+#endif // CONF_MM
+  unsigned char c = lnp_checksum_copy( buffer_ptr+2, data, length);
+  lnp_checksum_step( c, buffer_ptr[0]=0xf0 );
+  lnp_checksum_step( c, buffer_ptr[1]=length );
+  buffer_ptr[length+2] = c;
+  r = lnp_logical_write(buffer_ptr,length+3);
+#if defined(CONF_MM)
+  free(buffer_ptr); 
+#endif // CONF_MM
   return r;
 }
 
@@ -215,32 +197,23 @@ int lnp_integrity_write(const unsigned char *data,unsigned char length) {
 */
 int lnp_addressing_write(const unsigned char *data,unsigned char length,
                          unsigned char dest,unsigned char srcport) {
-
-  unsigned char c;
   int r;
-
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  if (sem_wait(&buf_sem) == -1)
-  	return 0;
-#endif
-#endif
-
-  c = lnp_checksum_copy( lnp_buffer+4, data, length );
-  lnp_checksum_step( c, lnp_buffer[0]=0xf1 );
-  lnp_checksum_step( c, lnp_buffer[1]=length+2 );
-  lnp_checksum_step( c, lnp_buffer[2]=dest );
-  lnp_checksum_step( c, lnp_buffer[3]=
+#if defined(CONF_MM)
+  char* buffer_ptr = malloc(length+5);
+#else // CONF_MM
+  char* buffer_ptr = lnp_buffer;
+#endif // CONF_MM
+  unsigned char c = lnp_checksum_copy( buffer_ptr+4, data, length );
+  lnp_checksum_step( c, buffer_ptr[0]=0xf1 );
+  lnp_checksum_step( c, buffer_ptr[1]=length+2 );
+  lnp_checksum_step( c, buffer_ptr[2]=dest );
+  lnp_checksum_step( c, buffer_ptr[3]=
                    (lnp_hostaddr | (srcport & LNP_PORTMASK)) );
-  lnp_buffer[length+4] = c;
-
-  r = lnp_logical_write(lnp_buffer,length+5);
-  
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  sem_post(&buf_sem);
-#endif
-#endif
+  buffer_ptr[length+4] = c;
+  r = lnp_logical_write(buffer_ptr,length+5);
+#if defined(CONF_MM)
+  free(buffer_ptr); 
+#endif // CONF_MM
   return r;
 }
 
@@ -527,11 +500,6 @@ void lnp_init(void) {
     lnp_addressing_handler[k]=LNP_DUMMY_ADDRESSING;
   lnp_integrity_handler=LNP_DUMMY_INTEGRITY;
 
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  sem_init(&buf_sem,0,1);
-#endif
-#endif
 #if defined(CONF_RCX_PROTOCOL)
   lnp_remote_handler=LNP_DUMMY_REMOTE;
 #endif
@@ -551,32 +519,24 @@ wakeup_t msg_received(wakeup_t m) {
 int send_msg(unsigned char msg)
 {
   int r;
-
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  if (sem_wait(&buf_sem) == -1)
-  	return 0;
-#endif
-#endif
-
-  lnp_buffer[0]=0x55;
-  lnp_buffer[1]=0xff;
-  lnp_buffer[2]=0x00;
-  lnp_buffer[3]=0xf7;
-  lnp_buffer[4]=0x08;
-  lnp_buffer[5]=msg;
-  lnp_buffer[6]=(unsigned char) (0xff-msg);
-  lnp_buffer[7]=(unsigned char) (0xf7+msg);
-  lnp_buffer[8]=(unsigned char) (0x08-msg);
-
-  r = lnp_logical_write(lnp_buffer,9);
-  
-#ifndef CONF_HOST
-#ifdef CONF_TM
-  sem_post(&buf_sem);
-#endif
-#endif
-
+#if defined(CONF_MM)
+  char* buffer_ptr = malloc(9);
+#else // CONF_MM
+  char* buffer_ptr = lnp_buffer;
+#endif // CONF_MM
+  buffer_ptr[0]=0x55;
+  buffer_ptr[1]=0xff;
+  buffer_ptr[2]=0x00;
+  buffer_ptr[3]=0xf7;
+  buffer_ptr[4]=0x08;
+  buffer_ptr[5]=msg;
+  buffer_ptr[6]=(unsigned char) (0xff-msg);
+  buffer_ptr[7]=(unsigned char) (0xf7+msg);
+  buffer_ptr[8]=(unsigned char) (0x08-msg);
+  r = lnp_logical_write(buffer_ptr,9);
+#if defined(CONF_MM)
+  free(buffer_ptr); 
+#endif // CONF_MM
   return r;
 }
 #endif

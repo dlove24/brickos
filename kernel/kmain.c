@@ -119,6 +119,7 @@ extern inline void show_off(void) {
 void kmain(void) __attribute__((noreturn));
 void kmain(void)
 {
+  int reset_after_shutdown=0;
 #ifdef CONF_DKEY
   int c;
 #endif
@@ -199,11 +200,11 @@ void kmain(void)
 #ifdef CONF_DKEY
     while((c=dkey_multi) & KEY_ONOFF)
       if(c&KEY_PRGM)
-  rom_reset();
+        reset_after_shutdown=1;
 #else
     while (PRESSED(dbutton(), BUTTON_ONOFF))
       if (PRESSED(dbutton(), BUTTON_PROGRAM))
-  rom_reset();
+        reset_after_shutdown=1;
 #endif
 
 #ifdef CONF_PROGRAM
@@ -221,6 +222,9 @@ void kmain(void)
 #ifdef CONF_TIME
     systime_shutdown();
 #endif
+
+    if (reset_after_shutdown)
+      rom_reset();
 
     lcd_clear();
     lcd_power_off();

@@ -45,6 +45,7 @@
 #include <sys/dmotor.h>
 #include <sys/dsound.h>
 #include <sys/battery.h>
+#include <sys/critsec.h>
 #ifdef CONF_AUTOSHUTOFF
 #include <sys/timeout.h>
 #endif
@@ -81,36 +82,55 @@ void* tm_switcher_vector;                       //!< pointer to task switcher
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//! system time handler for the 16bit timer OCIA irq
-/*! this is the pulse of the system.
-    task switcher and motor driver calls are initiated here.
-*/
-extern void systime_handler(void);
+//! clock handler triggered on the WDT overflow (every msec) on the NMI
+/*! this is the system clock
+ */
+extern void clock_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
-.global _systime_handler
+.global _clock_handler
+        _clock_handler:
+                mov.w @_sys_time+2,r6           ; lower 8 bits
+                add.b #0x1,r6l                  ; inc lower 4 bits
+                addx  #0x0,r6h                  ; add carry to top 4 bits
+                mov.w r6,@_sys_time+2
+                bcc sys_nohigh                  ; if carry, inc upper 8 bits
+                  mov.w @_sys_time,r6           ; 
+                  add.b #0x1,r6l                ; inc lower 4 bits
+                  addx  #0x0,r6h                ; add carry to top 4 bits
+                  mov.w r6,@_sys_time
+              sys_nohigh: 
+                mov.w #0x5a06,r6                ; reset wd timer to 6
+                mov.w r6,@0xa8
+                rts
+       ");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
+
+//! subsystem handler for every 2nd msec
+/*! this is the pulse of the system (subsystems).
+    sound, motor and lcd driver calls are initiated here.
+    task_switch_handler is called from here as well.
+*/
+extern void subsystem_handler(void);
+
+//! task switch handler called every msec
+/*! handles swapping between tasks
+ */
+extern void task_switch_handler(void);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+__asm__("
+.text
+.align 1
+.global _subsystem_handler
+.global _task_switch_handler
 .global _systime_tm_return
-_systime_handler:
+_subsystem_handler:
                ; r6 saved by ROM
 
                 push r0                         ; both motors & task
                                                 ; switcher need this reg.
-
-                ; increment system timer
-
-                mov.w @_sys_time+2,r6           ; LSW -> r6
-                add.b #0x1,r6l                  ; 16 bit: add 1
-                addx  #0x0,r6h
-                mov.w r6,@_sys_time+2
-                bcc sys_nohigh                  ; speedup for 65535 cases
-
-                  mov.w @_sys_time,r6           ; MSW -> r6
-                  add.b #0x1,r6l
-                  addx  #0x0,r6h
-                  mov.w r6,@_sys_time
-              sys_nohigh:
         "
 #ifdef CONF_DMOTOR
         "
@@ -202,13 +222,25 @@ _systime_handler:
                 mov.b r6l,@_lcd_refresh_counter
         "
 #endif
-
+        "
+                bclr  #2,@0x91:8                ; reset compare B IRQ flag
+        "
 #ifdef CONF_TM
         "
+                pop r0                          ; if fallthrough, pop r0
+              _task_switch_handler:
+                push r0                         ; save r0
+
                 mov.b @_tm_current_slice,r6l
                 dec r6l
                 bne sys_noswitch                ; timeslice elapsed?
 
+                  mov.w @_kernel_critsec_count,r6 ; check critical section
+                  beq sys_switch                ; ok to switch
+                  mov.b #1,r6l                  ; wait another tick
+                  jmp sys_noswitch              ; don't switch
+
+                sys_switch:
                   mov.w @_tm_switcher_vector,r6
                   jsr @r6                       ; call task switcher
                   
@@ -246,23 +278,42 @@ void systime_init(void) {
   dm_shutdown();
 #endif
 
-  // configure 16-bit timer compare A IRQ
-  // to occur every 1 ms, hook and enable it.
+  // configure 16-bit timer
+  // compare B IRQ will fire after one msec
+  // compare A IRQ will fire after another msec
+  // counter is then reset
   //
-  T_CSR =TCSR_OCA | TCSR_RESET_ON_A;
-  T_CR  =TCR_CLOCK_32;
-  T_OCR&=~TOCR_OCRB;
-  T_OCRA=500;
+  T_CSR  = TCSR_RESET_ON_A;
+  T_CR   = TCR_CLOCK_32;
+  T_OCR &= ~TOCR_OCRB;
+  T_OCRA = 1000;
+  T_OCR &= ~TOCR_OCRA;
+  T_OCR |= TOCR_OCRB; 
+  T_OCRB = 500;
 
-  ocia_vector=&systime_handler;
-  T_IER|=TIER_ENABLE_OCA;
+#if defined(CONF_TM)
+  ocia_vector = &task_switch_handler;
+#else // CONF_TM
+  ocia_vector = &subsystem_handler;
+#endif // CONF_TM
+  ocib_vector = &subsystem_handler;
+  T_IER |= (TIER_ENABLE_OCB | TIER_ENABLE_OCA);
+
+  nmi_vector = &clock_handler;
+  WDT_CSR = WDT_CNT_PASSWORD | WDT_CNT_MSEC_64;   // trigger every msec 
+  WDT_CSR = WDT_CSR_PASSWORD
+        | WDT_CSR_CLOCK_64
+	| WDT_CSR_WATCHDOG_NMI
+        | WDT_CSR_ENABLE
+        | WDT_CSR_MODE_WATCHDOG; 
 }
 
 //! shutdown system timer
 /*! will also stop task switching and motors.
 */
 void systime_shutdown(void) {
-  T_IER&=~TIER_ENABLE_OCA;    // unhook compare A IRQ
+  T_IER &= ~(TIER_ENABLE_OCA | TIER_ENABLE_OCB);  // unhook compare A/B IRQs
+  WDT_CSR &= ~WDT_CSR_ENABLE;                     // disable wd timer
 }
 
 #ifdef CONF_TM

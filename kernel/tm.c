@@ -32,13 +32,13 @@
 
 #ifdef CONF_TM
 
+#include <sys/critsec.h>
 #include <sys/mm.h>
 #include <sys/time.h>
 #include <sys/irq.h>
 #include <sys/bitops.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <semaphore.h>
 
 #ifdef CONF_VIS
 # include <sys/lcd.h>
@@ -62,8 +62,6 @@ tdata_t *ctid;                                  //!< ptr to current task data
 
 volatile unsigned int nb_tasks;                 //!< number of tasks
 volatile unsigned int nb_system_tasks;          //!< number of system (kernel) tasks
-
-sem_t task_sem;                                 //!< task data structure protection
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -150,13 +148,7 @@ size_t *tm_scheduler(size_t *old_sp) {
   tdata_t  *next;                             // next task to execute
   pchain_t *priority;
   wakeup_t tmp;
-  
-  if(sem_trywait(&task_sem)) {
-    // task is manipulating task data structures
-    // let it complete
-    return old_sp;
-  }
-    
+
   priority=ctid->priority;
   switch(ctid->tstate) {
   case T_ZOMBIE:
@@ -213,7 +205,6 @@ size_t *tm_scheduler(size_t *old_sp) {
       systime_set_switcher(&rom_dummy_handler);
       ctid=&td_single;
     
-      sem_post(&task_sem);
       return ctid->sp_save;
     }
     break;
@@ -231,17 +222,18 @@ size_t *tm_scheduler(size_t *old_sp) {
   //  
   priority=priority_head;
   next=priority->ctid->next;
-  while(1) {
-    if(next->tstate==T_SLEEPING)
+  while (1) {
+    if (next->tstate==T_SLEEPING)
       break;
     
-    if(next->tstate==T_WAITING) {
+    if (next->tstate==T_WAITING) {
       if ((next->tflags & T_SHUTDOWN) != 0) {
         next->wakeup_data = 0;
         break;
       }
+      ctid = next;
       tmp = next->wakeup(next->wakeup_data);
-      if( tmp != 0) {
+      if (tmp != 0) {
         next->wakeup_data = tmp;
         break;
       }
@@ -270,7 +262,6 @@ size_t *tm_scheduler(size_t *old_sp) {
   ctid=next->priority->ctid=next;             // execute next task
   ctid->tstate=T_RUNNING;
 
-  sem_post(&task_sem);
   return ctid->sp_save;
 }
 
@@ -369,8 +360,8 @@ void tm_init(void) {
   nb_tasks=0;
   nb_system_tasks=0;
   priority_head=NULL;
-  sem_init(&task_sem,0,1);
-   
+  INITIALIZE_KERNEL_CRITICAL_SECTION(); 
+ 
   // the single tasking context
   //
   td_single.tstate=T_RUNNING;
@@ -486,13 +477,7 @@ tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
   td->tstate=T_SLEEPING;              // task is waiting for execution
   td->parent=ctid;                    // set parent
 
-  if (sem_wait(&task_sem) == -1)
-  {
-    free(td);
-    free(sp);
-    free(newpchain);
-    return -1;
-  }
+  ENTER_KERNEL_CRITICAL_SECTION();
 
   ppchain=NULL;
   for(  pchain = priority_head;
@@ -528,8 +513,8 @@ tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
     freepchain=1; // free superfluous pchain.
   }
   nb_tasks++;
-  
-  sem_post(&task_sem);
+
+  LEAVE_KERNEL_CRITICAL_SECTION();  
 
   if(freepchain)
     free(newpchain);
@@ -624,9 +609,8 @@ void shutdown_task(tid_t tid) {
 void shutdown_tasks(tflags_t flags) {
   pchain_t* pchain;
   tdata_t* td;
-  
-  if (sem_wait(&task_sem) == -1)
-    return;
+
+  ENTER_KERNEL_CRITICAL_SECTION();  
  
   pchain = priority_head;
   while (pchain != NULL) {
@@ -640,8 +624,9 @@ void shutdown_tasks(tflags_t flags) {
       td = td->next;
     } while (td != pchain->ctid);
     pchain = pchain->next;
-  } 
-  sem_post(&task_sem);
+  }
+ 
+  LEAVE_KERNEL_CRITICAL_SECTION();
 }
 
 //! kill specified task
@@ -654,12 +639,13 @@ void kill(tid_t tid) {
   else {
     // when the task is switched to the next time,
     // make it exit immediatlely.
-    
-    if (sem_wait(&task_sem) == -1)
-      return;
+
+    ENTER_KERNEL_CRITICAL_SECTION(); 
+
     *( (td->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
     td->tstate=T_SLEEPING;    // in case it's waiting.
-    sem_post(&task_sem);
+
+    LEAVE_KERNEL_CRITICAL_SECTION();
   }
 }
 
@@ -674,8 +660,7 @@ void killall(priority_t prio) {
   if (prio == PRIO_HIGHEST)
     flags = T_IDLE;
 
-  if (sem_wait(&task_sem) == -1)
-    return;
+  ENTER_KERNEL_CRITICAL_SECTION();
 
   // find first chain with smaller or equal priority.
   //
@@ -696,7 +681,8 @@ void killall(priority_t prio) {
     } while(td!=pchain->ctid);
     pchain=pchain->next;
   }  
-  sem_post(&task_sem);
+
+  LEAVE_KERNEL_CRITICAL_SECTION();
 }
 
 #endif // CONF_TM

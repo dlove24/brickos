@@ -108,7 +108,7 @@ extern int __comm_debug;
 /* Defines */
 
 #define BUFFERSIZE      4096
-#define RETRIES         5
+#define RETRIES         10
 #define WAKEUP_TIMEOUT  4000
 
 #define UPLOAD_TIMEOUT	50

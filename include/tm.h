@@ -125,11 +125,6 @@ typedef struct _tdata_t tdata_t;
 
 #endif // DOXYGEN_SHOULD_SKIP_INTERNALS 
 
-//! task id type
-/*! In effect, the kernel simply typecasts *tdata_t to tid_t.
- */
-typedef size_t tid_t;
-
 #if defined(CONF_TM)
 //! test to see if task has been asked to shutdown
 /*! Check task shutdown flag.  If set, the task should shutdown
@@ -140,6 +135,11 @@ extern tdata_t *ctid;
 #else // CONF_TM
 #define shutdown_requested() (0)
 #endif // CONF_TM
+
+//! task id type
+/*! In effect, the kernel simply typecasts *tdata_t to tid_t.
+ */
+typedef size_t tid_t;
 
 #ifdef  __cplusplus
 }

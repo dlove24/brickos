@@ -41,7 +41,7 @@
 #ifdef CONF_LCD_REFRESH
 unsigned char lcd_refresh_counter;    //!< counter for lcd refresh in ms
 unsigned char lcd_byte_counter;       //!< LCD byte to refresh
-unsigned char lcd_refresh_period = 6; //!< LCD refresh period in ms
+unsigned char lcd_refresh_period = 2; //!< LCD refresh period in ms
 #endif
 
 //! lcd_shadow buffer:

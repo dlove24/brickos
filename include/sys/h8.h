@@ -420,6 +420,33 @@ extern volatile unsigned char PORT6;
 //! port 7 input register
 extern volatile unsigned char PORT7;
 
+
+
+//! watch dog timer control register
+extern volatile unsigned int WDT_CSR;
+
+#define WDT_CSR_PASSWORD        (0xA500)
+#define WDT_CSR_ENABLE          (0x0020)
+#define WDT_CSR_MODE_WATCHDOG   (0x0040)
+#define WDT_CSR_MODE_OVERFLOW   (0x0000)
+#define WDT_CSR_WATCHDOG_NMI    (0x0000)
+#define WDT_CSR_WATCHDOG_RES    (0x0008)
+#define WDT_CSR_CLOCK_2         (0x0000)
+#define WDT_CSR_CLOCK_32        (0x0001)
+#define WDT_CSR_CLOCK_64        (0x0002)
+#define WDT_CSR_CLOCK_128       (0x0003)
+#define WDT_CSR_CLOCK_256       (0x0004)
+#define WDT_CSR_CLOCK_512       (0x0005)
+#define WDT_CSR_CLOCK_2048      (0x0006)
+#define WDT_CSR_CLOCK_4096      (0x0007)
+
+//! watch dog timer counter register
+extern volatile unsigned char WDT_CNT;
+
+#define WDT_CNT_PASSWORD        (0x5A00)
+#define WDT_CNT_CLEAR           (0x0000)
+#define WDT_CNT_MSEC_64         (0x0006)
+
 #ifdef  __cplusplus
 }
 #endif

@@ -56,7 +56,7 @@ extern "C" {
 #define LNP_BYTE_TIME           MSECS_TO_TICKS(5) //!< time to transmit a byte
 #endif
 
-#define LNP_BYTE_TIMEOUT        (3*LNP_BYTE_TIME) //!< timeout waiting for a byte
+#define LNP_BYTE_TIMEOUT        (3*LNP_BYTE_TIME/2) //!< timeout waiting for a byte
 #define LNP_BYTE_SAFE       (4*LNP_BYTE_TIME) //!< delay before transmitting a byte
 
 #define LNP_WAIT_TXOK       (2*LNP_BYTE_TIMEOUT) //!< delay after good transmit

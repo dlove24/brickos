@@ -1,3 +1,55 @@
+2002-10-11  Joseph A Woolley <jawoolley@users.sourceforge.net>
+
+  * Added locked_increment and locked_decrement to inc/dec an
+    unsigned char value; interrupt safe.  Added
+    locked_check_and_increment function; used by 
+    enter_critical_section.
+  * Added critsec.c, critsec.h and sys/critsec.h to implement 
+    critical sections.
+  * Added a 'kernel critical section' that can be used in the
+    kernel to keep the task swapper from switching tasks.
+    This is a simple and 'cost effective' way to manage critical
+    resources.  This prevents a task from being killed while
+    in a critical region of code.  It also keeps two tasks
+    from modifying kernel structures at the same time.  This
+    replaces the use of semaphores which don't support nesting
+    and cannot be used while in the task manager while swapping.
+    A task should never yield, sleep or exit while in a critical
+    section; whether kernel or user level.
+  * Replaced semaphore in task manager with critical section.
+  * Replaced semaphore in memory manager with critical section.
+  * Added definitions for the Control Status Register (CSR) for
+    the Watch Dog Timer (WDT) and the Counter Register (CNT)
+    for the WDT.
+  * Seperated sys_time increment code from the systime_handler
+    and attached sys_time clock to the WDT.  This is 
+    configured to use the NMI, so clock should be more
+    accurate.  Named sys_time handler 'clock_handler'.
+  * Seperated sub-systems from task switcher in systime.c
+    and called sub-system handler 'subsystem_handler'.  The
+    sub-system handler will call the task switcher handler
+  * Named the task switcher handler 'task_switch_handler'.
+  * Attached task switcher handler to OCA of the 16 bit timer
+    and subsystem handler to OCB of the 16 bit timer.  The OCA
+    and OCB interrupts can be configured at different intervals,
+    however, they are linked.  The timer will reset on A, so
+    B will be delayed until A is reached, then the timer is 
+    reset and B can be reached again.  B must be less than A
+    or B will never be reached.  Currenty, A and B alternate
+    every msec.
+  * Adjusted the lnp_timeout_counter, auto_shutoff_counter, 
+    vis_refresh_counter and lcd_refresh_counter; (cut in half)
+    since the subsystem_handler is only called once every two
+    msecs.
+  * The task switcher is checked every msec since direct
+    modification of the timeslice counter can be used to tweak
+    task wake-up.  msleep currently does this to allow wakeup
+    to interrupt lower priority tasks mid-slice.
+  * Removed another static buffer used by LNP.  Instead, I
+    Added code to malloc and free the memory as needed.  Added
+    #ifdef blocks to resort back to static buffers if CONF_MM
+    is not defined.
+
 2002-10-11  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * First pass at cleaning up Makefiles by normalizing
@@ -222,4 +274,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.10 2002/10/11 09:41:44 stephmo Exp $
+$Id: ChangeLog,v 1.11 2002/10/12 03:22:25 jawoolley Exp $

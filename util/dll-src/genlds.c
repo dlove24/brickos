@@ -210,6 +210,8 @@ static void print_footer(FILE *f) {
     _T_ICRB = 0x9a ;
     _T_ICRC = 0x9c ;
     _T_ICRD = 0x9e ;
+    _WDT_CSR = 0xa8 ;
+    _WDT_CNT = 0xa9 ;
     _PORT1_PCR = 0xac ;
     _PORT2_PCR = 0xad ;
     _PORT3_PCR = 0xae ;

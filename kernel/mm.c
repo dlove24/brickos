@@ -29,7 +29,7 @@
 
 #include <stdlib.h>
 #include <sys/tm.h>
-#include <semaphore.h>
+#include <sys/critsec.h>
 #include <string.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,6 @@ typedef size_t tid_t;                           //! dummy process ID type
     task management.
 */
 const tid_t ctid=0x0001;
-#else
-sem_t mm_semaphore;       //!< assures tasksafe operation
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,8 +84,7 @@ size_t mm_try_join(size_t *ptr) {
 void mm_defrag() {
   size_t *ptr = &mm_start;
 #ifdef CONF_TM
-  if (sem_wait(&mm_semaphore) == -1)
-  	return;
+  ENTER_KERNEL_CRITICAL_SECTION();
 #endif
   while(ptr >= &mm_start) {
     if(*ptr == MM_FREE)
@@ -96,7 +93,7 @@ void mm_defrag() {
     ptr += MM_HEADER_SIZE;
   }
 #ifdef CONF_TM
-  sem_post(&mm_semaphore);      // tasksafe
+  LEAVE_KERNEL_CRITICAL_SECTION();
 #endif
 }
 
@@ -139,10 +136,6 @@ void mm_init() {
   *current=(int)(((-(int) current)-2)>>1);
   
   mm_update_first_free(&mm_start);
-  
-#ifdef CONF_TM
-  sem_init(&mm_semaphore,0,1);      // init tasksafe lock
-#endif
 }
 
 
@@ -156,8 +149,7 @@ void *malloc(size_t size) {
   size=(size+1)>>1;       // only multiples of 2
   
 #ifdef CONF_TM
-  if (sem_wait(&mm_semaphore) == -1)
-  	return NULL;
+  ENTER_KERNEL_CRITICAL_SECTION();
 #endif
   ptr=mm_first_free;
   
@@ -184,7 +176,7 @@ void *malloc(size_t size) {
           mm_update_first_free(ptr+*ptr+1);
         
 #ifdef CONF_TM
-        sem_post(&mm_semaphore);
+        LEAVE_KERNEL_CRITICAL_SECTION();
 #endif    
         return (void*) (ptr+1); 
       }
@@ -194,7 +186,7 @@ void *malloc(size_t size) {
   }
   
 #ifdef CONF_TM
-  sem_post(&mm_semaphore);
+  LEAVE_KERNEL_CRITICAL_SECTION();
 #endif    
   return NULL;
 }
@@ -294,8 +286,7 @@ int mm_free_mem(void) {
   size_t *ptr;
   
 #ifdef CONF_TM
-  if (sem_wait(&mm_semaphore) == -1)
-  	return 0;
+  ENTER_KERNEL_CRITICAL_SECTION();
 #endif
 
   // Iterate through the free list
@@ -305,7 +296,7 @@ int mm_free_mem(void) {
     free += *(ptr+1);
 
 #ifdef CONF_TM
-  sem_post(&mm_semaphore);
+  LEAVE_KERNEL_CRITICAL_SECTION();
 #endif    
   return free*2;
 }

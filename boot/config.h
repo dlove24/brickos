@@ -38,6 +38,7 @@
 #define CONF_AUTOSHUTOFF                //!< power down after x min of inactivity
 //#define CONF_TM_DEBUG                   //!< view key shows current instruction pointer
 #define CONF_SEMAPHORES                 //!< POSIX semaphores
+#define CONF_CRITICAL_SECTIONS          //!< Critical Section support
 #define CONF_PROGRAM                    //!< dynamic program loading support
 #define CONF_VIS                        //!< generic visualization.
 //#define CONF_ROM_MEMCPY                 //!< Use the ROM memcpy routine

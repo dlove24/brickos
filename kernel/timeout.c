@@ -30,7 +30,7 @@
 
 #ifdef CONF_AUTOSHUTOFF
 volatile unsigned int auto_shutoff_counter = 0;   //<! current count - used by the system timer
-unsigned int auto_shutoff_period = 1000;  //<! milliseconds between shutoff checks
+unsigned int auto_shutoff_period = 500;  //<! milliseconds between shutoff checks
 unsigned int auto_shutoff_secs = DEFAULT_SHUTOFF_TIME;  //<! seconds of idle to auto shutoff
 volatile unsigned int auto_shutoff_elapsed = 0;   //<! idle seconds elapsed
 volatile unsigned int idle_powerdown = 0;   //<! true if a auto-shutoff should occur
