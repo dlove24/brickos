@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.10 2002/10/17 03:47:04 stephmo Exp $
+###  $Id: Makefile,v 1.11 2002/10/17 05:06:45 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -41,16 +41,19 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 	cp -r ../demo ${pkgexampledir}
 	@cat ../demo/Makefile | sed -e 's/\.\.\/Makefile/$$\(LIBDIR\)\/Makefile/g' | \
 	                       sed -e 's/\.\.\/include/$$\(INCDIR\)/g' | \
-	                       sed -e 's:KERNEL\=\.\..boot.brickOS:LIBDIR \= ${pkglibdir}:' | \
+	                       sed -e 's:KERNEL\=\.\..boot.brickOS:KERNEL = $$\(LIBDIR\)/brickOS:' | \
+	                       sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
 						   sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../demo/Makefile.dist
 	@cat ../demo/c++/Makefile | sed -e 's/..ROOTDIR.Makefile/$$\(LIBDIR\)\/Makefile/g' | \
 	                            sed -e 's/..ROOTDIR.include/$$\(INCDIR\)/g' | \
-	                            sed -e 's:KERNEL \= .*:LIBDIR \= ${pkglibdir}:' | \
+	                            sed -e 's:KERNEL \= .*:KERNEL = $$\(LIBDIR\)/brickOS:' | \
+	                            sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
 						        sed -e 's/..ROOTDIR.util/(LIBDIR)/g' >../demo/c++/Makefile.dist
 	cp -f ../demo/Makefile.dist ${pkgexampledir}/demo/Makefile
 	cp -f ../demo/Makefile.dist ${pkgexampledir}/Makefile
 	cp -f ../demo/c++/Makefile.dist ${pkgexampledir}/demo/c++/Makefile
 	@find ${pkgexampledir} -type f -name '*.dist' -exec rm -f {} \;
+	@find ${pkgexampledir} -type f -name '*.lx' -exec rm -f {} \;
 	@find ${pkgexampledir} -type d -name 'CVS' -depth -exec rm -rf {} \;
 	@find ${pkgexampledir} -type f -name '*.o' -depth -exec rm -f {} \;
 	@find ${pkgexampledir} -type f -name '*.ref' -depth -exec rm -f {} \;
