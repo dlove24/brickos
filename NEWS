@@ -3,13 +3,13 @@ Our Next Release (work pending):
 * we are updating our HOWTO
 * we are moving source to gcc-3.2 compatibility
 * adding (optional, compile-in) support for 3rd party sensors
-* finishing support for usb tower on Linux
 * working on remaining reported issues
 
 News for upcoming brickos-1.0.0: 
 --------------------------------------------------
 * install/uninstall targets added to Makefiles
 * many patches filed to date, now applied
+* USB tower on Linux works
 * API doc generation now in Makefiles
 * LNP Parser for RCX firmware protocol op-codes based on work fm Zhengrong Zang
 * dll: NEW -dn or --delete=n option deletes a program from memory
