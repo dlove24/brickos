@@ -1,11 +1,12 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile - allows you to keep the upper hand
-## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>    
-##
+### ==========================================================================
+###  $Id: Makefile,v 1.6 2002/10/17 05:05:25 stephmo Exp $
+###  FILE: demo/c++/Makefile - make the C++ Language Demo Programs
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 ROOTDIR = ../../
 
+# #LIBDIR#         ###   DO NOT REMOVE THIS LINE  ###
 KERNEL = $(ROOTDIR)boot/brickOS
 
 PROGRAMS = \
@@ -53,3 +54,8 @@ realclean: clean
 ifndef NODEPS
 -include .depend
 endif
+
+
+### --------------------------------------------------------------------------
+###                     End of FILE: demo/c++/Makefile
+### ==========================================================================
