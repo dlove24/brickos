@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile,v 1.8 2002/10/23 17:42:46 stephmo Exp $
 ###  FILE: util/dll-src/Makefile - make program download & link support utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -47,7 +47,7 @@ realclean: clean
 .depend:
 	$(CC) -M $(CFLAGS) -c $(SRCS1) $(SRCS2) >.depend
 
-depend: .depend
+depend:: .depend
 	@# nothing to do here but do it silently
 
 install: install-stamp

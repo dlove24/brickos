@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile,v 1.9 2002/10/23 17:42:44 stephmo Exp $
 ###  FILE: demo/c++/Makefile - make the C++ Language Demo Programs
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -30,7 +30,7 @@ all:: $(PROGRAMS)
 .depend: *.[cC]
 	$(MAKEDEPEND) *.[cC] > .depend
 
-depend: .depend
+depend:: .depend
 	@# nothing to do here but do it silently
 
 #  NOTE: --format=1 is not supported on Linux ([ce]tags from emacs2[01] packages)

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.12 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile,v 1.13 2002/10/23 17:42:43 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -28,7 +28,7 @@ include ../Makefile.common
 .depend: $(BRICKOS_ROOT)/kernel/*.c
 	$(MAKEDEPEND) $(BRICKOS_ROOT)/kernel/*.c > .depend
 
-depend: .depend
+depend:: .depend
 
 install: install-stamp
 	@# nothing to do here but do it silently

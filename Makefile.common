@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.12 2002/10/23 06:23:11 stephmo Exp $
+###  $Id: Makefile.common,v 1.13 2002/10/23 17:42:42 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -49,7 +49,7 @@ BRICKOS_ROOT=/home/stephen/sourceforge/brickos/brickos
 #
 #  test to ensure that user has run configure before building
 #
-all:: ensureConfigured
+all depend:: ensureConfigured
 
 ensureConfigured:
 	@if [ ! -f $(BRICKOS_ROOT)/.configured.flg ]; then \

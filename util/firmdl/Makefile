@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile,v 1.8 2002/10/23 17:42:47 stephmo Exp $
 ###  FILE: util/firmdl/Makefile - make firmware download utility
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -27,7 +27,7 @@ $(MKIMG): mkimg.o srec.o
 fastdl.h: $(MKIMG) fastdl.srec
 	./$(MKIMG) fastdl.srec > $@
 
-depend:
+depend::
 	@# nothing to do here but do it silently
 
 install: install-stamp 
