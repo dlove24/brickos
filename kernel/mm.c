@@ -127,8 +127,6 @@ void mm_init() {
   MM_BLOCK_RESERVED(0xef30);      // lcddata
   MM_BLOCK_FREE    (0xef50);      // ram2
   MM_BLOCK_RESERVED(0xf000);      // motor
-  MM_BLOCK_FREE    (0xf010);      // ram3
-  MM_BLOCK_RESERVED(0xfb80);      // bad Memory and vectors
   MM_BLOCK_FREE    (0xfe00);      // ram4
   MM_BLOCK_RESERVED(0xff00);      // stack, onchip
 

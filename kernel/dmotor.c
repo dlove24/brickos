@@ -117,7 +117,7 @@ _dm_handler:
 
 		; driver chip
                   
-		mov.b	r6l,@0xf000:16		; output motor waveform
+		mov.b	r6l,@_motor_controller	; output motor waveform
 		
 		rts		
 	");

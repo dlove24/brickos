@@ -133,4 +133,7 @@ debouncing, and ASCII."
 #error "Velocity sensor needs rotation sensor code."
 #endif
 
+//! macro used to put some legOS function in high memory area.
+#define __TEXT_HI__  __attribute__ ((__section__ (".text.hi")))
+
 #endif // __config_h__

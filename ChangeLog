@@ -2,6 +2,9 @@
 
   * Applied Patches.  For more detail on each, see the closed
     patches still on file at the brickOS sourceforge project web
+  * Applied Patch 638513: Make use of high memory (Mech. only)
+     (the patch moved mm routines to high mem. This is not 
+	  yet decided, so no routines are moved, yet.)
   * Applied Patch 651692: Add setjmp/longjmp (ANSI C support)
   * Applied Patch 668115: Make brickOS work with up-to-date binutils
   * Applied Patch 673995: Patch brickos 0.2.6.09 for *BSD
@@ -321,4 +324,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.24 2003/02/16 03:46:16 stephmo Exp $
+$Id: ChangeLog,v 1.25 2003/02/16 04:08:48 stephmo Exp $

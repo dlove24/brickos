@@ -60,6 +60,9 @@ unsigned char *firmware_string = "Do you byte, when I knock?";
 extern char __bss;		//!< the start of the uninitialized data segment
 extern char __bss_end;	//!< the end of the uninitialized data segment
 
+//! the high memory segment
+extern char __text_hi, __etext_hi;
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Functions
@@ -124,7 +127,17 @@ void kmain(void)
   int c;
 #endif
 
+  /* Install the text.hi segment in the correct place.  The
+   * firmware loader puts it in the bss segment, we copy it 
+   * to it's final location.
+   */
+  memcpy(&__text_hi, &__bss, &__etext_hi - &__text_hi);
+
   reset_vector = rom_reset_vector;
+
+  /* Turn off motor, since writing to hitext manipulates motors */
+  motor_controller = 0;
+  
   memset(&__bss, 0, &__bss_end - &__bss);
 
 #ifdef CONF_MM
