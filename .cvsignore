@@ -1,3 +1,5 @@
+*.gz
+*.out
 .*doneflag
 *.log
 *.rpt
