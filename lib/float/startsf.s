@@ -78,7 +78,7 @@ ___startsf:
     push    r2
 
     ; Copy second operand flags/sign to r2
-    
+
     mov.w   r3,r2
 
     ; Expand the first operand

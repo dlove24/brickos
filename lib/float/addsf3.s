@@ -23,7 +23,7 @@
  *  Contributor(s): Kekoa Proudfoot <kekoa@graphics.stanford.edu>
  */
 
-; bug fixes:	
+; bug fixes:
 ;  - 12/16/2000 fixed sp+16 sign bug (bug symptom found by Kieran Elby)
 
 ; possible optimizations:
@@ -59,7 +59,7 @@ ___subsf3:
 ;; input: float in r0r1 and float at sp+2
 ;; output: float in r0r1
 ;;
-        
+
     .global ___addsf3
 
 ___addsf3:

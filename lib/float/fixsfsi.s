@@ -25,7 +25,7 @@
  *
  *  Another possibility would have been to return numbers modulo 2^31 or 2^32
  *  Or, could have returned either +MAXINT or +MAXUINT given out-of-range input
- * 
+ *
  *  The contents of this file are subject to the Mozilla Public License
  *  Version 1.0 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
@@ -233,7 +233,7 @@ fix:
 
         sub.w   r0,r0           ; zero destination
         sub.w   r1,r1
-        
+
         sub.w   r6,r1           ; subtract result (result in r5r6)
         subx.b  r5l,r0l
         subx.b  r5h,r0h

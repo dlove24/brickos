@@ -56,7 +56,7 @@ is lengthy, each conversion requires a large amount of code space.
 Alternatively, an invocation of the ufloatsisf routine is both smaller and
 faster.
 
-You can override GCC's support for conversion from unsigned long integer to 
+You can override GCC's support for conversion from unsigned long integer to
 single precision floating point as follows:
 
    - declare the replacement conversion routine:
@@ -79,7 +79,7 @@ already reasonably efficient.
 The floating point support implemented in this directory conforms to a
 subset of IEEE 754.  In particular, this implementation does not support
 traps, signalling NaNs, status flags, or rounding modes other than round to
-even, and the only functions implemented are those directly accessible in C 
+even, and the only functions implemented are those directly accessible in C
 using standard operators.
 
 The total size of all routines in the library is currently 1124 bytes.
