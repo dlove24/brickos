@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.11 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile.common,v 1.12 2002/10/23 06:23:11 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -53,7 +53,10 @@ all:: ensureConfigured
 
 ensureConfigured:
 	@if [ ! -f $(BRICKOS_ROOT)/.configured.flg ]; then \
-		echo "brickOS builds not yet configured, please run ./configure then attempt the build" >&2; \
+		echo "" >&2; \
+		echo "ERROR- brickOS builds are not yet configured..." >&2; \
+		echo " Please run ./configure then re-attempt this build." >&2; \
+		echo "" >&2; \
 		exit 2; \
 	fi
 
