@@ -241,7 +241,7 @@ $ mkdir /build
 		   <listitem>
 	         <para>
 		     Download the building scripts from
-			 <ulink url="download/legos-buildgcc.zip">
+			 <ulink url="http://legos.sourceforge.net/cygwin/download/legos-buildgcc.zip">
 			 <citetitle>here (legos-buildgcc.zip)</citetitle>
 			 </ulink> and put it in the same directory as above.  Unzip them to
 			   produce a shell script (buildgcc.sh) and two diff files.
