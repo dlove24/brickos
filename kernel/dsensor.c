@@ -87,6 +87,8 @@ static unsigned int next_rotation[3];     //!< rough upper estimatation of next 
 static signed char rotation_dir[3];       //!< direction of last rotation
 #endif
 
+
+
 //! convert a/d values to rotation states
 /*! Indexed with (value>>12).
     Invalid values yield negative states.
@@ -215,6 +217,265 @@ void ds_rotation_handler() {
 }
 #endif // CONF_DSENSOR_ROTATION
 
+#ifdef CONF_DSENSOR_MUX
+unsigned char ds_mux;	//!< mux   bitmask
+
+volatile int ds_muxs[3][3];	//!< mux ch values
+
+
+//width of each mux pulse
+#define DS_MUX_PULSE_TM_MS 10
+
+
+
+typedef struct {
+  unsigned long nextTm;  //timestamp for next pulse
+  char remainingEdges;    //edges left in pulse train
+  char channel; //current mux sub channel (0,1,2)
+  unsigned int attached[3];//what channels are sensors attached to
+                            //this also defines the number of ms
+                            //to wait before reading the value
+  
+  enum {ds_mux_prepRead,
+	ds_mux_read, 
+	ds_mux_pulse_low, 
+	ds_mux_pulse_high} action; //specify next action
+} ds_mux_data_t;
+
+ds_mux_data_t ds_mux_data[3]; //data on mux
+
+#endif //CONF_DSENSOR_MUX
+
+
+
+static inline void ds_power_on(unsigned channel) {
+  switch(channel) {
+  case 0:
+    bit_set(&PORT6,0);
+    break;
+  case 1:
+    bit_set(&PORT6,1);
+    break;
+  case 2:
+    bit_set(&PORT6,2);
+    break;
+  default:
+    //bad
+    break;
+  }
+}//endof ds_power_on
+
+static inline void ds_power_off(unsigned channel) {
+  switch(channel) {
+  case 0:
+    bit_clear(&PORT6,0);
+    break;
+  case 1:
+    bit_clear(&PORT6,1);
+    break;
+  case 2:
+    bit_clear(&PORT6,2);
+    break;
+  default:
+    //bad
+    break;
+  }
+}//endof ds_power_off
+
+#ifdef CONF_DSENSOR_MUX
+
+
+//! start multiplexing
+void ds_mux_on(volatile unsigned *sensor,
+	       unsigned int ch1,
+	       unsigned int ch2,
+	       unsigned int ch3) {
+  unsigned char i,j;
+  ds_passive(sensor);//powered, but not active in legOS sense
+
+
+  if(ch1==0 &&
+     ch2==0 &&
+     ch3==0) {
+    //umm this is useless
+    //avoid endless cycling
+    ds_mux_off(sensor);
+    return;
+  }
+
+  if (sensor == &SENSOR_3) {
+    i=0;
+  } else if (sensor == &SENSOR_2) {
+    i=1;
+  } else if (sensor == &SENSOR_1) {
+    i=2;
+  } else {
+    //bad
+    return;
+  }
+
+  
+  ds_mux_data[i].attached[0]=ch1;
+  ds_mux_data[i].attached[1]=ch2;
+  ds_mux_data[i].attached[2]=ch3;
+  
+  //add extended time based on the channel
+  //this is required by the mux
+  //the user supplies extra time based on the
+  //type of sensor they hook up
+  //these defaults give enough time to read
+  //a light sensor and should be ok for most
+  //sensors
+  if(ch1)
+    ds_mux_data[i].attached[0]+=160;
+  if(ch2)
+    ds_mux_data[i].attached[1]+=135;
+  if(ch3)
+    ds_mux_data[i].attached[2]+=25;
+
+
+
+
+  //check if we're just adjusting the ports
+  //if so we can return here
+  if(i==0 && ds_mux&1)
+    return;
+  if(i==1 && ds_mux&2)
+    return;
+  if(i==2 && ds_mux&4)
+    return;
+
+  //starting up mux
+
+  //power up
+  ds_power_on(i);
+  
+  //schedule first event
+  //find first attached sensor
+  for(j=0;j<3 && ds_mux_data[i].attached[j]==0;j++);
+    
+  ds_mux_data[i].channel=j;
+  ds_mux_data[i].remainingEdges=((j+1)*2);
+  ds_mux_data[i].action=ds_mux_pulse_low;
+  ds_mux_data[i].nextTm=sys_time+DS_MUX_PULSE_TM_MS;
+
+  if (sensor == &SENSOR_3) {
+    bit_set(&ds_mux, 0);
+  } else if (sensor == &SENSOR_2) {
+    bit_set(&ds_mux, 1);
+  } else if (sensor == &SENSOR_1) {
+    bit_set(&ds_mux, 2);
+  } else {
+    //bad
+    return;
+  }
+
+}//endof ds_mux_on
+
+
+
+void ds_mux_handler() {
+  unsigned sen=ds_channel;
+
+
+  if(ds_mux_data[sen].nextTm <= sys_time) {
+    //we've reached our next scheduled step
+    //lcd_int(sys_time-ds_mux_data[sen].nextTm);
+    switch(ds_mux_data[sen].action) {
+    case ds_mux_prepRead:
+      ds_power_off(sen);//power down for read
+      ds_mux_data[sen].action=ds_mux_read;
+      ds_mux_data[sen].nextTm=sys_time;//do it ASAP, but not now
+      break;
+    case ds_mux_read:
+      //read data
+      switch(sen) {
+      case 0:
+	ds_muxs[sen][(int)ds_mux_data[sen].channel]=SENSOR_3;
+	break;
+      case 1:
+	ds_muxs[sen][(int)ds_mux_data[sen].channel]=SENSOR_2;
+	break;
+      case 2:
+	ds_muxs[sen][(int)ds_mux_data[sen].channel]=SENSOR_1;
+	break;
+      default:
+	//bad
+      }
+
+ 
+      //change channel
+      do {
+	ds_mux_data[sen].channel++;
+	if(ds_mux_data[sen].channel>2/*max chan*/) {
+	  ds_mux_data[sen].channel=0;
+	}
+	//make sure selected channel is marked attached
+	//don't worry about an endless loop ds_mux_on makes
+	//sure at least one channel is attached
+      } while(
+	      (ds_mux_data[sen].attached
+	       [(int)ds_mux_data[sen].channel])==0);
+      
+    
+      //use this low pulse as the first low pulse of next train
+
+      ds_mux_data[sen].remainingEdges=
+	((ds_mux_data[sen].channel+1)*2)-1;
+
+      //schedule next high pulse
+      ds_mux_data[sen].action=ds_mux_pulse_high;
+      ds_mux_data[sen].nextTm=sys_time+DS_MUX_PULSE_TM_MS;
+      break;
+    case ds_mux_pulse_low:
+      //go low
+      ds_power_off(sen);
+      //schedule next high pulse
+      ds_mux_data[sen].nextTm=sys_time+DS_MUX_PULSE_TM_MS;
+      ds_mux_data[sen].remainingEdges--;  
+      ds_mux_data[sen].action=ds_mux_pulse_high;
+      break;
+    case ds_mux_pulse_high:
+      //go high
+      ds_power_on(sen);
+      ds_mux_data[sen].remainingEdges--;      
+     
+      if(ds_mux_data[sen].remainingEdges==0) {
+	//done with train
+	//schedule prepRead
+	ds_mux_data[sen].action=ds_mux_prepRead;
+
+	//schedule enough time for the mux to make the switch
+	//this is scaled because the timeout the mux uses starts
+	//when the first pulse comes in, it is around 70ms, so
+	//when switching to sensor 1 we must want an additional
+	//amount of time before it mux reacts, we wait less for 2
+	//and not at all for 3
+	//then we wait a little bit before reading the sensor
+	//this give the sensor time to power up
+	ds_mux_data[sen].nextTm=sys_time+
+	  ds_mux_data[sen].attached[(int)ds_mux_data[sen].channel];
+	//lcd_int(ds_mux_data[sen].channel+1);
+
+	break;
+      } else {
+	//schedule next low pulse
+	ds_mux_data[sen].action=ds_mux_pulse_low;
+	ds_mux_data[sen].nextTm=sys_time+DS_MUX_PULSE_TM_MS;
+      }      
+      break;
+    default:
+      //bad
+    }
+
+  }
+}//endof ds_mux_handler
+
+#endif //CONF_DSENSOR_MUX
+
+
+
+
 //! sensor A/D conversion IRQ handler
 //
 extern void ds_handler(void);
@@ -253,10 +514,36 @@ _ds_handler:
  ds_norot:
         "
 #endif
+
+#ifdef CONF_DSENSOR_MUX
+        "
+   mov.b @_ds_mux,r6h	; r6h = mux bitmask
+   btst r6l,r6h			; process mux sensor?
+   beq ds_nomux
+
+     push r0			; save r0..r3
+     push r1
+     push r2
+     push r3			; r4..r6 saved by gcc if necessary
+
+     jsr _ds_mux_handler	; process mux sensor
+
+     pop r3
+     pop r2
+     pop r1
+     pop r0
+ ds_nomux:
+        "
+#endif
         "
    inc r6l			; next channel
    and #0x03,r6l		; limit to 0-3
-   bclr r6l,@_PORT6:8		; set output inactive for reading
+
+   mov.b @_ds_activation,r6h	; r6h = activation bitmask
+   btst r6l,r6h			; activate output?
+   beq ds_nounset
+      bclr r6l,@_PORT6:8		; set output inactive for reading
+ ds_nounset:
 
    ; The settle time for reading the value from active sensor start here
 
@@ -302,6 +589,10 @@ void ds_init(void) {
   ds_rotation  =0;                      // rotation tracking disabled
 #endif
 
+#ifdef CONF_DSENSOR_MUX
+  ds_mux=0;                             // muxing disabled
+#endif
+
   ad_vector=&ds_handler;		// setup IRQ handler
   AD_CR &=~ADCR_EXTERN;
   AD_CSR =ADCSR_TIME_266 | ADCSR_GROUP_0 | ADCSR_AN_0  |
@@ -319,6 +610,7 @@ void ds_init(void) {
 /*! all sensors set to passive mode
 */
 void ds_shutdown(void) {
+
   AD_CSR=0x00;
   PORT6        &=DS_ALL_PASSIVE;
   rom_port6_ddr&=DS_ALL_PASSIVE;

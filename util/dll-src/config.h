@@ -59,6 +59,7 @@
 //#define CONF_DMOTOR             //!< direct motor 
 //#define CONF_DSENSOR            //!< direct sensor
 //#define CONF_DSENSOR_ROTATION //!< rotation sensor
+//#define CONF_DSENSOR_SWMUX      //!< techno-stuff swmux sensor
 
 // dependencies
 //

@@ -36,7 +36,6 @@ TOOLPREFIX=$(HMSTOOLDIR)/h8300-hitachi-hms/bin/h8300-hitachi-hms-
 SED_SFLAG=
 
 ifneq (,$(findstring $(OSTYPE),linux-gnu Linux))
-
 #  Debian GNU/Linux
 HMSTOOLDIR=/usr
 TOOLPREFIX=$(HMSTOOLDIR)/h8300-hitachi-hms/bin/h8300-hitachi-hms-

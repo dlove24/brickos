@@ -102,6 +102,17 @@ extern "C" {
 #define VELOCITY_3  (ds_velocities[0])
 #endif
 
+#ifdef CONF_DSENSOR_MUX
+#define SENSOR_1A (ds_muxs[2][0])
+#define SENSOR_1B (ds_muxs[2][1])
+#define SENSOR_1C (ds_muxs[2][2])
+#define SENSOR_2A (ds_muxs[1][0])
+#define SENSOR_2B (ds_muxs[1][1])
+#define SENSOR_2C (ds_muxs[1][2])
+#define SENSOR_3A (ds_muxs[0][0])
+#define SENSOR_3B (ds_muxs[0][1])
+#define SENSOR_3C (ds_muxs[0][2])
+#endif //CONF_DSENSOR_MUX
 
 //! Convert raw data to touch sensor (0: off, else pressed)
 #define TOUCH(a)    ((unsigned int)(a) < 0x8000)
@@ -138,6 +149,12 @@ extern volatile int ds_rotations[3];	//!< rotational position
 extern volatile int ds_velocities[3];	//!< rotational velocity
 #endif
 
+#ifdef CONF_DSENSOR_MUX
+extern unsigned char ds_mux;	//!< mux   bitmask
+
+extern volatile int ds_muxs[3][3];	//!< mux ch values
+#endif //CONF_DSENSOR_MUX
+
 ///////////////////////////////////////////////////////////////////////
 //
 // Functions
@@ -162,12 +179,16 @@ extern inline void ds_active(volatile unsigned *sensor)
 */
 extern inline void ds_passive(volatile unsigned *sensor)
 {
-  if (sensor == &SENSOR_3)
+  if (sensor == &SENSOR_3) {
     bit_clear(&ds_activation, 0);
-  else if (sensor == &SENSOR_2)
+    bit_clear(&PORT6, 0);
+  } else if (sensor == &SENSOR_2) {
     bit_clear(&ds_activation, 1);
-  else if (sensor == &SENSOR_1)
+    bit_clear(&PORT6, 1);
+  }  else if (sensor == &SENSOR_1) {
     bit_clear(&ds_activation, 2);
+    bit_clear(&PORT6, 2);
+  }
 }
 
 #ifdef CONF_DSENSOR_ROTATION
@@ -206,6 +227,46 @@ extern inline void ds_rotation_off(volatile unsigned *sensor)
     bit_clear(&ds_rotation, 2);
 }
 #endif // CONF_DSENSOR_ROTATION
+
+
+#ifdef CONF_DSENSOR_MUX
+
+#define DS_MUX_POST_SWITCH 150
+//! start multiplexing
+/*! \param  sensor: &SENSOR_1,&SENSOR_2,&SENSOR_3
+    \param  ch1: indicates if ch1 is to be scanned
+    \param  ch2: indicates if ch2 is to be scanned
+    \param  ch3: indicates if ch3 is to be scanned
+    ch1-ch3 also indicates how long to wait after switching
+    to a channel before reading from it.
+    DS_MUX_POST_SWITCH defines a good default, but some sensors
+    require more time, others may work with less.
+    specifying 0 will keep the port from being switched to
+    or read
+*/
+extern void ds_mux_on(volatile unsigned *sensor,
+		      unsigned int ch1,
+		      unsigned int ch2,
+		      unsigned int ch3);
+
+
+//! stop multiplexing
+/*! \param  sensor: &SENSOR_1,&SENSOR_2,&SENSOR_3
+*/
+extern inline void ds_mux_off(volatile unsigned *sensor)
+{
+  if (sensor == &SENSOR_3)
+    bit_clear(&ds_mux, 0);
+  else if (sensor == &SENSOR_2)
+    bit_clear(&ds_mux, 1);
+  else if (sensor == &SENSOR_1)
+    bit_clear(&ds_mux, 2);
+}//endof ds_mux_off
+#endif // CONF_DSENSOR_MUX
+
+
+
+
 
 #endif // CONF_DSENSOR
 
