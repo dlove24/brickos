@@ -1,5 +1,6 @@
 brickOS contributors
-------------------
+--------------------
+
 V{next-release}
 _________
 
@@ -34,6 +35,10 @@ Stephen M Moraco (stephen@debian.org)
   Upgrade inline documentation in support of our
   always publishing brickOS API docs to our website.
 
+and many people testing and submitting fix requests including (but
+not limited to):
+    Michael Obenland, Joseph Woolley, Max Bowsher, and...
+    
 
 V0.2.6
 _________
