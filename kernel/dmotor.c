@@ -160,7 +160,7 @@ void motor_a_dir(MotorDirection dir)
   dlcd_hide(LCD_A_RIGHT);
   if (dir == fwd || dir == brake)
     dlcd_show(LCD_A_RIGHT);
-  else if (dir == rev || dir == brake)
+  if (dir == rev || dir == brake)
     dlcd_show(LCD_A_LEFT);
 }
 
@@ -171,7 +171,7 @@ void motor_b_dir(MotorDirection dir)
   dlcd_hide(LCD_B_RIGHT);
   if (dir == fwd || dir == brake)
     dlcd_show(LCD_B_RIGHT);
-  else if (dir == rev || dir == brake)
+  if (dir == rev || dir == brake)
     dlcd_show(LCD_B_LEFT);
 }
 
@@ -182,7 +182,7 @@ void motor_c_dir(MotorDirection dir)
   dlcd_hide(LCD_C_RIGHT);
   if (dir == fwd || dir == brake)
     dlcd_show(LCD_C_RIGHT);
-  else if (dir == rev || dir == brake)
+  if (dir == rev || dir == brake)
     dlcd_show(LCD_C_LEFT);
 }
 
