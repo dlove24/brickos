@@ -246,14 +246,22 @@ void free(void *the_ptr) {
 
 
 //! allocate adjacent blocks of memory
-/*! \param nmemb number of blocks
-    \param size  individual block size
+/*! \param nmemb number of blocks (must be > 0)
+    \param size  individual block size (must be >0)
     \return 0 on error, else pointer to block
 */
 void *calloc(size_t nmemb, size_t size) {
   void *ptr;
-  
-  size*=nmemb;        // FIXME: overflows?
+  size_t original_size = size;
+
+  if (nmemb == 0 || size == 0)
+    return 0;
+ 
+  size*=nmemb;
+
+  // if an overflow occurred, size/nmemb will not equal original_size
+  if (size/nmemb != original_size)
+    return 0;
   
   if((ptr=malloc(size))!=NULL)
     memset(ptr,0,size);
@@ -277,19 +285,7 @@ void mm_reaper() {
 
   // pass 2: defragment free areas
   // this may alter free blocks
-#ifdef CONF_TM
-  if (sem_wait(&mm_semaphore) == -1)
-  	return;
-#endif
-  ptr=&mm_start;
-  while(ptr>=&mm_start) {
-    if(*(ptr++)==MM_FREE)
-      mm_try_join(ptr);
-    ptr+=*ptr+1;
-  }
-#ifdef CONF_TM
-  sem_post(&mm_semaphore);
-#endif
+  mm_defrag();
 } 
 
 //! return the number of bytes of unallocated memory
