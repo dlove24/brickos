@@ -26,6 +26,7 @@
 
 #if defined(CONF_DMOTOR)
 
+#include <conio.h>	// for the delay() function
 #include <c++/Motor.H>
 
 /// Pair-of-motors control interface.

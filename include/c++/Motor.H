@@ -21,6 +21,7 @@
 
 #if defined(CONF_DMOTOR)
 
+#include <conio.h>	// for the delay() function
 #include <dmotor.h>
 
 /**
