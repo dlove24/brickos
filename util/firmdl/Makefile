@@ -22,9 +22,12 @@
 #	- Conditional make based on $OSTYPE variable for Windows NT (cygnwin32)
 #
 
+TARGET1 = firmdl3$(EXT)
+
 include ../Makefile.common
 
-all: fastdl.h ../firmdl3$(EXT)
+all: fastdl.h ../$(TARGET1)
+	@# nothing to do here but do it silently
 
 mkimg$(EXT): mkimg.o srec.o
 	$(CC) $^ -o $@ $(CFLAGS)
@@ -33,9 +36,22 @@ mkimg$(EXT): mkimg.o srec.o
 	$(CC) $^ -o $@ $(CFLAGS)
 
 fastdl.h: mkimg$(EXT) fastdl.srec
-	./mkimg fastdl.srec > fastdl.h
+	./mkimg$(EXT) fastdl.srec > $@
 
 depend:
+	@# nothing to do here but do it silently
+
+install-stamp: ../$(TARGET1)
+	cp -f ../$(TARGET1) ${bindir}
+	@touch $@
+
+install: all install-stamp 
+	@# nothing to do here but do it silently
 
 clean:
-	rm -f *.o *~ *.bak fastdl.h mkimg$(EXT) firmdl3$(EXT)
+	rm -f *.o *~ *.bak
+
+realclean: clean
+	@rm -f fastdl.h mkimg$(EXT) ../firmdl3$(EXT) install-stamp
+
+.PHONY: realclean clean install depend all

@@ -17,7 +17,7 @@
 include Makefile.common
 
 # Define here the executable files to be build
-EXECUTABLES= fontdesign dll makelx fixdeps genlds firmdl3
+EXECUTABLES = fontdesign 
 
 # Needed for DOS/WIN32 platforms
 ifdef EXT
@@ -26,29 +26,28 @@ else
 	TARGETS=$(EXECUTABLES)
 endif
 
-all: $(TARGETS)
+SUBDIRS = dll-src firmdl
 
-# take off debug symbols
+all:: $(TARGETS)
+	@#  nothing more to do here...
+
+all clean depend install realclean::
+	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
+
+# remove debug symbols
 strip:
 	strip $(TARGETS)
 
-clean:
-	$(MAKE) $(MFLAGS) -C dll-src clean
-	$(MAKE) $(MFLAGS) -C firmdl clean
-
-makelx$(EXT) dll$(EXT) genlds$(EXT) fixdeps$(EXT):
-	$(MAKE) $(MFLAGS) -C dll-src || exit 2
-
-firmdl3$(EXT):
-	$(MAKE) $(MFLAGS) -C firmdl || exit 2
-
+# build our one local program
 fontdesign$(EXT):	fontdesign.c
-	$(CC) fontdesign.c -o $@ $(CFLAGS)
 
-depend:
-	$(MAKE) $(MFLAGS) -C dll-src depend
-	$(MAKE) $(MFLAGS) -C firmdl depend
+install:: install-stamp
 
+install-stamp: $(TARGETS)
+	cp -f fontdesign$(EXT) ${pkglibdir}
+	@touch $@
 
-realclean: clean
+realclean:: clean
 	rm -f $(TARGETS)
+	@rm -f install-stamp
+

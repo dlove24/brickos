@@ -10,17 +10,25 @@
 
 include ../Makefile.common
 
-TARGET1=../dll$(EXT)
-SRCS1=loader.c rcxtty.c keepalive.c ../../kernel/lnp.c lx.c
-OBJS1=$(notdir $(SRCS1:.c=.o))
+INSTALL_DIR = ..
+EXE1 = dll$(EXT)
+MAN1 = dll.1
+TARGET1 = $(INSTALL_DIR)/$(EXE1)
+SRCS1 = loader.c rcxtty.c keepalive.c ../../kernel/lnp.c lx.c
+OBJS1 = $(notdir $(SRCS1:.c=.o))
 
-TARGET2=../makelx$(EXT)
-SRCS2=convert.c srec.c srecload.c lx.c
-OBJS2=$(SRCS2:.c=.o)
+EXE2 = makelx$(EXT)
+TARGET2 = $(INSTALL_DIR)/$(EXE2)
+SRCS2 = convert.c srec.c srecload.c lx.c
+OBJS2 = $(SRCS2:.c=.o)
 
-SINGLE_SRC_TARGETS=../genlds$(EXT) ../fixdeps$(EXT)
+EXE3 = genlds$(EXT)
+TARGET3 = $(INSTALL_DIR)/$(EXE3)
+EXE4 = fixdeps$(EXT)
+TARGET4 = $(INSTALL_DIR)/$(EXE4)
 
-ALL_TARGETS=$(TARGET1) $(TARGET2) $(SINGLE_SRC_TARGETS)
+SINGLE_SRC_TARGETS = $(TARGET3) $(TARGET4)
+ALL_TARGETS        = $(TARGET1) $(TARGET2) $(SINGLE_SRC_TARGETS)
 LIBS=
 
 #
@@ -29,18 +37,43 @@ LIBS=
 CFLAGS+=-I. -I../../include/lnp
 
 all:  $(ALL_TARGETS)
+	@# nothing to be done, but silently
 
 clean:
-	rm -f *.o *~ *.bak $(ALL_TARGETS) .depend
+	rm -f *.o *~ *.bak 
 
-depend:
+realclean: clean
+	rm -f $(ALL_TARGETS) 
+	@rm -f .depend install-stamp
+
+.depend:
 	$(CC) -M $(CFLAGS) -c $(SRCS1) $(SRCS2) >.depend
 
+depend: .depend
+	@# nothing to be done, but silently
+
+install: install-stamp
+	@# nothing to be done, but silently
+
+install-stamp:
+	cp -f $(TARGET1) $(bindir)/$(EXE1)
+	@if [ ! -d ${pkglibdir} ]; then \
+		mkdir -p ${pkglibdir}; \
+	fi
+	cp -f $(TARGET2) $(pkglibdir)/$(EXE2)
+	cp -f $(TARGET3) $(pkglibdir)/$(EXE3)
+	cp -f $(TARGET4) $(pkglibdir)/$(EXE4)
+	@if [ ! -d ${mandir}/man1 ]; then \
+		mkdir -p ${mandir}/man1; \
+	fi
+	cp -f $(MAN1) $(mandir)/man1/$(MAN1)
+	@touch $@
+
 $(TARGET1):  $(OBJS1)
-	$(CC) -o $(TARGET1) $(OBJS1) $(LIBS) $(CFLAGS)
+	$(CC) -o $@ $(OBJS1) $(LIBS) $(CFLAGS)
 
 $(TARGET2):  $(OBJS2)
-	$(CC) -o $(TARGET2) $(OBJS2) $(LIBS) $(CFLAGS)
+	$(CC) -o $@ $(OBJS2) $(LIBS) $(CFLAGS)
 
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS)
@@ -51,4 +84,5 @@ $(TARGET2):  $(OBJS2)
 ../%$(EXT): %.c
 	$(CC) -o $@ $< $(CFLAGS)
 
+.PHONY: depend all clean realclean install
 # DO NOT DELETE

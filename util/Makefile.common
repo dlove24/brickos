@@ -7,6 +7,28 @@
 #
 
 #
+#  Define our default install locations
+#
+prefix = /usr/local
+exec_prefix = ${prefix}
+PACKAGE = brickos
+
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/lib
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/man
+includedir = ${prefix}/include
+
+pkgdatadir = $(datadir)/${PACKAGE}
+pkglibdir = $(libdir)/${PACKAGE}
+pkgincludedir = $(includedir)/${PACKAGE}
+
+#
 # DJGPP does not define OSTYPE
 # Newer version of Cygwin do not define OSTYPE
 #
