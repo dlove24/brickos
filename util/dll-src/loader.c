@@ -175,6 +175,9 @@ int lnp_logical_write(const void *data, size_t length) {
 
   // transmit
   //
+#if defined(LINUX) || defined(linux)
+   if (tty_usb == 0)
+#endif
   keepaliveRenew();
 
   return mywrite(rcxFD(), data, length)!=length;
@@ -306,6 +309,11 @@ void LNPinit(const char *tty) {
     myperror("opening tty");
     exit(1);
   }
+
+#if defined(LINUX) || defined(linux)
+  if (tty_usb == 0) {
+#endif
+     
   keepaliveInit();
    
   // wait for IR to settle
@@ -318,9 +326,15 @@ void LNPinit(const char *tty) {
          	  now.tv_usec - timeout.tv_usec;
       
   } while(diff < 100000);
+#if defined(LINUX) || defined(linux)
+  }
+#endif
 #if defined(_WIN32)
   PurgeComm(rcxFD(), PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
 #else
+#if defined(LINUX) || defined(linux)
+   if (tty_usb == 0)
+#endif
   read(rcxFD(),buffer,256);
 #endif
 }
@@ -438,6 +452,8 @@ int main(int argc, char **argv) {
 	"  -t<comport>  , --tty=<comport>       set IR Tower com port <comport>\n"
 #if defined(_WIN32)
 	"  -t<usb>      , --tty=<usb>           set IR Tower USB mode \n"
+#else
+        "                                       (if \"usb\" is in the port, use USB mode)\n"
 #endif
 	"  -i<0/1>      , --irmode=<0/1>        set IR mode near(0)/far(1) on RCX\n"
 	"  -e           , --execute             execute program after download\n"
@@ -480,6 +496,16 @@ int main(int argc, char **argv) {
 		fputs("\n\n Hary Mahesan - LEGO USB IR Tower Mode\n\n",stderr);
 	tty="\\\\.\\legotower1"; // Set the correct usb tower if you have more than one (unlikely).
   }
+#elif defined(LINUX) || defined(linux)
+   /* If the tty string contains "usb", e.g. /dev/usb/lego0, we */
+   /* assume it is the USB tower.  /dev/usb/lego0 is the default name of */
+   /* the device in the LegoUSB (http://legousb.sourceforge.net) project. */
+   /* If yours doesn't contain the "usb" string, just link it. */
+   if (strstr(tty,"usb") !=0) {
+       tty_usb=1;
+       if (verbose_flag)
+          fputs("\nC.P. Chan & Tyler Akins - USB IR Tower Mode for Linux.\n",stderr);
+   }
 #endif
 
   LNPinit(tty);
