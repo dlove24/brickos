@@ -1,8 +1,9 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile.common - make rules for kernel files
-## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>
-##
+### ==========================================================================
+###  $Id: Makefile.kernel,v 1.8 2002/10/15 06:51:19 stephmo Exp $
+###  FILE: Makefile.kernel - definitions in support of building brickOS
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
+###            (this file is included ONLY by boot/Makefile)
 
 # kernel sources & objects
 KSOURCES=kmain.c mm.c systime.c tm.c semaphore.c conio.c lcd.c \
@@ -77,3 +78,8 @@ endif
 	$(OBJCOPY) -O srec $*.out $*.srec
 	rm -f $*.o $*.out
 	chmod -x $*.srec
+
+
+### --------------------------------------------------------------------------
+###                        End of FILE: Makefile.kernel
+### ==========================================================================

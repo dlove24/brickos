@@ -1,11 +1,13 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile.common - make rules for user executables
-## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>    
-##
+### ==========================================================================
+###  $Id: Makefile.user,v 1.6 2002/10/15 06:51:55 stephmo Exp $
+###  FILE: Makefile.user - support for building programs run under brickOS
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
+###       (this file is included by the  demo/ and demo/c++  Makefiles)
 
-# User application libraries. Comment out if linking
-# them statically to kernel in Makefile.kernel.
+
+#  User application libraries. Comment out if linking
+#  them statically to kernel in Makefile.kernel.
 LIBS=-lc -lmint -lfloat -lc++
 
 # linker command files dynamic executables.
@@ -56,3 +58,8 @@ endif
 
 %.lx: %.ds1 %.ds2
 	$(MAKELX) $*.ds1 $*.ds2 $@
+
+
+### --------------------------------------------------------------------------
+###                          End of FILE: Makefile.user
+### ==========================================================================
