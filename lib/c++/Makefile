@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2003/01/11 12:30:29 emanlove Exp $
+###  $Id: Makefile,v 1.9 2004/01/25 21:59:42 hzeller Exp $
 ###  FILE: lib/c++/Makefile - make the c++ library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -8,8 +8,8 @@
 LIBTARGET = c++
 
 # sources 
-SOURCES = stub.c
-
+CSOURCES = stub.c
+CXXSOURCES=mem.cpp
 
 ##
 ## no user servicable parts below
@@ -17,7 +17,7 @@ SOURCES = stub.c
 
 LIBRARY   = lib$(LIBTARGET).a
 
-OBJECTS = $(SOURCES:.c=.o)
+OBJECTS = $(CSOURCES:.c=.o) $(CXXSOURCES:.cpp=.o)
 
 
 all:: promote-stamp
@@ -28,13 +28,13 @@ promote-stamp: $(LIBRARY)
 	@touch $@
 
 include ../../Makefile.common
-	
+
 $(LIBRARY): $(OBJECTS)
 	rm -f $@
 	$(AR) -sq $@ $(OBJECTS)
 
-.depend: $(SOURCES)
-	$(MAKEDEPEND) $(SOURCES) > .depend
+.depend: $(CSOURCES) $(CXXSOURCES)
+	$(MAKEDEPEND) $(CSOURCES) $(CXXSOURCES) > .depend
 
 depend:: .depend
 	@# nothing to do here but do it silently
