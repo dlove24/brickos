@@ -18,7 +18,7 @@
 			<revision>
 				<revnumber>1.3</revnumber>
 				<date>01 Mar 2003</date>
-				<authorinitials>smm</authorinitials>
+				<authorinitials>pm</authorinitials>
 				<revremark>Update for brickOS 0.2.7.10</revremark>
 			</revision>
 			<revision>
@@ -65,8 +65,8 @@
 		If you have opinions and corrections related to these instruction, you can write to
 		<ulink url="mailto:paolom@users.sourceforge.net">
 		<citetitle>Paolo Masetti</citetitle>
-		</ulink>
-		for every problems, use brickOS site reporting tools and forums or
+		</ulink>.
+		For every problems, use brickOS site reporting tools and forums or
 		<ulink url="http://www.lugnet.com/robotics/rcx/legos/">
 		<citetitle>lugnet.robotics.rcx.legos</citetitle>
 		</ulink> on
@@ -82,7 +82,7 @@
 			they'll do for you but I'm quite sure. They should get brickOS working on your own
 			PC, but they should be used at your own risk as with any other program
 			installation, you may crash your computer, lose files, and generally make a mess
-			of things. So, neither he nor I am responsible for what happens. :-)
+			of things. So, neither he nor I will be responsible for what should happen. :-)
 			</para>
 		</caution>
 	<!--/warning><-->
@@ -349,10 +349,11 @@ $ ./dll ../demo/helloworld.lx
 				If you have the IR tower connected to a different com port you can change the default
 				port with variable RCXTTY. This is the command: "export RCXTTY=COMx".
 				NOTE: if you have a USB tower, please use "export RCXTTY=USB".
-				More help with "./firmdl3 --help" and "./dll --help"
+				You can get more help using commands "./firmdl3 --help" and "./dll":
 			</para>
 			<para>
 				<programlisting>
+$ ./firmdl --help
 usage: firmdl3 [options] filename
       --debug      show debug output, mostly raw bytes
   -f, --fast       use fast 4x downloading (default)
@@ -361,23 +362,25 @@ usage: firmdl3 [options] filename
       --tty=usb    assume tower connected to USB
   -h, --help       display this help and exit
 				</programlisting>
-  
+  </para>
+  <para> <!-- blank line --> </para>
+  <para>
 				<programlisting>
-dll: unknown option -- help
+$ ./dll
 usage: dll [options] [command | file.lx]
 Options:
-  -p<prognum>  , --program=<prognum>   set destination program to <prognum>
-  -r<rcxaddr>  , --rcxaddr=<rcxaddr>   send to RCX host address <rcxaddr>
-  -s<srcport>  , --srcport=<srcport>   send to RCX source port <srcport>
-  -t<comport>  , --tty=<comport>       set IR Tower com port <comport>
-  -t<usb>      , --tty=<usb>           set IR Tower USB mode
-  -i<0/1>      , --irmode=<0/1>        set IR mode near(0)/far(1) on RCX
+  -p&lt;prognum&gt;  , --program=&lt;prognum&gt;   set destination program to &lt;prognum&gt;
+  -r&lt;rcxaddr&gt;  , --rcxaddr=&lt;rcxaddr&gt;   send to RCX host address &lt;rcxaddr&gt;
+  -s&lt;srcport&gt;  , --srcport=&lt;srcport&gt;   send to RCX source port &lt;srcport&gt;
+  -t&lt;comport&gt;  , --tty=&lt;comport&gt;       set IR Tower com port &lt;comport&gt;
+  -t&lt;usb&gt;      , --tty=&lt;usb&gt;           set IR Tower USB mode
+  -i&lt;0/1&gt;      , --irmode=&lt;0/1&gt;        set IR mode near(0)/far(1) on RCX
   -e           , --execute             execute program after download
   -v           , --verbose             verbose mode
 
 Commands:
-  -d<prognum>  , --delete=<prognum>    delete program <prognum> from memory
-  -n<hostaddr> , --node=<hostaddr>     set LNP host address in brick
+  -d&lt;prognum&gt;  , --delete=&gt;prognum&gt;    delete program &lt;prognum&gt; from memory
+  -n&lt;hostaddr&gt; , --node=&gt;hostaddr&gt;     set LNP host address in brick
 
 Default COM port or USB support can be set using environment variable RCXTTY.
 Eg:     set RCXTTY=COM2
