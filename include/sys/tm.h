@@ -1,5 +1,5 @@
 /*! \file   include/sys/tm.h
-    \brief  task management interna
+    \brief  Internal Interface: task management
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -62,6 +62,9 @@ extern volatile unsigned int nb_tasks;		//!< number of tasks
   // nb_system_tasks is maintained  in execi and kill/killall
   // T_KERNEL tasks are counted as they are started
 extern volatile unsigned int nb_system_tasks;
+
+  // tm_timeslice is from kernel/systime.c
+extern volatile unsigned char tm_timeslice;	//!< task time slice
 
 
 ///////////////////////////////////////////////////////////////////////
