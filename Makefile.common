@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.13 2002/10/23 17:42:42 stephmo Exp $
+###  $Id: Makefile.common,v 1.14 2002/11/19 23:57:08 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -69,7 +69,7 @@ ifdef BUILDING_HOST_UTILS
 #   defines for build of native compiled utilities
 # ----------------------------------------------------------------------------
 
-CFLAGS=-O2 -Wall
+CFLAGS+=-O2 -Wall
 
 else  # ifndef BUILDING_HOST_UTILS
 
