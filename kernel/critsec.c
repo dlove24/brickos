@@ -10,9 +10,10 @@
 //! critical section counter for kernel/task manager
 /*! when the critical section counter is Zero,
     task swapping is allowed.  when greater than
-    zero, task swapping is not allowed.
+    zero, task swapping is not allowed. This is checked in
+    the task_switch_handler() in systime.c
  */
-volatile unsigned char kernel_critsec_count;
+atomic_t kernel_critsec_count;
 
 //! increment counter without interruption
 /*! locks interrupts except NMI, then 
@@ -24,7 +25,7 @@ volatile unsigned char kernel_critsec_count;
     \return always 0 (currently)
     \sa locked_decrement
  */
-int locked_increment(volatile unsigned char* counter);
+int locked_increment(atomic_t* counter);
 __asm__("
 .text
 .globl _locked_increment
@@ -49,7 +50,7 @@ __asm__("
     \return always 0 (currently)
     \sa locked_increment
  */
-int locked_decrement(volatile unsigned char* counter);
+int locked_decrement(atomic_t* counter);
 __asm__("
 .text
 .globl _locked_decrement
@@ -77,7 +78,7 @@ __asm__("
     \return 0xffff if failure, 0 if successful
     \sa locked_decrement
  */
-int locked_check_and_increment(unsigned char* counter, tdata_t** tid);
+int locked_check_and_increment(atomic_t* counter, tdata_t** tid);
 __asm__("
 .text
 .global _locked_check_and_increment
