@@ -6,6 +6,7 @@
 
 #  distribution name (all lower-case by convention)
 PACKAGE = brickos
+
 #  version of this release, let's use the verision from our VERSION file
 VERSION = $(shell cat VERSION)
 
@@ -16,28 +17,26 @@ export BRICKOS_ROOT=$(shell cd . && pwd)/
 #
 #  makefile to build the brickOS operating system and demo files
 # 
-SUBDIRS=util lib boot demo
+SUBDIRS=util lib boot demo doc
 
+all install::
+	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) -C $$i $@ || exit 2 ; done
 
-all:
-	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) -C $$i || exit 2 ; done
+depend clean realclean::
+	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
 
-depend:
-	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i depend || exit 2 ; done
-
-clean:
-	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i clean ; done
+clean::
 	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
 
 c++:
 	$(MAKE) -C demo c++
 
-realclean::
-	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i realclean ; done
-	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags 
-	$(MAKE) $(MFLAGS) -C doc clean
-	
+realclean:: clean
 
+
+#
+#  when we get a new version of doxygen, run this target once
+#
 upgrade-doxygen:
 	doxygen -u Doxyfile-c 
 	doxygen -u Doxyfile-c++
@@ -231,3 +230,7 @@ distdir: $(DISTFILES)
 	@find $(DISTDIR) -type d -depth -name 'CVS' -exec rm -rf {} \; 
 	@find $(DISTDIR) -type f -name '.cvs*' -exec rm -f {} \; 
 	@find $(DISTDIR) -type f -name '.dep*' -exec rm -f {} \; 
+
+# ------------------------------------------------------------
+#          End of top-level brickOS Makefile
+# ------------------------------------------------------------
