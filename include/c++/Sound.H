@@ -1,4 +1,4 @@
-/*! \file   c++/Sound.H
+/*! \file   include/c++/Sound.H
     \brief  C++ Sound Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -28,6 +28,7 @@
 #if defined(CONF_DSOUND)
 
 /**
+ * \class Sound Sound.H c++/Sound.H
  * Sound generation interface.
  * Sound Generation Class interface
  *

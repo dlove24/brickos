@@ -1,4 +1,4 @@
-/*! \file   c++/Sensor.H
+/*! \file   include/c++/Sensor.H
     \brief  C++ Sensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -29,6 +29,7 @@
 #include <conio.h>
 
 /**
+ * \class Sensor Sensor.H c++/Sensor.H
  * Basic sensor interface.
  * This is the base class for all sensors.
  *
@@ -36,7 +37,7 @@
  * which the sensor is attached and whether it should be powered (active/on) 
  * or not (passive/off).
  *
- * It provides methods to:
+ * The %Sensor class provides methods to:
  * \li read the value of the sensor [\ref #get, \ref #sample]
  *
  * \li power the sensor as needed [\ref #on, \ref #off, \ref #active, 
@@ -71,14 +72,14 @@ public:
   };
 
   /**
-   * Construct a sensor.
+   * Construct a new sensor instance.
    *
-   * At time of construction identify where it is connected and
+   * At time of construction identify where the sensor is connected and
    *  whether it should be active or passive (default is passive).
    *
    * \param port The port to be associated with this instance of a sensor
-   * \param makeActive T/F - true means make active (default is false, passive)
-   * \see #Port
+   * \param makeActive T/F - Where true means make active (default is false, passive)
+   * \see Sensor#Port
    */
   Sensor(const Port port, bool makeActive = false)
     : sensor((port == S1) ? SENSOR_1 : 
@@ -93,8 +94,9 @@ public:
   /**
    * Destroy this sensor instance
    *
-   *  \note Just before the sensor instance is destroyed it is turned off 
-   *  (in case is was active) thereby conserving battery power.
+   *  \note Just before the sensor instance is destroyed the power to the
+   *  input pad is turned off (in case is was active) thereby 
+   *  conserving battery power.
    */
   ~Sensor() {off();}
 
@@ -175,7 +177,6 @@ public:
 protected:
   /**
    * The address of our sensor value
-   * \return A pointer to an unsigned int value
    */
   volatile unsigned int& sensor;
 };

@@ -1,4 +1,4 @@
-/*! \file   c++/LightSensor.H
+/*! \file   include/c++/LightSensor.H
     \brief  C++ LightSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -27,6 +27,7 @@
 
 #if defined(CONF_DSENSOR)
 /**
+ * \class LightSensor LightSensor.H c++/LightSensor.H
  * Light-sensor interface (active/passive mode).
  * The LightSensor Class - using a %LightSensor in active or passive mode
  *
@@ -55,7 +56,7 @@ public:
    *
    * NOTE: ultimately, this will be scaled to fall between 0 and 100.
    * \return unsigned int - the current light sensor reading
-   * \see #sample
+   * \see LightSensor#sample
    */
   unsigned int get() const {return LIGHT(sensor);}
   /**
@@ -63,7 +64,7 @@ public:
    * \param size - Number of samples to average (default = 10 samples)
    * \param wait - time (in mS) to wait between samples (default = 2mS)
    * \return unsigned int - The average of the sampled values
-   * \see #get
+   * \see LightSensor#get
    */
   unsigned int sample(unsigned int size = 10, int wait = 2) const {
     if (size == 0) size = 1;

@@ -1,4 +1,4 @@
-/*! \file   c++/Lamp.H
+/*! \file   include/c++/Lamp.H
     \brief C++ Lamp Class Interface
     \author Stephen M Moraco (stephmo@users.sourceforge.net)
 
@@ -29,6 +29,7 @@
 #include <dmotor.h>
 
 /**
+ * \class Lamp Lamp.H c++/Lamp.H
  * Lamp control interface.
  * Define a lamp connection to the RCX so we can turn the lamp on(), off()
  * or set its brightness().
@@ -38,7 +39,7 @@
 class Lamp {
 public:
   /**
-   *  The RCX pad to which the Lamp is connected
+   *  The RCX output pad to which the Lamp is connected
    */
   enum Port { 
          A, //!< RCX output pad A

@@ -1,0 +1,45 @@
+/// \file doc/doxy-extras/demos-c++.dxy
+/// \brief Main page for collecting our C++ examples
+/// \author Stephen M Moraco (stephmo@users.sourceforge.net)
+///
+/// This file provides a simple catalog of our C++ example programs
+
+///
+/// @page C++-Demos Example Programs in C++
+///
+/// \par Ex1: display battery voltage
+///  a simple demostration of reading the battery and writing to the LCD
+///
+/// \par demo/batt.C
+///
+/// \include batt.C
+///
+/// \par Ex2: emitting light (Using Lamp from the Ultimate Accessory Set)
+///  a demostration of the controlling the Lamp
+///
+/// \par demo/lampTest.C
+///
+/// \include lampTest.C
+///
+/// \par Ex3: generating sounds
+///  a simple demostration of the RCX playing music
+///
+/// \par demo/sound.C
+///
+/// \include sound.C
+///
+
+activeSensor.C
+batt.C
+lampTest.C
+lightSensor.C
+motor.C
+raceTrack.C
+rotation.velocity.Sensor.C
+rotationSensor.C
+rover.C
+sensor.C
+sound.C
+temperatureSensor.C
+touch.pressed.Sensor.C
+touchSensor.C

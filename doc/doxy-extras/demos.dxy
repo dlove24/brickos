@@ -1,0 +1,34 @@
+/// \file doc/doxy-extras/demos.dxy
+/// \brief Main page for collecting our C examples
+/// \author Stephen M Moraco (stephmo@users.sourceforge.net)
+///
+/// This file provides a simple catalog of our example files
+
+///
+/// @page C-Demos Example Programs in C
+///
+/// \par Ex1: Our hello world example
+///  a simple demostration of how to write to the LCD
+///
+/// \par demo/helloworld.c
+///
+/// \include helloworld.c
+///
+/// \par Ex2: generating sounds
+///  a simple demostration of the RCX playing music
+///
+/// \par demo/sound.c
+///
+/// \include sound.c
+///
+/// \par Ex3: A line following robot
+///  a simple demostration of 
+///
+/// \par demo/linetrack.c
+///
+/// \include linetrack.c
+///
+
+##incluce robots.c
+##incluce rover.c
+##incluce trailerbot.c

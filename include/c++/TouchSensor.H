@@ -1,4 +1,4 @@
-/*! \file   c++/TouchSensor.H
+/*! \file   include/c++/TouchSensor.H
     \brief  C++ TouchSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -27,6 +27,7 @@
 #if defined(CONF_DSENSOR)
 
 /**
+ * \class TouchSensor TouchSensor.H c++/TouchSensor.H
  * Touch-sensor interface (passive mode).
  * The Touch %Sensor Class - using a touch sensor in passive mode 
  *

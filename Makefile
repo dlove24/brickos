@@ -32,12 +32,9 @@ clean:
 c++:
 	$(MAKE) -C demo c++
 
-realclean:
+realclean::
 	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i realclean ; done
-	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
-	rm -rf doc/html-c++ doc/html-c doc/rtf-c doc/rtf-c++ doc/rtf
-	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag  *.out
-	rm -f Doxyfile-c++.log Doxyfile-c++.rpt .Doxyfile-c++-doneflag 
+	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags 
 	$(MAKE) $(MFLAGS) -C doc clean
 	
 
@@ -51,8 +48,12 @@ upgrade-doxygen:
 #
 html-c: Doxyfile-c-report
 
+realclean::
+	rm -rf doc/html-c doc/rtf-c
+	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag *.out
+
 brickos-html-c-dist.tar.gz: html-c 
-	cd doc;tar --gzip -cvf $@ $?;mv $@ ..;cd -
+	cd doc;tar --gzip -cf $@ html-c;mv $@ ..;cd -
 
 html-c-dist: brickos-html-c-dist.tar.gz
 
@@ -73,15 +74,19 @@ Doxyfile-c.rpt: Doxyfile-c.log
 	@touch $@
 
 Doxyfile-c-report: .Doxyfile-c-doneflag
-	-ls -ltr *.out
+	-ls -ltr *.out 2>/dev/null
 
 #
 #  doc/html-c++ subdirectory
 #
 html-c++: Doxyfile-c++-report
 
+realclean::
+	rm -rf doc/html-c++ doc/rtf-c++
+	rm -f Doxyfile-c++.log Doxyfile-c++.rpt .Doxyfile-c++-doneflag *.out
+
 brickos-html-c++-dist.tar.gz: html-c++
-	cd doc;tar --gzip -cvf $@ $?;mv $@ ..;cd -
+	cd doc;tar --gzip -cf $@ html-c++;mv $@ ..;cd -
 
 html-c++-dist: brickos-html-c++-dist.tar.gz
 
@@ -102,21 +107,56 @@ Doxyfile-c++.rpt: Doxyfile-c++.log
 	@touch $@
 
 Doxyfile-c++-report: .Doxyfile-c++-doneflag
-	-ls -ltr *.out
+	-ls -ltr *.out 2>/dev/null
 
 #
-#  doc/html subdirectory
+#  doc/html-kern subdirectory
 #
-html-full:
-	doxygen Doxyfile
+html-kern: Doxyfile-kern-report
 
-html: html-full html-c html-c++
+realclean::
+	rm -rf doc/html-kern doc/rtf-kern
+	rm -f Doxyfile-kern.log Doxyfile-kern.rpt .Doxyfile-kern-doneflag *.out
+
+brickos-html-kern-dist.tar.gz: html-kern
+	cd doc;tar --gzip -cf $@ html-kern;mv $@ ..;cd -
+
+html-kern-dist: brickos-html-kern-dist.tar.gz
+
+Doxyfile-kern.log: 
+	doxygen  Doxyfile >$@ 2>&1
+
+Doxyfile-kern.rpt: Doxyfile-kern.log
+	@grep Warn $? | sed -e 's/^.*brickos\///' | cut -f1 -d: | sort | \
+	uniq -c | sort -rn | tee $@
+
+.Doxyfile-kern-doneflag:  Doxyfile-kern.rpt
+	@for FIL in `cat Doxyfile-kern.rpt | cut -c9-99`; do \
+       OUTFILE=`echo $$FIL | sed -e 's/[\/\.]/-/g'`.out; \
+       echo "# FILE: $$OUTFILE" >$$OUTFILE; \
+       grep "$$FIL" Doxyfile-kern.rpt >>$$OUTFILE; \
+       grep "$$FIL" Doxyfile-kern.log | grep Warn >>$$OUTFILE; \
+    done
+	@touch $@
+
+Doxyfile-kern-report: .Doxyfile-kern-doneflag
+	-ls -ltr *.out 2>/dev/null
+
+#
+#  make all API documentation
+#
+html: html-c html-c++ html-kern
+
+#
+#  make distribution files of all API documentation
+#
+html-dist: html-c-dist html-c++-dist html-kern-dist
 
 # tags
 tag:
 	ctags --format=1 kernel/*.c include/*.h include/*/*.h
 
-.PHONY: all depend clean realclean html tag c++
+.PHONY: all depend clean realclean html tag c++ html html-c html-c++ html-kern html-dist 
 
 
 # ------------------------------------------------------------

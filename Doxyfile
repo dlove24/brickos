@@ -23,7 +23,7 @@ PROJECT_NAME           = "brickOS Kernel Developer"
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.2.6.08
+PROJECT_NUMBER         = v0.2.6.08
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -126,8 +126,7 @@ FULL_PATH_NAMES        = YES
 # only done if one of the specified strings matches the left-hand part of 
 # the path. It is allowed to use relative paths in the argument list.
 
-STRIP_FROM_PATH        = ./include/ \
-                         ./
+STRIP_FROM_PATH        = ./
 
 # The INTERNAL_DOCS tag determines if documentation 
 # that is typed after a \internal command is included. If the tag is set 
@@ -188,7 +187,7 @@ JAVADOC_AUTOBRIEF      = YES
 # The new default is to treat a multi-line C++ comment block as a detailed 
 # description. Set this tag to YES if you prefer the old behaviour instead.
 
-MULTILINE_CPP_IS_BRIEF = YES
+MULTILINE_CPP_IS_BRIEF = NO
 
 # If the DETAILS_AT_TOP tag is set to YES then Doxygen 
 # will output the detailed description near the top, like JavaDoc.
@@ -201,7 +200,7 @@ DETAILS_AT_TOP         = NO
 # member inherits the documentation from any documented member that it 
 # reimplements.
 
-INHERIT_DOCS           = NO
+INHERIT_DOCS           = YES
 
 # If the INLINE_INFO tag is set to YES (the default) then a tag [inline] 
 # is inserted in the documentation for inline members.
@@ -257,7 +256,8 @@ GENERATE_DEPRECATEDLIST= YES
 # will result in a user defined paragraph with heading "Side Effects:". 
 # You can put \n's in the value part of an alias to insert newlines.
 
-ALIASES                = 
+ALIASES                = "sideeffect=\par Side Effects:\n" \
+                         "index=\par Index:\n"
 
 # The ENABLED_SECTIONS tag can be used to enable conditional 
 # documentation sections, marked by \if sectionname ... \endif.
@@ -337,8 +337,10 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = kernel/ \
-                         include/
+INPUT                  = kernel \
+                         include \
+                         boot \
+                         doc/doxy-extras
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -348,11 +350,11 @@ INPUT                  = kernel/ \
 # *.h++ *.idl *.odl
 
 FILE_PATTERNS          = *.c \
-                         *.h \
                          *.C \
                          *.cpp \
-                         *.text \
-                         *.H
+                         *.h \
+                         *.H \
+                         *.dxy
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -481,7 +483,7 @@ GENERATE_HTML          = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT            = html
+HTML_OUTPUT            = html-kern
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for 
 # each generated HTML page (for example: .htm,.php,.asp). If it is left blank 
@@ -662,7 +664,7 @@ GENERATE_RTF           = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
 # put in front of it. If left blank `rtf' will be used as the default path.
 
-RTF_OUTPUT             = rtf
+RTF_OUTPUT             = rtf-kern
 
 # If the COMPACT_RTF tag is set to YES Doxygen generates more compact 
 # RTF documents. This may be useful for small projects and may help to 
@@ -802,8 +804,7 @@ INCLUDE_FILE_PATTERNS  =
 # or name=definition (no spaces). If the definition and the = are 
 # omitted =1 is assumed.
 
-PREDEFINED             = DOXYGEN_SHOULD_SKIP_INTERNALS \
-                         DOXYGEN_SHOULD_SKIP_THIS \
+PREDEFINED             = DOXYGEN_SHOULD_SKIP_THIS \
                          DOXYGEN_DOC_BUILD
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 

@@ -1,4 +1,4 @@
-/*! \file   c++/RotationSensor.H
+/*! \file   include/c++/RotationSensor.H
     \brief  C++ RotationSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -29,6 +29,7 @@
 #if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
 
 /**
+ * \class RotationSensor RotationSensor.H c++/RotationSensor.H
  * Rotation-sensor interface (active mode).
  * Provide an interface to rotation sensor hardware attached to the RCX
  *

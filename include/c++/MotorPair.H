@@ -1,4 +1,4 @@
-/*! \file   c++/MotorPair.H
+/*! \file   include/c++/MotorPair.H
     \brief  C++ MotorPair Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -29,6 +29,7 @@
 #include <conio.h>	// for the delay() function
 #include <c++/Motor.H>
 
+/// \class MotorPair MotorPair.H c++/MotorPair.H
 /// Pair-of-motors control interface.
 ///
 /// Often our robots use two motors, one on either side, which should be controlled

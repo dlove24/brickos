@@ -1,4 +1,4 @@
-/*! \file   c++/Battery.H 
+/*! \file   include/c++/Battery.H 
     \brief  C++ Battery Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -27,6 +27,7 @@
 
 #if defined(CONF_DSENSOR)
 /**
+ * \class Battery Battery.H c++/Battery.H
  * Battery-sensor interface (RCX Internal).
  * This class deals with the battery sensor. 
  *

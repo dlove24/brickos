@@ -58,8 +58,8 @@ typedef struct {
 } note_t;
 
 
-/// \defgroup noteDurations standard note/rest durations
-///@{
+//! \defgroup noteDurations standard note/rest durations
+//@{
 
 /// Whole note in terms of sixteenths
 #define WHOLE            16
@@ -73,15 +73,15 @@ typedef struct {
 /// Eighth note in terms of sixteenths
 #define EIGHTH           2
 
-///@}
+//@}
+
 
 //  PITCH_H is European equivalent to American B note.
 
-/// \defgoup notePitches standard note pitch values
-///@{
+//! \defgoup notePitches standard note pitch values
+//@{
 
-/// Note Pitch Values
-
+/// Note Pitch Value
 #define PITCH_A0 	 0
 #define PITCH_Am0 	 1
 #define PITCH_H0 	 2
@@ -180,7 +180,7 @@ typedef struct {
 #define PITCH_Gm8 	 95
 #define PITCH_A8 	 96
 
-///@}
+//@}
 
 //! specify a pause (rest)
 #define PITCH_PAUSE   	 97
@@ -211,12 +211,16 @@ typedef struct {
 //
 ///////////////////////////////////////////////////////////////////////
 
+#ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
+
 extern unsigned dsound_16th_ms;   	      	 //!< length of 1/16 note in ms
 extern unsigned dsound_internote_ms;  	      	 //!< length of internote spacing in ms
 extern volatile note_t *dsound_next_note;     	 //!< pointer to current note
 extern volatile time_t dsound_next_time;      	 //!< when to play next note
 
 extern const note_t *dsound_system_sounds[];  	 //!< system sound data
+
+#endif // DOXYGEN_SHOULD_SKIP_INTERNALS
 
 
 ///////////////////////////////////////////////////////////////////////

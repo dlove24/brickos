@@ -1,5 +1,5 @@
-/*! \file   c++/TemperatureSensor.H
-    \brief  C++ Temperature Sensor Class Interface
+/*! \file   include/c++/TemperatureSensor.H
+    \brief  C++ TemperatureSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
                  
     Defines interface to temperature sensors 
@@ -28,6 +28,7 @@
 #if defined(CONF_DSENSOR)
 
 /**
+ *  \class TemperatureSensor TemperatureSensor.H c++/TemperatureSensor.H
  * Temperature-sensor interface.
  * This is class deals with temperature sensors
  *

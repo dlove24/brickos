@@ -18,8 +18,10 @@
 #include <config.h>
 #if defined(CONF_DMOTOR)
 
+#include <unistd.h>		// for the sleep() func.
+#include <sys/tm.h>		// for the shutdown_requested() func.
+
 #include <c++/Lamp.H>
-#include <c++/Sound.H>
 
 int 
 main(int argc, 
@@ -29,7 +31,7 @@ main(int argc,
   int power = 0;
   
   myLite.on();
-  while (power < 255) {
+  while (power < 255 && !shutdown_requested()) {
 	myLite.brightness(power);
 	sleep(1);
 	power += (256/8);

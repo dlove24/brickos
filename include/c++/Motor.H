@@ -1,4 +1,4 @@
-/*! \file   c++/Motor.H
+/*! \file   include/c++/Motor.H
     \brief  C++ Motor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -25,6 +25,7 @@
 #include <dmotor.h>
 
 /**
+ * \class Motor Motor.H c++/Motor.H
  * Motor control interface.
  * This class is designed to manipulate motors attached to an RCX
  * \see The other control classes: MotorPair, Sound, Lamp

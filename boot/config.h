@@ -1,6 +1,6 @@
-/*! \file include/config.h
-		\brief	kernel configuration file
-		\author Markus L. Noga <markus@noga.de>
+/*! \file boot/config.h
+	\brief	kernel configuration file
+	\author Markus L. Noga <markus@noga.de>
  */
 
 /*
