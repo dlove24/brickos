@@ -5,6 +5,8 @@
   * Applied Patch 651692: Add setjmp/longjmp (ANSI C support)
   * Applied Patch 668115: Make brickOS work with up-to-date binutils
   * Applied Patch 673995: Patch brickos 0.2.6.09 for *BSD
+  * Fixed bug 666378: Motors still running when RCX turned off
+     (applied fix described in bug report.)
 
 2003-01-11  Ed Manlove <emanlove@users.sourceforge.net>
 
@@ -319,4 +321,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.22 2003/02/14 05:48:49 stephmo Exp $
+$Id: ChangeLog,v 1.23 2003/02/14 06:03:17 stephmo Exp $

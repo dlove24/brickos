@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.16 2003/02/14 05:40:50 stephmo Exp $
+###  $Id: Makefile.common,v 1.17 2003/02/14 06:03:17 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -41,7 +41,7 @@ EXT=
 CC=cc
 CFLAGS=-O2 -Wall
 MAKEDEPEND=$(CC) -M
-BRICKOS_ROOT=/home/stephen/sourceforge/brickos/brickos
+BRICKOS_ROOT=
 # -------------------------------------------------------
 #  END-configuration insert  (do not remove this line)
 #

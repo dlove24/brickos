@@ -134,8 +134,6 @@ void dm_init(void) {
 //! shutdown motors
 //
 void dm_shutdown(void) {
-  motor_controller=0x00;		// shutdown hardware
-
   motor_a_dir(off);			// initialize driver data
   motor_b_dir(off);
   motor_c_dir(off);
@@ -143,6 +141,8 @@ void dm_shutdown(void) {
   motor_a_speed(MAX_SPEED);
   motor_b_speed(MAX_SPEED);
   motor_c_speed(MAX_SPEED);
+
+  motor_controller=0x00;		// shutdown hardware
 }
 
 #ifdef CONF_VIS
