@@ -14,8 +14,10 @@
 
 2004-01-02  Henner Zeller <hzeller@users.sourceforge.net>
 
-  * Fixed Bugs #835433, #766169, #766168 
-  * Implement Feature Request #686495
+  * Fixed Bug #835433 - install problem: multiline asm vs. new gcc
+  * Fixed Bug #766169 - kernel/systime.c spurious ^Ms
+  * Fixed Bug #766168 - kernel_critsec_count volatility
+  * Implement Feature Request #686495 - added on/off sound
   * add sem_timedwait() 
   * externalized atomic counting in atomic.[hc]; introduce new type atomic_t
   * semaphores and critical sections make use of atomic_t
@@ -366,4 +368,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.36 2004/01/26 03:54:26 stephmo Exp $
+$Id: ChangeLog,v 1.37 2004/02/14 04:48:16 stephmo Exp $

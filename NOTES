@@ -1,0 +1,15 @@
+===============================================================================
+  File: NOTES - things of interest while perusing GNU GCC docs
+  $Header: /cvsroot/brickos/brickos/NOTES,v 1.1 2004/02/14 04:48:16 stephmo Exp $
+  -Stephen - created during prep of gcc-3.2 package
+-------------------------------------------------------------------------------
+
+Determine implication of gcc/g++ Function Attribute 'tiny_data' See: 
+  http://gcc.gnu.org/onlinedocs/gcc-3.2.3/gcc/Function-Attributes.html#Function%20Attributes
+
+Determine implication of gcc/g++ Function Attribute 'eightbit_data', and
+'malloc'.
+
+-------------------------------------------------------------------------------
+                                End of File: NOTES
+===============================================================================
