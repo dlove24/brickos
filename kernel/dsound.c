@@ -123,6 +123,7 @@ static inline void play_pause() {
 void dsound_handler(void) {
 #else
 HANDLER_WRAPPER("dsound_handler","dsound_core");
+//! sound core, called from ????
 void dsound_core(void) {
 #endif
   if(sys_time>=dsound_next_time) {

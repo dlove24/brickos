@@ -89,7 +89,7 @@ extern int sem_trywait(sem_t * sem);
 extern int sem_post(sem_t * sem);
 
 //
-// get the semaphore value
+//! get the semaphore value
 //
 extern inline int sem_getvalue(sem_t * sem, int *sval)
 {

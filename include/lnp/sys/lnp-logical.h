@@ -92,6 +92,8 @@ extern void lnp_logical_init(void);
 //
 extern void lnp_logical_shutdown(void);
 
+//! callback for end of transmission
+//
 void txend_handler(void)
 #ifdef RCX_COMPILER
  __attribute__ ((rcx_interrupt))

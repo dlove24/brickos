@@ -752,6 +752,7 @@ INCLUDE_FILE_PATTERNS  =
 # omitted =1 is assumed.
 
 PREDEFINED             = DOXYGEN_SHOULD_SKIP_INTERNALS \
+                         DOXYGEN_SHOULD_SKIP_THIS \
                          DOXYGEN_DOC_BUILD
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 

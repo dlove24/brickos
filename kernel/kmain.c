@@ -57,8 +57,8 @@
  */
 unsigned char *firmware_string = "Do you byte, when I knock?";
 
-extern char __bss;		//! the start of the uninitialized data segment
-extern char __bss_end;	//! the end of the uninitialized data segment
+extern char __bss;		//!< the start of the uninitialized data segment
+extern char __bss_end;	//!< the end of the uninitialized data segment
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -66,7 +66,7 @@ extern char __bss_end;	//! the end of the uninitialized data segment
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-extern int main(int argc, char **argv);     //! the user main()
+extern int main(int argc, char **argv);     //!< the user main()
 
 
 //! show ON string
