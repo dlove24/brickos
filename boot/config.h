@@ -131,8 +131,7 @@
 #endif
 
 #if defined(CONF_PROGRAM) && (!defined(CONF_TM) || !defined(CONF_LNP) || !defined(CONF_DKEY) || !defined(CONF_ASCII))
-#error "Program support needs task management, networking, key
-debouncing, and ASCII."
+#error "Program support needs task management, networking, key debouncing, and ASCII."
 #endif
 
 #if defined(CONF_DSENSOR_ROTATION) && !defined(CONF_DSENSOR)
