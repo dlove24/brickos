@@ -5,35 +5,60 @@
 ##
 
 # our target
-LIBTARGET=c
+LIBTARGET = c
+LIBRARY   = lib$(LIBTARGET).a
 
 # sources & objects
 #
 # Cygwin B-20 can't compile printf.c
 ifneq (,$(findstring $(OSTYPE),cygwin32))
-	SOURCES= memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c
+	SOURCES = memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c
 else
-	SOURCES= memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c printf.c
+	SOURCES = memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c printf.c
 endif
 
-OBJECTS=$(SOURCES:.c=.o)
+OBJECTS = $(SOURCES:.c=.o)
 
 
 ##
 ## no user servicable parts below
 ##
 
-all: lib$(LIBTARGET).a $(OBJECTS)
-	cp -f lib$(LIBTARGET).a ../
-	
+all: promote-stamp
+	@#  nothing more to be done here
+
+promote-stamp: $(LIBRARY)
+	cp -f $? ../
+	@touch $@
+
 include ../../Makefile.common
 
-lib$(LIBTARGET).a: $(OBJECTS)
-	rm -f lib$(LIBTARGET).a
-	$(AR) -sq lib$(LIBTARGET).a $(OBJECTS)
+$(LIBRARY): $(OBJECTS)
+	rm -f $@
+	$(AR) -sq $@ $(OBJECTS)
 
-depend:
-	makedepend $(SOURCES)
+.depend: $(SOURCES)
+	makedepend -f - $(SOURCES) >.depend
+
+depend: .depend
+	@#  nothing more to be done here
 
 clean:
-	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags *.a
+	rm -f *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags *.a
+
+realclean: clean
+	rm -f $(LIBRARY) ../$(LIBRARY) .depend
+	@rm -f install-stamp promote-stamp
+
+install: install-stamp
+	@#  nothing more to be done here
+
+install-stamp: $(LIBRARY)
+	@if [ ! -d ${pkglibdir} ]; then \
+		mkdir -p ${pkglibdir}; \
+	fi
+	cp -f $? ${pkglibdir}/$?
+	@touch $@
+
+# DO NOT DELETE
+

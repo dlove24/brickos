@@ -5,7 +5,8 @@
 ##
 
 # our target
-LIBTARGET=mint
+LIBTARGET = mint
+LIBRARY   = lib$(LIBTARGET).a
 
 # sources & objects
 SOURCES= cmpsi2.c   divhi3.c   modhi3.c   mulhi3.c   udivhi3.c  umodhi3.c \
@@ -18,17 +19,41 @@ OBJECTS=$(SOURCES:.c=.o)
 ## no user servicable parts below
 ##
 
-all: lib$(LIBTARGET).a $(OBJECTS)
-	cp -f lib$(LIBTARGET).a ../
+all: promote-stamp
+	@#  nothing more to be done here
+
+promote-stamp: $(LIBRARY)
+	cp -f $? ../
+	@touch $@
 
 include ../../Makefile.common
 
-lib$(LIBTARGET).a: $(OBJECTS)
-	rm -f lib$(LIBTARGET).a
-	$(AR) -sq lib$(LIBTARGET).a $(OBJECTS)
+$(LIBRARY): $(OBJECTS)
+	rm -f $@
+	$(AR) -sq $@ $(OBJECTS)
 
-depend:
-	makedepend $(SOURCES)
+.depend: $(SOURCES)
+	makedepend -f - $(SOURCES) >.depend
+
+depend: .depend
+	@#  nothing more to be done here
 
 clean:
-	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags *.a
+	rm -f *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags *.a
+
+realclean: clean
+	rm -f $(LIBRARY) ../$(LIBRARY) .depend
+	@rm -f install-stamp promote-stamp
+
+install: install-stamp
+	@#  nothing more to be done here
+
+install-stamp: $(LIBRARY)
+	@if [ ! -d ${pkglibdir} ]; then \
+		mkdir -p ${pkglibdir}; \
+	fi
+	cp -f $? ${pkglibdir}/$?
+	@touch $@
+
+# DO NOT DELETE
+

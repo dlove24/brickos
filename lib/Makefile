@@ -5,17 +5,9 @@
 ##
 
 SUBDIRS=c      mint      float   c++
-LIBS=libc.a libmint.a libfloat.a libc++.a
 
-all: $(LIBS)
+all clean realclean depend::
+	@for i in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$i $@ || exit 2; done
 
-clean:
-	for i in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$i clean ; done
-
-lib%.a: %
-	$(MAKE) $(MFLAGS) -C $* || exit 2
-
-depend:
-
-realclean: clean
-	rm -f $(LIBS)
+install:
+	@#  nothing to do here..., yet
