@@ -1,3 +1,9 @@
+2002-09-01  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Remove legOS from Makefiles and doxygen files
+  * Add Linux/Debian support to Makefile.common
+  * Prep as 1st brickos test release
+
 2002-08-28  Joseph Woolley <jawoolley@users.sourceforge.net>
   * Updated comments, code and data structures to refer to
     tasks instead of threads and processes.
@@ -22,13 +28,20 @@
     variable.
   * Modified tm_sleep_wakeup so tasks will interupt lower
     priority tasks when wakeup time is between time-slices.
-    
+
+2002-08-21  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Changes to loader utils to support new internal name
+  * Changes to .lx image to contain brickos vs. legos
+  * Makefile changes to generate brickos files vs. legos
+
 2002-08-21  Ted Hess <thess@users.sourceforge.net>
 
   * Allow setting LNP Host address at build or load-time
     - Specify LNP_HOSTADDR=n on make command-line (0 .. N)
     - Use dll option --node={hostaddress} or -n{hostaddress}
-    Note: CONF_LNP_HOSTADDR in config.h is now a small integer instead of shifted mask
+    Note: CONF_LNP_HOSTADDR in config.h is now a small integer 
+	instead of shifted mask
   * fix LEGOS_ROOT macro to work in sub-directory (makefile)
   * added $CDEFINES macro for compile-time defines (makefile)
   * minor fixes for various config option combinations to build properly
@@ -171,4 +184,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.4 2002/08/29 03:45:35 jawoolley Exp $
+$Id: ChangeLog,v 1.5 2002/09/02 17:38:45 stephmo Exp $

@@ -16,13 +16,13 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project. 
 
-PROJECT_NAME           = "legOS C++"
+PROJECT_NAME           = "brickOS C++"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.2.6.04
+PROJECT_NUMBER         = 0.2.6.07
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -104,7 +104,7 @@ FULL_PATH_NAMES        = YES
 # only done if one of the specified strings matches the left-hand part of 
 # the path. It is allowed to use relative paths in the argument list.
 
-STRIP_FROM_PATH        = /home/stephen/sourceforge/legos/legOS
+STRIP_FROM_PATH        = /home/stephen/sourceforge/brickos/brickos
 
 # The INTERNAL_DOCS tag determines if documentation 
 # that is typed after a \internal command is included. If the tag is set 
