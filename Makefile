@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.17 2002/10/23 06:42:49 stephmo Exp $
+###  $Id: Makefile,v 1.18 2002/10/23 08:00:02 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -196,9 +196,9 @@ tag::
 SOURCES = boot demo kernel lib util
 HEADERS = include 
 
-EXTRA_DIST = Doxy* doc h8300.rcx
+EXTRA_DIST = Doxy* doc h8300.rcx configure
 
-DIST_COMMON =  README ChangeLog CONTRIBUTORS LICENSE VERSION Makefile* NEWS TODO
+DIST_COMMON =  README ChangeLog CONTRIBUTORS LICENSE VERSION Makefile* NEWS TODO README.use
 
 
 #
