@@ -9,8 +9,13 @@
 
     \par Display positions
     Digit display positions are denumerated from right to left,
-    starting with 0 for the digit right to the running man. Digit 5
-    is only partially present on the RCXs display.
+    starting with 0 for the digit to the right of the running man. 
+	
+	\par
+    LCD Postions:  5 4 3 2 1 <man> 0
+
+	\par
+    NOTE: Position 5 is only partially present on the LCD display.
 
     \par Native segment masks
     In these bitmasks, bit 0 toggles the middle segment. Bit 1 toggles
@@ -59,17 +64,16 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-//
-// hex display codes
-//
+//! Table: list of native patterns, one for each HEX character
+/*! \index HEX char value (0-9, a-f)
+*/
 extern const char hex_display_codes[];
 
 #ifdef CONF_ASCII
 
-//
-// ascii display codes
-// only lower 128 bit, please!
-//
+//! Table: list of native patterns, one for each ASCII character
+/*! \index ASCII char value (least significant 7 bits ONLY)
+*/
 extern const char ascii_display_codes[];
 
 #endif // CONF_ASCII
@@ -82,10 +86,10 @@ extern const char ascii_display_codes[];
 
 #endif // CONF_CONIO
 
-//
-// delay by approximately d ms
-//
-extern void delay(unsigned d);
+//! delay approximately ms mSec
+/*! \todo why is delay() in this file?
+*/
+extern void delay(unsigned ms);
 
 #ifdef CONF_CONIO
 
@@ -95,91 +99,123 @@ extern void delay(unsigned d);
 // encoding: middle=1, topr=2, top=4, ... (counterclockwise)
 // dot not included because not reliably present.
 //
+//! write bit-pattern for segments at position 0 of LCD
 extern void cputc_native_0(char mask);
+//! write bit-pattern for segments at position 1 of LCD
 extern void cputc_native_1(char mask);
+//! write bit-pattern for segments at position 2 of LCD
 extern void cputc_native_2(char mask);
+//! write bit-pattern for segments at position 3 of LCD
 extern void cputc_native_3(char mask);
+//! write bit-pattern for segments at position 4 of LCD
 extern void cputc_native_4(char mask);
+//! write bit-pattern for segments at position 5 of LCD
 extern void cputc_native_5(char mask);
 
-// a dispatcher for the fixed position versions
+//! Set/Clear individual segments at specified position of LCD
+/*! (this is essentially a dispatcher for cputc_native_[0-5] functions)
+ *  \param mask the segment pattern to be displayed
+ *  \param pos the location at which to display the segment pattern
+ *  \return Nothing
+ */
 extern void cputc_native(char mask, int pos);
 
+//! write HEX digit to position 0 of LCD
 extern inline void cputc_hex_0(unsigned nibble)
 {
   cputc_native_0(hex_display_codes[(nibble) & 0x0f]);
 }
+//! write HEX digit to position 1 of LCD
 extern inline void cputc_hex_1(unsigned nibble)
 {
   cputc_native_1(hex_display_codes[(nibble) & 0x0f]);
 }
+//! write HEX digit to position 2 of LCD
 extern inline void cputc_hex_2(unsigned nibble)
 {
   cputc_native_2(hex_display_codes[(nibble) & 0x0f]);
 }
+//! write HEX digit to position 3 of LCD
 extern inline void cputc_hex_3(unsigned nibble)
 {
   cputc_native_3(hex_display_codes[(nibble) & 0x0f]);
 }
+//! write HEX digit to position 4 of LCD
 extern inline void cputc_hex_4(unsigned nibble)
 {
   cputc_native_4(hex_display_codes[(nibble) & 0x0f]);
 }
+//! write HEX digit to position 5 of LCD
 extern inline void cputc_hex_5(unsigned nibble)
 {
   cputc_native_5(hex_display_codes[(nibble) & 0x0f]);
 }
 
-//! a dispatcher for the fixed position versions
+//! Write HEX digit to specified position of LCD
+/*! (this is essentially a dispatcher for cputc_hex_[0-5] functions)
+ *  \param c the HEX digit to be displayed
+ *  \param pos the location at which to display the HEX digit
+ *  \return Nothing
+ */
 extern inline void cputc_hex(char c, int pos)
 {
   cputc_native(hex_display_codes[(c) & 0x7f], pos);
 }
 
-//! display a hexword
-//
+//! Write a HEX word to LCD
 extern void cputw(unsigned word);
 
 #ifdef CONF_ASCII
+//! write ASCII char to position 0 of LCD
 extern inline void cputc_0(unsigned c)
 {
   cputc_native_0(ascii_display_codes[(c) & 0x7f]);
 }
+//! write ASCII char to position 1 of LCD
 extern inline void cputc_1(unsigned c)
 {
   cputc_native_1(ascii_display_codes[(c) & 0x7f]);
 }
+//! write ASCII char to position 2 of LCD
 extern inline void cputc_2(unsigned c)
 {
   cputc_native_2(ascii_display_codes[(c) & 0x7f]);
 }
+//! write ASCII char to position 3 of LCD
 extern inline void cputc_3(unsigned c)
 {
   cputc_native_3(ascii_display_codes[(c) & 0x7f]);
 }
+//! write ASCII char to position 4 of LCD
 extern inline void cputc_4(unsigned c)
 {
   cputc_native_4(ascii_display_codes[(c) & 0x7f]);
 }
+//! write ASCII char to position 5 of LCD
 extern inline void cputc_5(unsigned c)
 {
   cputc_native_5(ascii_display_codes[(c) & 0x7f]);
 }
 
-//! display ascii character c at display position pos
-//
+//! Write ASCII character to specified position of LCD
+/*! (this is essentially a dispatcher for cputc_[0-5] functions)
+ *  \param c the ASCII char to be displayed
+ *  \param pos the location at which to display the ASCII char
+ *  \return Nothing
+ */
 extern inline void cputc(char c, int pos)
 {
   cputc_native(ascii_display_codes[(c) & 0x7f], pos);
 }
 
 //
-// display a zero terminated string s
-// max first 5 characters
+//! Write string s to LCD (Only first 5 chars)
 //
 extern void cputs(char *s);
 
-//! clear user portion of screen
+//
+//! clear user portion of LCD
+//
 extern void cls();
 
 #else

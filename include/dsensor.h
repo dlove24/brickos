@@ -172,7 +172,9 @@ extern inline void ds_passive(volatile unsigned *sensor)
 
 #ifdef CONF_DSENSOR_ROTATION
 //! set rotation to an absolute value
-/*! \param  sensor: &SENSOR_1,&SENSOR_2,&SENSOR_3
+/*! \param sensor one of &SENSOR_1, &SENSOR_2, or &SENSOR_3
+    \param  pos the current rotational postion (typically use 0 here)
+	\return Nothing
 
     The axis should be inert during the function call.
 */
