@@ -1,3 +1,7 @@
+2004-02-15  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * fixed lib/float/divsf3.s (Univ. submittal, see source file)
+
 2004-01-25  Henner Zeller <hzeller@users.sourceforge.net>
 
   * add new form of new/delete operators (gcc-3.x caused this).
@@ -368,4 +372,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.37 2004/02/14 04:48:16 stephmo Exp $
+$Id: ChangeLog,v 1.38 2004/02/16 03:45:29 stephmo Exp $

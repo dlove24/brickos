@@ -1,7 +1,7 @@
 brickOS contributors
 --------------------
 
-V{next-release}
+V{next-release}  we're building this list as we go...
 _________
 
 Bernardo Dal Seno (dibbe@users.sourceforge.net)
@@ -34,6 +34,11 @@ Stephen M Moraco (stephen@debian.org)
   document builds.
   Upgrade inline documentation in support of our
   always publishing brickOS API docs to our website.
+
+Evgeni Krimer <krimer at tx.technion.ac.il>
+Roman Barsky <barsky at cs.technion.ac.il>
+(while at Israel Institute of Technology Computer Science Department)
+  Fixes to lib/float/divsf3: Floating point divide single precision routines
 
 and many people testing and submitting fix requests including (but
 not limited to):
