@@ -1,5 +1,6 @@
 2004-02-16  Stephen M Moraco <stephmo@users.sourceforge.net>
 
+  * Added new index.html page to installed docs
   * Fixed generation of installed Makefile.common had
     to adjust filter removing all:: target so does not
     check for ensure configured (add of depend to all
@@ -379,4 +380,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.39 2004/02/16 22:15:12 stephmo Exp $
+$Id: ChangeLog,v 1.40 2004/02/17 03:23:59 stephmo Exp $
