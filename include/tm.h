@@ -33,8 +33,6 @@
 extern "C" {
 #endif // __cplusplus
 
-#ifdef CONF_TM
-
 #include <mem.h>
 
 ///////////////////////////////////////////////////////////////////////
@@ -132,6 +130,7 @@ typedef struct _tdata_t tdata_t;
  */
 typedef size_t tid_t;
 
+#if defined(CONF_TM)
 //! test to see if task has been asked to shutdown
 /*! Check task shutdown flag.  If set, the task should shutdown
  *  as soon as possible.  If clear, continue running.
