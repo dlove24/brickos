@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.9 2002/10/15 22:03:45 stephmo Exp $
+###  $Id: Makefile,v 1.10 2002/10/17 03:47:04 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -38,15 +38,52 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 			   config.h $(KERNEL_TARGETS) ../Makefile.user ../Makefile.common
 	cp -r ../include/* ${pkgincludedir}
 	@find ${pkgincludedir} -type d -name 'CVS' -depth -exec rm -rf {} \;
-	cp -f ../demo/Makefile ${pkgexampledir}
 	cp -r ../demo ${pkgexampledir}
+	@cat ../demo/Makefile | sed -e 's/\.\.\/Makefile/$$\(LIBDIR\)\/Makefile/g' | \
+	                       sed -e 's/\.\.\/include/$$\(INCDIR\)/g' | \
+	                       sed -e 's:KERNEL\=\.\..boot.brickOS:LIBDIR \= ${pkglibdir}:' | \
+						   sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../demo/Makefile.dist
+	@cat ../demo/c++/Makefile | sed -e 's/..ROOTDIR.Makefile/$$\(LIBDIR\)\/Makefile/g' | \
+	                            sed -e 's/..ROOTDIR.include/$$\(INCDIR\)/g' | \
+	                            sed -e 's:KERNEL \= .*:LIBDIR \= ${pkglibdir}:' | \
+						        sed -e 's/..ROOTDIR.util/(LIBDIR)/g' >../demo/c++/Makefile.dist
+	cp -f ../demo/Makefile.dist ${pkgexampledir}/demo/Makefile
+	cp -f ../demo/Makefile.dist ${pkgexampledir}/Makefile
+	cp -f ../demo/c++/Makefile.dist ${pkgexampledir}/demo/c++/Makefile
+	@find ${pkgexampledir} -type f -name '*.dist' -exec rm -f {} \;
 	@find ${pkgexampledir} -type d -name 'CVS' -depth -exec rm -rf {} \;
 	@find ${pkgexampledir} -type f -name '*.o' -depth -exec rm -f {} \;
 	@find ${pkgexampledir} -type f -name '*.ref' -depth -exec rm -f {} \;
 	cp -f $(KERNEL_TARGETS) ${pkglibdir}
-	cp -f config.h ${pkglibdir}
-	cp -f ../Makefile.user ../Makefile.common ${pkglibdir}
-	touch $@
+	@echo "/* WARNING: INSTALLED config.h: do not change this file without re-building brickOS kernel! */" >config.h.dist
+	@cat config.h >>config.h.dist
+	cp -f config.h.dist ${pkgincludedir}/config.h
+	@cat ../Makefile.common | sed -e 's/.BRICKOS_ROOT.lib/(LIBDIR)/g' | \
+	                         sed -e 's/.BRICKOS_ROOT.include/(INCDIR)/g' | \
+							 sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../Makefile.common.dist
+	@cat ../Makefile.user | sed -e 's/.BRICKOS_ROOT.lib/(LIBDIR)/g' | \
+                             sed -e 's/.BRICKOS_ROOT.include/(INCDIR)/g' | \
+                             sed -e 's/.BRICKOS_ROOT.boot/(INCDIR)/g' | \
+							 sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../Makefile.user.dist
+	cp -f ../Makefile.user.dist ${pkglibdir}/Makefile.user
+	@echo "" >>../Makefile.common.dist
+	@echo "INCDIR = ${pkgincludedir}" >>../Makefile.common.dist
+	@echo "BINDIR = ${bindir}" >>../Makefile.common.dist
+	@echo "LIBDIR = ${pkglibdir}" >>../Makefile.common.dist
+	@echo "" >>../Makefile.common.dist
+	@echo "### --------------------------------------------------------------------------" >>../Makefile.common.dist
+	@echo "###                         End of FILE: Makefile.common" >>../Makefile.common.dist
+	@echo "### ==========================================================================" >>../Makefile.common.dist
+	cp -f ../Makefile.common.dist ${pkglibdir}/Makefile.common
+	@find ${pkgexampledir} -type f -exec chmod 444 {} \;
+	@touch $@
+
+clean::
+	rm -f ../Makefile.user.dist ../Makefile.common.dist ../demo/Makefile.dist config.h.dist
+
+
+#!/bin/bash -p
+
 
 ${pkgincludedir} ${pkgexampledir} ${pkglibdir}:
 	mkdir -p $@
@@ -57,7 +94,7 @@ uninstall:
 tag:
 	@# nothing to do here but do it silently
 
-clean:
+clean::
 	rm -f *.srec *.o *.lds *.dis *.coff *.map *.dis2
 
 realclean:
