@@ -1,0 +1,389 @@
+<!DOCTYPE Article PUBLIC "-//OASIS//DTD DocBook V4.1//EN"[
+]>
+
+<article id="top">
+   <articleinfo>
+    <title>LegOS 0.2.6 -
+    Instructions for installing on Win9x/NT/2000/XP</title>
+    <author>
+		<firstname>Paolo</firstname>
+		<surname>Masetti</surname>
+    </author>
+      <releaseinfo>
+    Version 1.1, 19 Apr 2002
+      </releaseinfo>
+
+      <copyright>
+    <year>2001</year><holder>Paolo Masetti.</holder>
+      </copyright>
+
+      <revhistory>
+          <revision>
+              <revnumber>1.1</revnumber>
+              <date>19 Apr 2002</date>
+              <authorinitials>smm</authorinitials>
+              <revremark>Update for legOS 0.2.6</revremark>
+          </revision>
+          <revision>
+              <revnumber>1.0</revnumber>
+              <date>13 May 2001</date>
+              <authorinitials>pm</authorinitials>
+              <revremark>Initial Release after legOS 0.2.5</revremark>
+          </revision>
+      </revhistory>
+
+    </articleinfo>
+
+	   <!--ackno><hrm...  didn't work-->
+	     <para>
+    		 This document was originally an adaptation from the original version written by
+    		 <ulink url="mailto:peter.vanderbeken@pandora.be">
+    		   <citetitle>Peter Van der Beken</citetitle>
+    		 </ulink>.
+    		 Many thanks to
+    		 <ulink url="mailto:luge@users.sourceforge.net">
+    		   <citetitle>Luis Villa</citetitle>
+    		 </ulink>
+    		 for his HOW-TO for Linux and his
+    		 effort in documenting legOS.
+	     </para>
+	   <!--/ackno><-->
+
+	     <para>
+    		 If you have problems related to these instruction, you can write to
+    		 <ulink url="mailto:paolom@users.sourceforge.net">
+    		   <citetitle>Paolo Masetti</citetitle>
+    		 </ulink>.
+	     </para>
+
+	   <!--warning><hrm... image url in HTML output is wrong!-->
+	   <caution>
+	     <para>
+    		 These instruction works for me (I'm using NT Win2k Pro SP1). I can't be sure
+    		 they'll do for you but I'm quite sure. They should get legOS working on your own
+    		 PC, but they should be used at your own risk as with any other program
+    		 installation, you may crash your computer, lose files, and generally make a mess
+    		 of things. So, neither he nor I am responsible for what happens. :-)
+	     </para>
+	   </caution>
+	   <!--/warning><-->
+
+	     <para>
+    		 These instruction give you a fully functional legOS 0.2.6 (probably a newer
+    		 version too). You will be able to recompile the entire kernel image, the tools
+    		 (dll, firmdl3 & so on). You will have to download a lot of MB. If you do not
+    		 like that, please use
+    		 <ulink url="http://legos.sourceforge.net/files/windows/djgpp/WinlegOS.exe">
+    		 <citetitle>WinlegOS</citetitle>
+    		 </ulink>
+    		 that is a good porting of the minimal requirement
+    		 to compile and upload .lx files with Windows.
+	     </para>
+
+	<sect1>
+		<title>Step by step instructions:</title>
+	  <sect2>
+		<title>1. Install Cygwin</title>
+
+		 <itemizedlist>
+
+		   <listitem>
+	         <para>
+    		 Install Cygwin 1.3.x or newer version (1.3.10 as of this writing) from Cygwin Site:
+			 <ulink url="http://www.cygwin.com/">
+			 <citetitle>http://www.cygwin.com/</citetitle>
+			 </ulink>.
+    	     </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+    		 You can install it on-line running the setup program directly from this url:
+			 <ulink url="http://www.cygwin.com/setup.exe">
+			 <citetitle>Install Cygwin now</citetitle>
+			 </ulink>. Save the file in a temporary  directory and run it.
+    	     </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+    		 You can download all the files for a later install, or install directly from
+			 Internet. Choice the best for you:
+		 <mediaobject>
+		   <imageobject>
+		     <imagedata fileref="images/Cygwin1.jpg">
+		   </imageobject>
+		   <textobject>
+		     <phrase>
+			  IMG: Cygwin Setup Dialog: choose type of install.
+		     </phrase>
+		   </textobject>
+		 </mediaobject>
+
+    	     </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+			 Install in the directory that you prefer. Do not worry about it, this version
+			   of cygwin will mount directories as *nix later. I have done these choices:
+		 <mediaobject>
+		   <imageobject>
+		     <imagedata fileref="images/Cygwin2.jpg">
+		   </imageobject>
+		   <textobject>
+		     <phrase>
+			  IMG: Cygwin Setup Dialog: select install options.
+		     </phrase>
+		   </textobject>
+		 </mediaobject>
+
+    	     </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+			 Last setup I've tried let you choose which modules you need to download and
+			   setup. Here is a minimal list (but probably some modules could be removed too)
+			     that was tested to work:
+				<programlisting>
+ash
+autoconf
+automake
+bash
+binutils
+cpio
+cygwin
+diff
+file
+fileutils
+findutils
+flex
+gcc
+grep
+less
+login
+make
+mingw
+patch
+sed
+shellutils
+tar
+textutils
+time
+w32api
+				</programlisting>
+    	     </para>
+		 <mediaobject>
+		   <imageobject>
+		     <imagedata fileref="images/Cygwin3.jpg">
+		   </imageobject>
+		   <textobject>
+		     <phrase>
+			  IMG: Cygwin Setup Dialog: install progress.
+		     </phrase>
+		   </textobject>
+		 </mediaobject>
+		   </listitem>
+		 </itemizedlist>
+
+	  <para> <!-- blank line --> </para>
+	  </sect2>
+
+	  <sect2>
+		<title>2. Build the Hitachi-H8 cross-compiler</title>
+		 <itemizedlist>
+
+		   <listitem>
+	         <para>
+		       Open a cygwin bash shell window (you can open it using
+			   <menuchoice><guimenu>Start</guimenu><guisubmenu>Programs</guisubmenu><guisubmenu>Cygnus
+			     Solution</guisubmenu><guimenuitem>Cygwin Bash Shell</guimenuitem>
+				 </menuchoice>)
+	         </para>
+		   </listitem>
+		   <listitem>
+	         <para>
+		     Make a new directory:
+			 <programlisting>
+$ mkdir /build
+			 </programlisting>
+		     where you will download the
+		     next files: <filename>c:\cygwin\build</filename>
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		     Download gcc 2.95.2 sources using this link ->
+			 <ulink url="ftp://ftp.gnu.org/pub/gnu/gcc/gcc-2.95.2.tar.gz">
+			 <citetitle>gcc-2.95.2.tar.gz</citetitle>
+			 </ulink> and save in
+			   <filename>c:\cygwin\build</filename>
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		     Download binutils 2.10.1 sources using this link ->
+			 <ulink url="ftp://ftp.gnu.org/pub/gnu/binutils/binutils-2.10.1.tar.gz">
+			 <citetitle>binutils-2.10.1.tar.gz</citetitle>
+			 </ulink> and save in
+			   <filename>c:\cygwin\build</filename>
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		     Download the building scripts from
+			 <ulink url="download/legos-buildgcc.zip">
+			 <citetitle>here (legos-buildgcc.zip)</citetitle>
+			 </ulink> and put it in the same directory as above.  Unzip them to
+			   produce a shell script (buildgcc.sh) and two diff files.
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		     Build the cross compiler:
+			 <programlisting>
+$ cd /build
+$ ./buildgcc.sh
+			 </programlisting>
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+			 Ignore the warnings in compile process. It should work.
+	         </para>
+		   </listitem>
+
+		 </itemizedlist>
+	  <para> <!-- blank line --> </para>
+	  </sect2>
+
+	  <sect2>
+		<title>3. Install the legOS files</title>
+		 <itemizedlist>
+
+		   <listitem>
+	         <para>
+		       Get
+			   <ulink url="http://legos.sourceforge.net/files/common/legos-0.2.6.tar.gz">
+			   <citetitle>legos-0.2.6.tar.gz</citetitle>
+			   </ulink>. Drag a copy to <filename>C:\cygwin</filename>.
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		       Type:
+			 <programlisting>
+$ cd /
+$ tar xvfz legos-0.2.6.tar.gz
+			 </programlisting>
+	         </para>
+		   </listitem>
+
+		   <listitem>
+	         <para>
+		       Lots of files will stream by as they install into their 
+			   directories. This will create a legos-0.2.6 directory.
+	         </para>
+		   </listitem>
+
+		 </itemizedlist>
+
+	  <para> <!-- blank line --> </para>
+	  </sect2>
+
+	  <sect2>
+		<title>4. TRY IT!!!</title>
+		 <itemizedlist>
+
+		   <listitem>
+	         <para>
+		       Type:
+			 <programlisting>
+$ cd /legos-0.2.6
+$ make realclean
+$ make depend
+$ make
+$ cd util
+$ make strip
+			 </programlisting>
+			 </para><para>Now, Power on RCX.</para>
+			 <para>Put IR tower on COM1</para><para>
+			 <programlisting>
+$ ./firmdl3 ../boot/legos.srec
+$ ./dll ../demo/helloworld.lx
+			 </programlisting>
+			 Press RUN on RCX and enjoy!
+	         </para>
+		   </listitem>
+
+		 </itemizedlist>
+
+	       <para>
+			If you have the IR tower connected to a different com port you can change the default
+			with the instruction: "export RCXTTY=COMx".  NOTE: if you have a USB tower this
+			is "export RCXTTY=USB"
+	       </para>
+
+	  <para> <!-- blank line --> </para>
+	  </sect2>
+
+	<sect2>
+	  <title>Final Notes</title>
+	  <para>
+          If it doesn't work, consult
+    	  <ulink url="http://www.lugnet.com/robotics/rcx/legos/">
+    	  <citetitle>lugnet.robotics.rcx.legos</citetitle>
+    	  </ulink> on
+    	  <ulink url="http://www.lugnet.com">
+    	  <citetitle>lugnet.com</citetitle>
+    	  </ulink>.
+	  </para>
+
+	  <para>
+    	  Every command indicated is executed from the Cygwin environment. In the examples,
+    	  the "$" is the prompt cygwin gives to you.
+	  </para>
+
+	  <para>
+    	  You can use Notetab Light to edit files instead of WordPad or VI.
+    	  It's available from:
+    	  <ulink url="http://www.notetab.com/">
+    	  <citetitle>http://www.notetab.com</citetitle>
+    	  </ulink>. It preserves the unix line-endings, and it can
+    	  change between unix and dos line-endings.
+	  </para>
+	  <para> <!-- blank line --> </para>
+	</sect2>
+
+	<sect2>
+	  <title></title>
+	  <para>
+    	  Last update:
+    	  <ulink url="mailto:stephen@debian.org">
+    	  <citetitle>Stephen Moraco</citetitle>
+    	  </ulink> 19/04/2002.
+	  </para>
+	  <para>
+    	  Initial Release:
+    	  <ulink url="mailto:paolom@users.sourceforge.net">
+    	  <citetitle>Paolo Masetti</citetitle>
+    	  </ulink> 13/05/2001.
+	  </para>
+	  <para>
+    	  SGML Source for document created for Paolo by
+    	  <ulink url="mailto:stephen@debian.org">
+    	  <citetitle>Stephen Moraco</citetitle>
+    	  </ulink> 19/07/2001.
+	  </para>
+	  <para> <!-- blank line --> </para>
+	</sect2>
+  </sect1>
+
+</article>

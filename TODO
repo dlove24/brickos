@@ -1,0 +1,27 @@
+- change our name due to LEGO Company request
+- improve sensor detection.response times (see: priority patch, dat4 project)
+- add assignment of HOSTID for LNP at download time (firmdl3)
+- timeout handling needs improvement. if the RCX transmits data, the IR
+  tower will shutdown more quickly.
+- Add support for remote control. A patch is already available for
+  this- just need to test and document it.
+- Fix DJGPP support. Should mainly be a matter of compiling new tools.
+- maybe switch loader.c from getopt_long (GNU only) to getopt (POSIX
+  compliant) for easier porting.
+
+Many, many ideas from the mailing list, mainly from Eddie & Paolo:
+- Redo the tool chain. Eddie has volunteered.
+- Redo sensor handling code. Eddie and Paolo will take care of this.
+- Implement event queues?
+- Implement a timer function?
+- Just rewrite battery task as a real task (systimer is oversized)
+- Introduce a new Makefile.Config with all Makefiles definitio and
+  test for presence of Perl during make process.
+- Debug functions via LNP. Paolo already have a prototype.
+- Remote control of RCX via LNP. Maybe better in a userspace task.
+
+Wishlist:
+- Standardize all platforms on gcc 2.95 for compatibility.
+- PHP-based web compiler hosted at sourceforge.
+- Finally, the PHP-based documentation commentary system I (Luis) keep
+  promising.

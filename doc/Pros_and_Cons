@@ -1,0 +1,64 @@
+-- legOS - the independent LEGO Mindstorms OS
+-- doc/Pros_and_Cons - why use legOS?
+-- (c) 1998 by Markus L. Noga <markus@noga.de>    
+------------------------------------------------------------------------
+
+legOS cons:
+
+ - System is unstable - this is beta.
+ - gcc and binutils required.
+ - C programming knowledge required.
+ - No graphical interface on the host.
+ - No spirit.ocx support. 
+ 
+But spirit.ocx is Windows only, anyway, isn't it? What use would an OS
+for your RCX be if you didn't even have one on your workstation? 
+
+
+legOS pros:
+
+ - User tasks are executed as native code, not interpreted.
+ - More memory. Forget 32 variables. Think 32k.
+ - Full-featured language. Use the same gcc that compiles Linux.
+ - Priority-based preemptive multitasking.
+ - Real process synchronization with POSIX semaphores.
+ - Fine-grained hardware control:
+   * supports CPU power saving.
+   * complete LCD control.
+   * raw mode IR.
+
+Battling Creatures? You can force opponents to back up in fear. With
+"Powerdown" or "Erase firmware", a legOS machine wins even with three
+motors tied to its back. 
+
+
+As Christmas heralds some spare time, I have already sketched out
+several possible legOS extensions.
+
+ - C++ support (possibly even STL)
+ - IR networking for multiple PCs and RCXs. Forget 1-byte messages.
+   * UDP networking.
+   * host programming library.
+   * 4x faster task downloads.
+ - ECM against standard RCX communication.
+
+
+In short, legOS isn't for you if
+
+ - you are a beginner or
+ - you prefer to control the RCX from your PC.
+
+legOS is for you if
+
+ - you want complete control or
+ - you write software that runs on the RCX
+   (for example, neural networks trained by genetic algorithms).
+
+And, of cause, if you like to tinker with operating systems.
+Contributions, bugfixes and suggestions are always welcome.
+
+-- 
+Markus L. Noga			markus@noga.de
+INRIA Rhône-Alpes		http://www.inrialpes.fr/
+IPR Universität Karlsruhe   	http://wwwipr.ira.uka.de/
+

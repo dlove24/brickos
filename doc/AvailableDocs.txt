@@ -1,0 +1,15 @@
+There are a number of good docs available on the web but that are too large to include in the base tarball. A brief list:
+
+The HOWTO: the basic intro to legOS.
+http://legOS.sourceforge.net/HOWTO/
+
+API documentation:
+http://legOS.sourceforge.net/docs/CAPI/
+
+C++ API documentation:
+http://legOS.sourceforge.net/docs/CPPAPI/
+
+kernel docs: intro to the kernel, covering how it works.
+http://legOS.sourceforge.net/docs/kerneldoc/
+
+

@@ -1,0 +1,95 @@
+2002-04-19  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Version number bump to 0.2.6 - Official Release
+	* Moved some ChangeLog content to NEWS, updates in NEWS
+	* Updated CONTRIBUTERS
+	* Removed some old text from TODO, added new
+
+2002-04-17  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Version number bump to 0.2.5.3 - next release candidate
+	* README: added version number to directory name in instru.
+	* Makefile:  Added cygwin on WinXP detection (in util dir)
+	* Makefile:  added remove of dll-src/.depend on clean
+
+2002-04-17	Paolo Masetti <paolom@users.sourceforge.net>
+
+	* Makefile:  Added cygwin on WinXP detection
+	* lnp.c:	 fixed a problem vs lnp.h
+	* dsensor.c: fixed a badly formatted comment/syntax error
+
+2002-04-11  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Makefile: Added TODO to list of files in distribution
+	  (missed it on first attempt)
+	* Add HOWTO source to complete addition of docs for this release
+	* Version number bump to 0.2.5.2 - next release candidate
+
+2002-04-08	Paolo Masetti <paolom@users.sourceforge.net>
+
+	* rcxtty.c: Parity patch by Michael Obenland <obenland@t-online.de>
+
+2002-04-04  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Makefile.Common: Added HMSTOOLDIR so Debian GNU/Linux users
+	   can build the code with:  export HMSTOOLDIR=/usr;make -e
+	* TODO, NEWS, README, VERSION  updating in prep for release
+
+2002-04-01  Paolo Masetti <paolom@users.sourceforge.net>
+
+	* Makefile.Common: Using $(shell uname) if $OSTYPE is undefined
+	* Cygwin B-20 / Cygwin 1.x: Added support for both environment
+	   with some limitation for B-20 (printf.c)
+	* utils: Changed Makefile avoiding duplicate generation of
+	   executables
+	* firmdl3 / dll: Added USB support (WIN32)
+		Patches by Hary D. Mahesan 09/27/01
+		<hmahesan@hotmail.com>
+		<hdmahesa@engmail.uwaterloo.ca>
+	    Edited & CVS merged by paolom
+
+2002-03-30  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* THIS IS A COLLECTION OF ALL CHANGES IN CVS since 0.2.5
+	   it therefore does not reflect who did the work and when
+	   in the future we will -Stephen
+	* Fix BUG #228723: makelx out-of-bounds check bad on c++
+	* Fix BUG #226789: Remove -u use to fix build on BSD 
+	* Added Manpage source files dll.1 & firmdl3.1
+	* Add C++ TemperatureSensor Class
+	* Add 3 new C++ demos: 
+	   rotation.velocity.Sensor.C
+	   temperatureSensor.C
+	   touch.pressed.Sensor.C
+	* dll: add default of /dev/ttyb for Sun (serial port B)
+	* dll: added -d switch to display sizes during run
+	* util/dll-src/Makefile:  remove need for symlink in tarball
+	   (symlinks not supported in Packaging for Debian)
+	   also simplify compile rules
+	* Add cmpsi2.c/ucmpsi2.c to lib/mint/Makefile, version the new files
+	* Add printf.c to lib/c/Makefile, version printf.c source file
+	* In kernel/program.c: Added free memory and batter life display
+	   Press "view" repeatedly while no programs are running to see
+	* Add NUM_SYSTEM_THREADS def & mod files to use DEF vs. literal
+	* In sys/mm.c/h: add int mm_free_mem(void); function
+	* TouchSensor class: added pressed() member
+	* RotationSensor.H: added CONF_DSENSOR_VELOCITY wraps
+	* C++: motorPair.C/H methods renamed to lower case, demos adjusted
+	* C++: motor.C/H methods renamed to lower case, demos adjusted
+	* Minor changes to internal comments containing source file name
+	* .PHONEY and c++ make targets added to demo/Makefile
+	* .PHONEY and c++ make targets added to Makefile
+	* README was updated to 0.2.5 after release (oops)
+	* Added Cygwin 1.1 make target support
+	* DOXYGEN: Added API generation support using Doxygen
+	   Added doxygen API docs build/clean make-targets to Makefile
+	   Updated Doxygen files to work with newer Doxygen version
+	   Revise insternal comments for c/C++ classes so API reads better
+	   Add DOXYGEN_SHOULD_SKIP_INTERNALS flags to misc source
+	   Add C and C++ Doxygen control files
+
+2002-03-29  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* creating this file after 0.2.5 release
+--
+$Id: ChangeLog,v 1.1 2002/08/20 03:04:27 stephmo Exp $

@@ -1,0 +1,78 @@
+/*! \file   include/c++/LightSensor.H c++/LightSensor.H
+    \brief  C++ LightSensor Class Interface
+    \author Pat Welch (legOS@mousebrains.com)  
+		 
+    Defines interface to LightSensors plugged into the RCX
+*/
+//
+// The contents of this file are subject to the Mozilla Public License
+// Version 1.0 (the "License"); you may not use this file except in
+// compliance with the License. You may obtain a copy of the License
+// at http://www.mozilla.org/MPL/
+// 
+// Software distributed under the License is distributed on an "AS IS"
+// basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+// the License for the specific language governing rights and
+// limitations under the License.
+//
+// This software was developed as part of the legOS project.
+//
+// Contributor: Pat Welch (legOS@mousebrains.com)
+
+#ifndef _LightSensor_H_
+#define _LightSensor_H_
+
+#include <c++/Sensor.H>
+
+/**
+ * @class LightSensor LightSensor.H <c++/LightSensor.H>
+ * The Light Sensor Class - using a lightSensor in active mode
+ *
+ * At construction time you specify the RCX connector pad to which 
+ * the lightSensor is attached.
+ *
+ * It provides two methods to read the value of the 
+ * sensor [@ref #get, @ref #sample]
+ *
+ * @note access methods from the base class @ref Sensor 
+ * if you desire access to the raw sensor values or to the power control 
+ * methods.
+ *
+ * @short Light Sensor interface (active mode)
+ * @see Sensor, RotationSensor, TouchSensor
+ */
+class LightSensor : public Sensor {
+public:
+  /**
+   * Instance an active light sensor at {port}
+   * @param port The connector pad (1, 2 or 3) to which the light sensor is 
+   * attached
+   */
+  LightSensor(const Sensor::Port port) : Sensor(port, true) {}
+  /**
+   * Get the current lightSensor value.
+   *
+   * NOTE: ultimately, this will be scaled to fall between 0 and 100.
+   * @return unsigned int - the current light sensor reading
+   * @see #sample
+   */
+  unsigned int get() const {return LIGHT(sensor);}
+  /**
+   * Get the average of {size} samples, waiting {wait} mSec between each sample
+   * @param size - Number of samples to average (default = 10 samples)
+   * @param wait - time (in mS) to wait between samples (default = 2mS)
+   * @return unsigned int - The average of the sampled values
+   * @see #get
+   */
+  unsigned int sample(unsigned int size = 10, int wait = 2) const {
+    if (size == 0) size = 1;
+    unsigned int sum(get());
+    for (unsigned int i = 1; i < size; ++i) {
+      sum += get();
+      delay(wait);
+    }
+    return sum / size;
+  }
+};
+
+#endif // _LightSensor_H_

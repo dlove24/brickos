@@ -1,0 +1,119 @@
+Libfloat.a (Dec 16 2000 release)
+Written by Kekoa Proudfoot
+Released May 27, 1999
+
+
+INTRODUCTION
+
+Libfloat.a provides single precision floating point support for H8
+processors.
+
+Libfloat.a is a part of Librcx, which is distributed under the Mozilla
+Public License.  Please see the file ../LICENSE for details.
+
+Routines include:
+
+   addsf3:
+       single precision floating point add
+
+   subsf3:
+       single precision floating point subtract
+
+   mulsf3:
+       single precision floating point multiply
+
+   divsf3:
+       single precision floating point divide
+
+   negsf2:
+       single precision floating point negate
+
+   cmpsf2, eqsf2, nesf2, ltsf2, lesf2, gtsf2, gesf2:
+       single precision floating point compare, all returning -1, 0, or 1
+       comparisons differ in what they return if input is NaN (not a number)
+
+   fixsfsi:
+       conversion from single precision floating point to signed long integer
+
+   fixunssfsi:
+       conversion from single precision floating point to unsigned long integer
+
+   floatsisf:
+       conversion from signed long integer to single precision floating point
+
+   ufloatsisf:
+       conversion from unsigned long integer to single precision floating point
+
+
+USAGE NOTES
+
+GCC will use all of these functions except ufloatsisf and perhaps also
+cmpsf2.  The ufloatsisf routine is specifically intended to be used to
+override GCC's built-in support for converting unsigned long integers to
+floating point.  GCC performs each such conversion as an invocation of
+floatsisf wrapped in additional support code, and because the support code
+is lengthy, each conversion requires a large amount of code space.
+Alternatively, an invocation of the ufloatsisf routine is both smaller and
+faster.
+
+You can override GCC's support for conversion from unsigned long integer to 
+single precision floating point as follows:
+
+   - declare the replacement conversion routine:
+
+        extern float __ufloatsisf (unsigned long value);
+
+   - call the routine in place of a cast from unsigned long to float:
+
+        unsigned long ulvalue;
+        float fvalue;
+
+        ...
+
+        fvalue = __ufloatsisf(ulvalue);
+
+You do not need to use ufloatsisf for converting unsigned short, unsigned
+int, or unsigned char types, since GCC's support for these conversions is
+already reasonably efficient.
+
+The floating point support implemented in this directory conforms to a
+subset of IEEE 754.  In particular, this implementation does not support
+traps, signalling NaNs, status flags, or rounding modes other than round to
+even, and the only functions implemented are those directly accessible in C 
+using standard operators.
+
+The total size of all routines in the library is currently 1124 bytes.
+
+A few possible optimizations were left out of this release and may be
+incorporated into a later version of this library.
+
+
+ACKNOWLEDGEMENTS
+
+- Kieran Elby sent in a "0 - x" bug report for subsf3
+
+
+VERSION HISTORY
+
+May 27 1999
+
+- initial release
+- total size: 1142 bytes
+
+Dec 16 2000
+
+- fixed Kieran's "0 - x" bug
+- simplified negsf2
+- total size: 1124 bytes
+
+
+BUG REPORTS
+
+Any bugs or problems with this library should be reported to:
+
+    kekoa@graphics.stanford.edu
+
+---
+Kekoa Proudfoot
+December 16, 2000
+

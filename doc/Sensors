@@ -1,0 +1,47 @@
+-- legOS - the independent LEGO Mindstorms OS
+-- doc/Sensors - sensor documentation
+-- (c) 1998 by Markus L. Noga <markus@noga.de>    
+------------------------------------------------------------------------
+
+By default, sensor support is enabled and initialized by the kernel. To disable, comment out the NO_DIRECT_SENSORS line in include/config.h. 
+
+The three inputs and battery voltage are monitored in sequence. A/D conversion time is 266 clock ticks per channel, resulting in a maximum theoretical update frequency of 16 kHz at a system clock of 16 MHz. However, the time required by the ISR lowers this value somewhat. 8-10 kHz should be a conservative bet.
+
+Sensor values can be read like any unsigned variable. Assignments will have undefined effects, as they periodically overwritten by the A/D conversion routine. The variable names are:
+
+SENSOR_1
+SENSOR_2
+SENSOR_3
+BATTERY
+
+
+Active sensors
+--------------
+
+The Mindstorms light and rotation sensors are active components. They require pulsed alimenation to operate. That is, power supply must be cut when performing A/D conversion on the respective channel.
+
+To enable this functionality, use ds_active(&SENSOR_n). Otherwise, the light sensor detects ambient light, while the rotation sensor doesn't work at all. To disable, use ds_passive(&SENSOR_n).
+
+A macro LIGHT(a) to scale active light sensor values to 0 .. LIGHT_MAX is supplied, as well as convenience macros
+
+LIGHT_1
+LIGHT_2
+LIGHT_3
+
+The kernel initializes all sensors to passive mode on startup and restores this state on termination of the user module.
+
+
+Rotation sensors
+----------------
+
+Mindstorms rotation sensors provide different resistances to encode rotational position. With a finite state machine, this can be decoded into relative position. 
+
+To enable this functionality, use ds_rotation_on(&SENSOR_n). To disable, use ds_rotation_off(&SENSOR_n). The decoded relative position can be read from these unsigned variables:
+
+ROTATION_1
+ROTATION_2
+ROTATION_3
+
+Note that these are relative positions. By default, the sensor cannot identify absolute positions. If this information is supplied by external means, ds_rotation_set(&SENSOR_n,int pos) can be used to set an absolute position.
+
+The kernel disables rotation tracking by default. The absolute rotational position is undefined on startup.

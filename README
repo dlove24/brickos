@@ -1,0 +1,38 @@
+Hello, this is legOS-0.2.6:
+
+This software will run on Linux and Windows (using the Cygwin tool suite.)
+
+To start with legOS:
+
+- Type make. Utilities, libraries, a default kernel and some demos will
+  be made.
+- Pre-packaged binaries have been discontinued.
+- Be sure to add legOS-0.2.6/util to your PATH. Set RCXTTY if you use a non-
+  standard port for the IR tower. Use firmdl3 to download boot/legOS.srec
+  to your RCX.
+- Type "dll demo/helloworld.lx". If all is well, it should be automatically
+  relocated and transmitted to program slot 0. Press the RUN key to run. The
+  program stops automatically.
+- Type "dll -p1 demo/rover.lx" to transmit another demo to program slot 1.
+  Use the PRGM key to select the desired program. Try RUN.
+
+- Stop your program with the RUN or ON/OFF key. Programs are preserved over
+  ON/OFF now.  Press ON/OFF and PRGM simultaneously to erase legOS.
+
+If things don't quite work, work at it.
+
+For your own projects,
+
+- Make a directory in the legOS root directory.
+- Copy Makefile from the demo directory.
+- Put your main routine into myproject.c. (.C if using C++)
+- If you need more source files, add them in the Makefile.
+- "make myproject.lx && dll myproject.lx".
+
+In case anyone is wondering, dll is short for dynamic linker and loader.
+
+For more documentation, look in doc/ and on the web at
+http://legOS.sourceforge.net/HOWTO/
+
+------------------------------------------------------------------------
+legOS Copyright (C) 1998-2002 by Markus L. Noga <markus@noga.de>

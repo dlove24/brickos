@@ -1,0 +1,11 @@
+Markus says:
+
+Default IRQ handlers don't work, if disabling interrupts, always mask out the 
+respective IRQ enable bits.
+
+For IRQs associated with certain bits in status registers, always clear these
+bits before enabling the IRQ. Mostly, the IRQ is only triggered when the status
+bits change. Therefore, always clear them at the end of an ISR, too.
+
+The ROM OCIA interrupt is pretty obnoxious - not only does it control motors, 
+but it also plays with the sound, too.

@@ -1,0 +1,175 @@
+##
+## legOS - the independent LEGO Mindstorms OS
+## Makefile.common - common make rules
+## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>
+##
+
+#
+# 2000.04.30 - Paolo Masetti <paolo.masetti@itlug.org>
+#
+#	- Conditional make variable definitions based on $OSTYPE
+#
+
+#
+# DJGPP does not define OSTYPE
+# Newer version of Cygwin do not define OSTYPE
+#
+ifndef OSTYPE
+	# Last resort if uname is unavailable
+	OSTYPE=$(shell uname)
+endif
+
+# Hitachi H8 tool prefix
+
+# Linux / Solaris
+HMSTOOLDIR=/usr/local/crossgcc
+# NOTE: for Debian GNU/Linux this allows:
+#   export HMSTOOLDIR=/usr; make -e 
+TOOLPREFIX=$(HMSTOOLDIR)/h8300-hitachi-hms/bin/h8300-hitachi-hms-
+SED_SFLAG=
+
+#
+# WindowsNT/Cygnwin, test against several values:
+#
+ifneq (,$(findstring $(OSTYPE),cygwin32 cygwin CYGWIN_NT-4.0 CYGWIN_NT-5.0 CYGWIN_NT-5.1 WindowsNT Windows_NT))
+
+# NT
+TOOLPREFIX=h8300-hms-
+SED_SFLAG=i
+
+endif
+
+#
+# 2001.01.16 - Paolo Masetti <paolo.masetti@itlug.org>
+#
+#     - Added definition for Cygwin 1.1
+
+#
+# Cygwin 1.1
+#
+ifneq (,$(findstring $(OSTYPE),CYGWIN_NT-4.0 CYGWIN_NT-5.0 CYGWIN_NT-5.1))
+
+TOOLPREFIX=h8300-hitachi-hms-
+SED_SFLAG=i
+
+endif
+
+ifneq (,$(findstring $(OSTYPE),MSDOS msdosdjgpp MS-DOS))
+#
+# 2000.06.17 - Paolo Masetti <paolo.masetti@itlug.org>
+#
+#     - Added DJPP defines, thanks to Rossz Vámos-Wentworth <rossw@jps.net> for hint.
+#
+# DJPP
+TOOLPREFIX=h8300-hms-
+SED_SFLAG=i
+#
+# 2001.01.09 - Rossz Vamos-Wentworth <rossz2@home.com>
+#
+#     - Help DJGPP find the cross compiler toolchain
+#
+DJGPP_PATH:=$(shell dirname $(subst \,/,$(DJGPP)) | sed "s{^\(.\):{/dev/\1{")
+export GCC_EXEC_PREFIX=$(DJGPP_PATH)/cross/lib/gcc-lib/
+export COMPILER_PATH=$(DJGPP_PATH)/cross/bin;$(DJGPP_PATH)/cross/h8300-hms/bin
+#
+endif
+
+# legOS root directory autodetection
+# if this fails, use:
+#
+# LEGOS_ROOT=$(HOME)/legOS/
+#
+# 2000.03.11 - Paolo Masetti <paolo.masetti@itlug.org>
+#
+#	- Added "case insensitive" flag to better handle NTFS
+#
+# 2000.05.02 - Paolo Masetti <paolo.masetti@itlug.org
+#
+#     - Added a better handling for multiple legos directories.
+#       Thanks to Steve Morris <sjm@judgement.com> for hint.
+#
+ifndef LEGOS_ROOT
+#  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/")/
+#  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/i")/
+  export LEGOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(legOS\).*/\1\2/$(SED_SFLAG)")/
+endif
+
+#
+#
+# safe to leave everything below untouched
+#
+#
+
+# options
+COPT  =-O2 -fno-builtin -fomit-frame-pointer
+CWARN =-Wall
+#
+# 2000.03.12 - Paolo Masetti <paolo.masetti@itlug.org>
+#
+#	- Added -I$(LEGOS_ROOT)include/lnp in respect of
+#	  Martin Corneluis (cornelius@csd.de) fix for lnp includes
+#	  see http://www.lugnet.com/robotics/rcx/legos/?n=498 for details
+#
+CINC  =-I$(LEGOS_ROOT)include -I$(LEGOS_ROOT)include/lnp -I.
+
+CFLAGS=$(COPT) $(CWARN) $(CINC)
+CXXFLAGS=-DCXX $(CFLAGS)
+
+##
+## older options
+##
+
+# do we need to pad the srec file with zeros?
+#NEED_ZERO_PADDING=--pad-to 0xC000
+
+# how to disassemble
+ODFLAGS = --disassemble-all --no-show-raw-insn -m h8300
+
+# which firmware version to act upon
+FIRMVERS=firm0309
+
+
+##
+## no user servicable parts below
+##
+
+AS=$(TOOLPREFIX)as
+AR=$(TOOLPREFIX)ar
+LD=$(TOOLPREFIX)ld
+NM=$(TOOLPREFIX)nm
+OBJCOPY=$(TOOLPREFIX)objcopy
+OBJDUMP=$(TOOLPREFIX)objdump
+CC=$(TOOLPREFIX)gcc
+CXX=$(TOOLPREFIX)g++
+
+MERGEMAP	=$(LEGOS_ROOT)util/merge-map
+GENLDS 	=$(LEGOS_ROOT)util/genlds
+FIXDEPS	=$(LEGOS_ROOT)util/fixdeps
+MAKELX	=$(LEGOS_ROOT)util/makelx
+MAKEDEPEND	=$(CC) -M $(CINC)
+
+###
+### generic rules
+###
+
+# how to assemble
+%.o: %.s
+	$(AS) $< -o $@
+
+# how to compile C source
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# how to compile C kernel sources
+%.o: $(LEGOS_ROOT)kernel/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# how to generate an assembly listing of a kernel source
+%.s: $(LEGOS_ROOT)kernel/%.c
+	$(CC) $(CFLAGS) -c $< -S
+
+# how to compile C++ source
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+%.o: %.C
+	$(CXX) $(CXXFLAGS) -c $< -o $@

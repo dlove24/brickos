@@ -1,0 +1,70 @@
+##
+## legOS - the independent LEGO Mindstorms OS
+## Makefile.common - make rules for kernel files
+## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>
+##
+
+# kernel sources & objects
+KSOURCES=kmain.c mm.c systime.c tm.c semaphore.c conio.c lcd.c \
+	 lnp-logical.c lnp.c program.c vis.c battery.c\
+         timeout.c dkey.c dmotor.c dsensor.c dsound.c
+KOBJECTS=$(KSOURCES:.c=.o)
+
+# Kernel libraries. Use second version to link all
+# libraries statically to kernel. Change Makefile.user, too.
+LIBS=-lc -lmint
+#LIBS=--whole-archive -lc -lmint -lfloat
+
+# linker command files for kernel
+LDFLAGS=-T $(LEGOS_ROOT)h8300.rcx -relax -L$(LEGOS_ROOT)lib
+
+############ kernel stuff
+
+# how to build coff kernel (for symbols, disassembly etc)
+%.coff: $(KOBJECTS)
+	$(LD) $(LDFLAGS) $(KOBJECTS) $(LIBS) -o $*.coff
+	chmod a-x $*.coff
+
+# how to build srec kernel (for download)
+%.srec: %.coff
+	$(OBJCOPY) -I coff-h8300 -O srec $(NEED_ZERO_PADDING) $*.coff $*.srec
+	chmod a-x $*.srec
+
+# how to make map files
+%.map: %.coff
+	$(NM) $*.coff | sort -u > $*.map
+
+# how to build linker script for dynamic executables
+%.lds: %.map
+	$(GENLDS) $* < $*.map > $*.lds
+
+# how to disassemble coff kernel
+%.dis: %.coff
+	$(OBJDUMP) $(ODFLAGS) $*.coff > $*.dis
+
+# how to merge map files with symbols
+%.dis2: %.map %.dis
+	$(MERGEMAP) $*.map $*.dis > $*.dis2
+
+# how to disassemble srec kernel (don't do this.)
+%.dis: %.srec
+	$(OBJDUMP) $(ODFLAGS) $*.srec > $*.dis
+
+
+############ original firmware stuff
+
+# how to disassemble original firmware file
+%.dis: %.lgo
+	$(OBJDUMP) $(ODFLAGS) $*.lgo > $*.dis
+
+# how to merge labels etc into disassembly
+%.s: %.fix $(FIRMVERS).dis
+	./fixfirm.pl $*.fix $(FIRMVERS).dis > $*.s
+
+# how to reassemble new firmware file
+%.srec: %.s
+	$(AS) $*.s -o $*.o
+	$(LD) -Ttext=0x8000 $*.o -o $*.out
+	$(OBJCOPY) -O srec $*.out $*.srec
+	rm -f $*.o $*.out
+	chmod -x $*.srec
