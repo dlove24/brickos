@@ -1,149 +1,174 @@
+2002-08-28  Joseph Woolley <jawoolley@users.sourceforge.net>
+  * Updated comments, code and data structures to refer to
+    tasks instead of threads and processes.
+  * Added menu choice for modifying LNP Host Address at
+    run-time.
+  * Added menu choice to delete current program.
+  * Added low priority task to animate man (while program
+    running) and to show/hide the battery low indicator.
+  * Updated execi and tm_switcher to keep a tally of the
+    number of kernel tasks at run-time.  This value is
+    used to determine if any user tasks are running.
+  * Updated comments from LegOS to BrickOS and from LegOS
+    Network Protocol to Link Network Protocol (unofficial)
+  * Fixed minor bug in mm_try_join for "end-of-memory"
+    condition.  Previously unchecked, the pointer would
+    wrap around into kernel memory; producing undefined
+    behaviour.
+  * Updated killall so only user tasks or all tasks are
+    killed.
+  * Added T_IDLE flag to indicate which task is the idle
+    task.  Removed now-unnecessary idle_task global
+    variable.
+  * Modified tm_sleep_wakeup so tasks will interupt lower
+    priority tasks when wakeup time is between time-slices.
+    
 2002-08-21  Ted Hess <thess@users.sourceforge.net>
 
-	* Allow setting LNP Host address at build or load-time
-	  - Specify LNP_HOSTADDR=n on make command-line (0 .. N)
-	  - Use dll option --node={hostaddress} or -n{hostaddress}
-	  Note: CONF_LNP_HOSTADDR in config.h is now a small integer instead of shifted mask
-	* fix LEGOS_ROOT macro to work in sub-directory (makefile)
-	* added $CDEFINES macro for compile-time defines (makefile)
-	* minor fixes for various config option combinations to build properly
-	* added CMDsethost to dll protocol to set host addrs
-	* use Win32 device name for USB tower on Win32
-	* updated man page for new dll options
+  * Allow setting LNP Host address at build or load-time
+    - Specify LNP_HOSTADDR=n on make command-line (0 .. N)
+    - Use dll option --node={hostaddress} or -n{hostaddress}
+    Note: CONF_LNP_HOSTADDR in config.h is now a small integer instead of shifted mask
+  * fix LEGOS_ROOT macro to work in sub-directory (makefile)
+  * added $CDEFINES macro for compile-time defines (makefile)
+  * minor fixes for various config option combinations to build properly
+  * added CMDsethost to dll protocol to set host addrs
+  * use Win32 device name for USB tower on Win32
+  * updated man page for new dll options
 
 2002-05-05  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Applied Patch #552135: RCX Remote control support + misc
-	  fixes: animated figure (doesn't fidget anymore),
-	  dll Program numbers now consistent (1 - 8), LCD display
-	  of motor dir during braking now correct, cputc_native_xxx macros 
-	  now allow expression as arg, and dll now allows delete of program.
-	* small adjustments to two demos
-	* This effectively removes the prior IR Remote implementation as
-	  it is now a blend of the two patched approaches
-	* Added new config settings:
-	   CONF_RCX_PROTOCOL    // RCX protocol handler (lnp)
-	   CONF_LR_HANDLER      // Remote control button event dispatcher
-	   CONF_RCX_MESSAGE     // Standard firmare message functions
-	  Which replaced the following settings:
-	   CONF_REMOTE_CTRL      // remote control
-	   CONF_RKEY_HANDLER     // remote control keys handler
-	   CONF_RKEY_MOTOR       // remote control motor
-	   CONF_MESSAGE          // standard firmware message
+  * Applied Patch #552135: RCX Remote control support + misc
+    fixes: animated figure (doesn't fidget anymore),
+    dll Program numbers now consistent (1 - 8), LCD display
+    of motor dir during braking now correct, cputc_native_xxx macros 
+    now allow expression as arg, and dll now allows delete of program.
+  * small adjustments to two demos
+  * This effectively removes the prior IR Remote implementation as
+    it is now a blend of the two patched approaches
+  * Added new config settings:
+     CONF_RCX_PROTOCOL    // RCX protocol handler (lnp)
+     CONF_LR_HANDLER      // Remote control button event dispatcher
+     CONF_RCX_MESSAGE     // Standard firmare message functions
+    Which replaced the following settings:
+     CONF_REMOTE_CTRL      // remote control
+     CONF_RKEY_HANDLER     // remote control keys handler
+     CONF_RKEY_MOTOR       // remote control motor
+     CONF_MESSAGE          // standard firmware message
 
 2002-04-28  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Added Motor control to complete implementation of
-	  Patch #475185: Remote Control & Standard Message Patch
-	* Cleaned up Makefile.user targets (much more to do)
+  * Added Motor control to complete implementation of
+    Patch #475185: Remote Control & Standard Message Patch
+  * Cleaned up Makefile.user targets (much more to do)
 
-2002-04-26	Paolo Masetti <paolom@users.sourceforge.net>
+2002-04-26  Paolo Masetti <paolom@users.sourceforge.net>
 
-	* demo/c++:  Added .cvsignore file
+  * demo/c++:  Added .cvsignore file
 
 2002-04-23  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Apply Patch #475185: Remote Control & Standard Message Patch
-	* Move from NUM_SYSTEM_THREADS to NUM_SYSTEM_TASKS
+  * Apply Patch #475185: Remote Control & Standard Message Patch
+  * Move from NUM_SYSTEM_THREADS to NUM_SYSTEM_TASKS
 
 2002-04-22  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Apply Patch #403527: LNP checksum optimizations
-	* Apply Patch #403728: LNP optimizations versus CVS
-	* Apply Patch #545860: race conditions fix in LNP
+  * Apply Patch #403527: LNP checksum optimizations
+  * Apply Patch #403728: LNP optimizations versus CVS
+  * Apply Patch #545860: race conditions fix in LNP
 
 2002-04-19  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Version number bump to 0.2.6 - Official Release
-	* Moved some ChangeLog content to NEWS, updates in NEWS
-	* Updated CONTRIBUTERS
-	* Removed some old text from TODO, added new
+  * Version number bump to 0.2.6 - Official Release
+  * Moved some ChangeLog content to NEWS, updates in NEWS
+  * Updated CONTRIBUTERS
+  * Removed some old text from TODO, added new
 
 2002-04-17  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Version number bump to 0.2.5.3 - next release candidate
-	* README: added version number to directory name in instru.
-	* Makefile:  Added cygwin on WinXP detection (in util dir)
-	* Makefile:  added remove of dll-src/.depend on clean
+  * Version number bump to 0.2.5.3 - next release candidate
+  * README: added version number to directory name in instru.
+  * Makefile:  Added cygwin on WinXP detection (in util dir)
+  * Makefile:  added remove of dll-src/.depend on clean
 
-2002-04-17	Paolo Masetti <paolom@users.sourceforge.net>
+2002-04-17  Paolo Masetti <paolom@users.sourceforge.net>
 
-	* Makefile:  Added cygwin on WinXP detection
-	* lnp.c:	 fixed a problem vs lnp.h
-	* dsensor.c: fixed a badly formatted comment/syntax error
+  * Makefile:  Added cygwin on WinXP detection
+  * lnp.c:   fixed a problem vs lnp.h
+  * dsensor.c: fixed a badly formatted comment/syntax error
 
 2002-04-11  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Makefile: Added TODO to list of files in distribution
-	  (missed it on first attempt)
-	* Add HOWTO source to complete addition of docs for this release
-	* Version number bump to 0.2.5.2 - next release candidate
+  * Makefile: Added TODO to list of files in distribution
+    (missed it on first attempt)
+  * Add HOWTO source to complete addition of docs for this release
+  * Version number bump to 0.2.5.2 - next release candidate
 
-2002-04-08	Paolo Masetti <paolom@users.sourceforge.net>
+2002-04-08  Paolo Masetti <paolom@users.sourceforge.net>
 
-	* rcxtty.c: Parity patch by Michael Obenland <obenland@t-online.de>
+  * rcxtty.c: Parity patch by Michael Obenland <obenland@t-online.de>
 
 2002-04-04  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* Makefile.Common: Added HMSTOOLDIR so Debian GNU/Linux users
-	   can build the code with:  export HMSTOOLDIR=/usr;make -e
-	* TODO, NEWS, README, VERSION  updating in prep for release
+  * Makefile.Common: Added HMSTOOLDIR so Debian GNU/Linux users
+     can build the code with:  export HMSTOOLDIR=/usr;make -e
+  * TODO, NEWS, README, VERSION  updating in prep for release
 
 2002-04-01  Paolo Masetti <paolom@users.sourceforge.net>
 
-	* Makefile.Common: Using $(shell uname) if $OSTYPE is undefined
-	* Cygwin B-20 / Cygwin 1.x: Added support for both environment
-	   with some limitation for B-20 (printf.c)
-	* utils: Changed Makefile avoiding duplicate generation of
-	   executables
-	* firmdl3 / dll: Added USB support (WIN32)
-		Patches by Hary D. Mahesan 09/27/01
-		<hmahesan@hotmail.com>
-		<hdmahesa@engmail.uwaterloo.ca>
-	    Edited & CVS merged by paolom
+  * Makefile.Common: Using $(shell uname) if $OSTYPE is undefined
+  * Cygwin B-20 / Cygwin 1.x: Added support for both environment
+     with some limitation for B-20 (printf.c)
+  * utils: Changed Makefile avoiding duplicate generation of
+     executables
+  * firmdl3 / dll: Added USB support (WIN32)
+    Patches by Hary D. Mahesan 09/27/01
+    <hmahesan@hotmail.com>
+    <hdmahesa@engmail.uwaterloo.ca>
+      Edited & CVS merged by paolom
 
 2002-03-30  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* THIS IS A COLLECTION OF ALL CHANGES IN CVS since 0.2.5
-	   it therefore does not reflect who did the work and when
-	   in the future we will -Stephen
-	* Fix BUG #228723: makelx out-of-bounds check bad on c++
-	* Fix BUG #226789: Remove -u use to fix build on BSD
-	* Added Manpage source files dll.1 & firmdl3.1
-	* Add C++ TemperatureSensor Class
-	* Add 3 new C++ demos:
-	   rotation.velocity.Sensor.C
-	   temperatureSensor.C
-	   touch.pressed.Sensor.C
-	* dll: add default of /dev/ttyb for Sun (serial port B)
-	* dll: added -d switch to display sizes during run
-	* util/dll-src/Makefile:  remove need for symlink in tarball
-	   (symlinks not supported in Packaging for Debian)
-	   also simplify compile rules
-	* Add cmpsi2.c/ucmpsi2.c to lib/mint/Makefile, version the new files
-	* Add printf.c to lib/c/Makefile, version printf.c source file
-	* In kernel/program.c: Added free memory and batter life display
-	   Press "view" repeatedly while no programs are running to see
-	* Add NUM_SYSTEM_THREADS def & mod files to use DEF vs. literal
-	* In sys/mm.c/h: add int mm_free_mem(void); function
-	* TouchSensor class: added pressed() member
-	* RotationSensor.H: added CONF_DSENSOR_VELOCITY wraps
-	* C++: motorPair.C/H methods renamed to lower case, demos adjusted
-	* C++: motor.C/H methods renamed to lower case, demos adjusted
-	* Minor changes to internal comments containing source file name
-	* .PHONEY and c++ make targets added to demo/Makefile
-	* .PHONEY and c++ make targets added to Makefile
-	* README was updated to 0.2.5 after release (oops)
-	* Added Cygwin 1.1 make target support
-	* DOXYGEN: Added API generation support using Doxygen
-	   Added doxygen API docs build/clean make-targets to Makefile
-	   Updated Doxygen files to work with newer Doxygen version
-	   Revise insternal comments for c/C++ classes so API reads better
-	   Add DOXYGEN_SHOULD_SKIP_INTERNALS flags to misc source
-	   Add C and C++ Doxygen control files
+  * THIS IS A COLLECTION OF ALL CHANGES IN CVS since 0.2.5
+     it therefore does not reflect who did the work and when
+     in the future we will -Stephen
+  * Fix BUG #228723: makelx out-of-bounds check bad on c++
+  * Fix BUG #226789: Remove -u use to fix build on BSD
+  * Added Manpage source files dll.1 & firmdl3.1
+  * Add C++ TemperatureSensor Class
+  * Add 3 new C++ demos:
+     rotation.velocity.Sensor.C
+     temperatureSensor.C
+     touch.pressed.Sensor.C
+  * dll: add default of /dev/ttyb for Sun (serial port B)
+  * dll: added -d switch to display sizes during run
+  * util/dll-src/Makefile:  remove need for symlink in tarball
+     (symlinks not supported in Packaging for Debian)
+     also simplify compile rules
+  * Add cmpsi2.c/ucmpsi2.c to lib/mint/Makefile, version the new files
+  * Add printf.c to lib/c/Makefile, version printf.c source file
+  * In kernel/program.c: Added free memory and batter life display
+     Press "view" repeatedly while no programs are running to see
+  * Add NUM_SYSTEM_THREADS def & mod files to use DEF vs. literal
+  * In sys/mm.c/h: add int mm_free_mem(void); function
+  * TouchSensor class: added pressed() member
+  * RotationSensor.H: added CONF_DSENSOR_VELOCITY wraps
+  * C++: motorPair.C/H methods renamed to lower case, demos adjusted
+  * C++: motor.C/H methods renamed to lower case, demos adjusted
+  * Minor changes to internal comments containing source file name
+  * .PHONEY and c++ make targets added to demo/Makefile
+  * .PHONEY and c++ make targets added to Makefile
+  * README was updated to 0.2.5 after release (oops)
+  * Added Cygwin 1.1 make target support
+  * DOXYGEN: Added API generation support using Doxygen
+     Added doxygen API docs build/clean make-targets to Makefile
+     Updated Doxygen files to work with newer Doxygen version
+     Revise insternal comments for c/C++ classes so API reads better
+     Add DOXYGEN_SHOULD_SKIP_INTERNALS flags to misc source
+     Add C and C++ Doxygen control files
 
 2002-03-29  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-	* creating this file after 0.2.5 release
+  * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.3 2002/08/22 03:49:00 stephmo Exp $
+$Id: ChangeLog,v 1.4 2002/08/29 03:45:35 jawoolley Exp $
