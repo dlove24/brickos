@@ -121,26 +121,26 @@ int sem_timedwait(sem_t *sem,
 */
 int sem_trywait(sem_t * sem);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.globl _sem_trywait
-       _sem_trywait:
-	stc ccr,r1h				; save flags	
-	orc #0x80,ccr				; block all but NMI
-	mov.b @r0,r1l
-	beq sem_fail				; !=0 -> decrease, return 0
-	dec r1l
-	mov.b r1l,@r0
-	sub.w r0,r0                             ; return 0
-	bra sem_ok
-
- sem_fail:
-        mov #0xffff,r0	    		      	; else return 0xffff
-
- sem_ok:
-        ldc r1h,ccr				; restore flags
-	rts
+__asm__("\n\
+.text\n\
+.align 1\n\
+.globl _sem_trywait\n\
+       _sem_trywait:\n\
+	stc ccr,r1h				; save flags	\n\
+	orc #0x80,ccr				; block all but NMI\n\
+	mov.b @r0,r1l\n\
+	beq sem_fail				; !=0 -> decrease, return 0\n\
+	dec r1l\n\
+	mov.b r1l,@r0\n\
+	sub.w r0,r0                             ; return 0\n\
+	bra sem_ok\n\
+\n\
+ sem_fail:\n\
+        mov #0xffff,r0	    		      	; else return 0xffff\n\
+\n\
+ sem_ok:\n\
+        ldc r1h,ccr				; restore flags\n\
+	rts\n\
 	");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 	

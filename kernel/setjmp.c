@@ -24,45 +24,45 @@
 int     setjmp(jmp_buf env);
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 2
-.globl _setjmp
-_setjmp:
-    stc     ccr,r1h         ; remember flags
-    mov.w   #12,r2          ; move r0 'behind' jump buffer
-    add	    r2,r0           ; for storing with pre-decrement
-
-    pop     r2              ; get return address
-    mov.w   r2,@-r0         ; store return address
-    mov.w   r1,@-r0         ; store flags
-    mov.w   r7,@-r0         ; store registers r4-r7
-    mov.w   r6,@-r0
-    mov.w   r5,@-r0
-    mov.w   r4,@-r0
-    sub.w   r0,r0           ; return value: 0
-    jmp     @r2             ; jump to caller
+__asm__("\n\
+.text\n\
+.align 2\n\
+.globl _setjmp\n\
+_setjmp:\n\
+    stc     ccr,r1h         ; remember flags\n\
+    mov.w   #12,r2          ; move r0 'behind' jump buffer\n\
+    add	    r2,r0           ; for storing with pre-decrement\n\
+\n\
+    pop     r2              ; get return address\n\
+    mov.w   r2,@-r0         ; store return address\n\
+    mov.w   r1,@-r0         ; store flags\n\
+    mov.w   r7,@-r0         ; store registers r4-r7\n\
+    mov.w   r6,@-r0\n\
+    mov.w   r5,@-r0\n\
+    mov.w   r4,@-r0\n\
+    sub.w   r0,r0           ; return value: 0\n\
+    jmp     @r2             ; jump to caller\n\
 	");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
 
 void    longjmp(jmp_buf env, int val);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 2
-.globl _longjmp
-_longjmp:
-    mov.w   @r0+,r4         ; restore registers r4-r7
-    mov.w   @r0+,r5
-    mov.w   @r0+,r6
-    mov.w   @r0+,r7
-    mov.w   @r0+,r2         ; get flags
-    mov.w   @r0+,r0         ; get return address
-    push    r0              ; set up for rts
-    mov.w   r1,r0           ; return specified value
-    ldc     r2h,ccr         ; restore flags
-    rts                     ; return to caller
+__asm__("\n\
+.text\n\
+.align 2\n\
+.globl _longjmp\n\
+_longjmp:\n\
+    mov.w   @r0+,r4         ; restore registers r4-r7\n\
+    mov.w   @r0+,r5\n\
+    mov.w   @r0+,r6\n\
+    mov.w   @r0+,r7\n\
+    mov.w   @r0+,r2         ; get flags\n\
+    mov.w   @r0+,r0         ; get return address\n\
+    push    r0              ; set up for rts\n\
+    mov.w   r1,r0           ; return specified value\n\
+    ldc     r2h,ccr         ; restore flags\n\
+    rts                     ; return to caller\n\
 	");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

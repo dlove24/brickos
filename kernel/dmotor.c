@@ -68,61 +68,61 @@ MotorState dm_a,                  //!< motor A state
 */
 extern void dm_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.section .text.hi
-.align 1
-.global _dm_handler
-_dm_handler:
-		; r6 saved by ROM
-                ; r0 saved by systime_handler
+__asm__("\n\
+.section .text.hi\n\
+.align 1\n\
+.global _dm_handler\n\
+_dm_handler:\n\
+		; r6 saved by ROM\n\
+                ; r0 saved by systime_handler\n\
 "
 #ifdef CONF_DMOTOR_HOLD
 "		mov.b #0xcf,r6l			; r6l is output\n"
 #else
 "     	      	sub.w r6,r6   	      	      	; r6l is output\n"
 #endif
-"               ; we simultaneously load delta (r0h) and sum (r0l)
-                ; this depends on byte order, but the H8 will stay MSB
-                ; and the resulting code is efficient and compact.
-                
-                ; motor A
-                
-                mov.w   @_dm_a,r0
-		add.b	#1,r0h			; maps 255 to 256
-		dec.b	r0h
-                addx.b	r0h,r0l                 ; add delta to sum
-                bcc     dm0                     ; sum overflow?
-		  mov.b	@_dm_a+2,r6h            ; -> output drive pattern
-		  xor.b	r6h,r6l
-            dm0:mov.b   r0l,@_dm_a+1            ; save sum
-
-                ; motor B
-                
-                mov.w   @_dm_b,r0
-		add.b	#1,r0h			; maps 255 to 256
-		dec.b	r0h
-                addx.b	r0h,r0l                 ; add delta to sum
-                bcc     dm1                     ; sum overflow?
-		  mov.b	@_dm_b+2,r6h            ; -> output drive pattern
-		  xor.b	r6h,r6l
-            dm1:mov.b   r0l,@_dm_b+1            ; save sum
-
-                ; motor C
-                
-                mov.w   @_dm_c,r0
-		add.b	#1,r0h			; maps 255 to 256
-		dec.b	r0h
-                addx.b	r0h,r0l                 ; add delta to sum
-                bcc     dm2                     ; sum overflow?
-		  mov.b	@_dm_c+2,r6h            ; -> output drive pattern
-		  xor.b	r6h,r6l
-            dm2:mov.b   r0l,@_dm_c+1            ; save sum
-
-		; driver chip
-                  
-		mov.b	r6l,@_motor_controller:8	; output motor waveform
-		
-		rts		
+"               ; we simultaneously load delta (r0h) and sum (r0l)\n\
+                ; this depends on byte order, but the H8 will stay MSB\n\
+                ; and the resulting code is efficient and compact.\n\
+                \n\
+                ; motor A\n\
+                \n\
+                mov.w   @_dm_a,r0\n\
+		add.b	#1,r0h			; maps 255 to 256\n\
+		dec.b	r0h\n\
+                addx.b	r0h,r0l                 ; add delta to sum\n\
+                bcc     dm0                     ; sum overflow?\n\
+		  mov.b	@_dm_a+2,r6h            ; -> output drive pattern\n\
+		  xor.b	r6h,r6l\n\
+            dm0:mov.b   r0l,@_dm_a+1            ; save sum\n\
+\n\
+                ; motor B\n\
+                \n\
+                mov.w   @_dm_b,r0\n\
+		add.b	#1,r0h			; maps 255 to 256\n\
+		dec.b	r0h\n\
+                addx.b	r0h,r0l                 ; add delta to sum\n\
+                bcc     dm1                     ; sum overflow?\n\
+		  mov.b	@_dm_b+2,r6h            ; -> output drive pattern\n\
+		  xor.b	r6h,r6l\n\
+            dm1:mov.b   r0l,@_dm_b+1            ; save sum\n\
+\n\
+                ; motor C\n\
+                \n\
+                mov.w   @_dm_c,r0\n\
+		add.b	#1,r0h			; maps 255 to 256\n\
+		dec.b	r0h\n\
+                addx.b	r0h,r0l                 ; add delta to sum\n\
+                bcc     dm2                     ; sum overflow?\n\
+		  mov.b	@_dm_c+2,r6h            ; -> output drive pattern\n\
+		  xor.b	r6h,r6l\n\
+            dm2:mov.b   r0l,@_dm_c+1            ; save sum\n\
+\n\
+		; driver chip\n\
+                  \n\
+		mov.b	r6l,@_motor_controller:8	; output motor waveform\n\
+		\n\
+		rts		\n\
 	");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 	

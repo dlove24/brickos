@@ -77,7 +77,7 @@ static const note_t off_sound[]={{PITCH_C4, 1}, {PITCH_C3, 1}, {PITCH_END, 0}};
 extern int main(int argc, char **argv);     //!< the user main()
 
 #if defined(CONF_DSOUND) && defined(CONF_ON_OFF_SOUND)
-static void onOffSound(note_t *snd) {
+static void onOffSound(const note_t *snd) {
 	dsound_set_duration(40);
 	dsound_play(snd);
 }

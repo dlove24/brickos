@@ -57,47 +57,47 @@ char dkey_timer __attribute__ ((unused)); //! debouncing timer
 //
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.global _dkey_handler
-_dkey_handler:
-   mov.b @_dkey_timer,r6l	   ; check debouncing timer==0
-   beq dkey_check
-
-     dec r6l
-     mov.b r6l,@_dkey_timer
-     rts
-
-dkey_check:
-   sub.b r6l,r6l      	      	   ; generate button codes
-      	      	      	      	   ; from PORT4/PORT7 in r6l
-   mov.b @_PORT4,r6h
-   bld #1,r6h
-   bist #0,r6l
-   bld #2,r6h
-   bist #1,r6l
-
-   mov.b @_PORT7,r6h
-   bld #6,r6h
-   bist #2,r6l
-   bld #7,r6h
-   bist #3,r6l
-
-   mov.b @_dkey_multi,r6h
-   xor.b r6l,r6h      	      	  ; create mask of changed positions in r6h
-   beq dkey_same
-
-     mov.b r6l,@_dkey_multi
-
-     and.b r6h,r6l    	      	  ; mask out unchanged positions
-     mov.b r6l,@_dkey
-
-     mov.b #100,r6l  	      	  ; set debouncing timer
-     mov.b r6l,@_dkey_timer
-
-dkey_same:
-   rts
+__asm__("\n\
+.text\n\
+.align 1\n\
+.global _dkey_handler\n\
+_dkey_handler:\n\
+   mov.b @_dkey_timer,r6l	   ; check debouncing timer==0\n\
+   beq dkey_check\n\
+\n\
+     dec r6l\n\
+     mov.b r6l,@_dkey_timer\n\
+     rts\n\
+\n\
+dkey_check:\n\
+   sub.b r6l,r6l      	      	   ; generate button codes\n\
+      	      	      	      	   ; from PORT4/PORT7 in r6l\n\
+   mov.b @_PORT4,r6h\n\
+   bld #1,r6h\n\
+   bist #0,r6l\n\
+   bld #2,r6h\n\
+   bist #1,r6l\n\
+\n\
+   mov.b @_PORT7,r6h\n\
+   bld #6,r6h\n\
+   bist #2,r6l\n\
+   bld #7,r6h\n\
+   bist #3,r6l\n\
+\n\
+   mov.b @_dkey_multi,r6h\n\
+   xor.b r6l,r6h      	      	  ; create mask of changed positions in r6h\n\
+   beq dkey_same\n\
+\n\
+     mov.b r6l,@_dkey_multi\n\
+\n\
+     and.b r6h,r6l    	      	  ; mask out unchanged positions\n\
+     mov.b r6l,@_dkey\n\
+\n\
+     mov.b #100,r6l  	      	  ; set debouncing timer\n\
+     mov.b r6l,@_dkey_timer\n\
+\n\
+dkey_same:\n\
+   rts\n\
 ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

@@ -41,22 +41,22 @@ extern "C" {
 //! enters software standby mode.
 extern inline void power_off(void)
 {
-  __asm__ __volatile__("
-  push r6
-  bset #7,@0xc4:8  ; software standby mode
-  jsr @ power_off  ; ROM call
-        pop r6
+  __asm__ __volatile__("\n\
+  push r6\n\
+  bset #7,@0xc4:8  ; software standby mode\n\
+  jsr @ power_off  ; ROM call\n\
+        pop r6\n\
 ");
 }
 
 //! disables software standby mode so tm_idle_task() can use the sleep
 //  instruction.
 extern inline void power_init(void) {
-  __asm__ __volatile__("
-  push r6
-  jsr @ power_init ; ROM call
-  bclr #7,@0xc4:8  ; disable software standby
-  pop r6
+  __asm__ __volatile__("\n\
+  push r6\n\
+  jsr @ power_init ; ROM call\n\
+  bclr #7,@0xc4:8  ; disable software standby\n\
+  pop r6\n\
 ");
 }
 

@@ -87,25 +87,25 @@ void* tm_switcher_vector;                       //!< pointer to task switcher
  */
 extern void clock_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.global _clock_handler
-        _clock_handler:
-                mov.w #0x5a07,r6                ; reset wd timer to 6
-                mov.w r6,@0xffa8
-
-                mov.w @_sys_time+2,r6           ; lower 8 bits
-                add.b #0x1,r6l                  ; inc lower 4 bits
-                addx  #0x0,r6h                  ; add carry to top 4 bits
-                mov.w r6,@_sys_time+2
-                bcc sys_nohigh                  ; if carry, inc upper 8 bits
-                  mov.w @_sys_time,r6           ; 
-                  add.b #0x1,r6l                ; inc lower 4 bits
-                  addx  #0x0,r6h                ; add carry to top 4 bits
-                  mov.w r6,@_sys_time
-              sys_nohigh: 
-                rts
+__asm__("\n\
+.text\n\
+.align 1\n\
+.global _clock_handler\n\
+        _clock_handler:\n\
+                mov.w #0x5a07,r6                ; reset wd timer to 6\n\
+                mov.w r6,@0xffa8\n\
+\n\
+                mov.w @_sys_time+2,r6           ; lower 8 bits\n\
+                add.b #0x1,r6l                  ; inc lower 4 bits\n\
+                addx  #0x0,r6h                  ; add carry to top 4 bits\n\
+                mov.w r6,@_sys_time+2\n\
+                bcc sys_nohigh                  ; if carry, inc upper 8 bits\n\
+                  mov.w @_sys_time,r6           ; \n\
+                  add.b #0x1,r6l                ; inc lower 4 bits\n\
+                  addx  #0x0,r6h                ; add carry to top 4 bits\n\
+                  mov.w r6,@_sys_time\n\
+              sys_nohigh: \n\
+                rts\n\
        ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
@@ -121,143 +121,143 @@ extern void subsystem_handler(void);
  */
 extern void task_switch_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.global _subsystem_handler
-.global _task_switch_handler
-.global _systime_tm_return
-_subsystem_handler:
-               ; r6 saved by ROM
-
-                push r0                         ; both motors & task
-                                                ; switcher need this reg.
+__asm__("\n\
+.text\n\
+.align 1\n\
+.global _subsystem_handler\n\
+.global _task_switch_handler\n\
+.global _systime_tm_return\n\
+_subsystem_handler:\n\
+               ; r6 saved by ROM\n\
+\n\
+                push r0                         ; both motors & task\n\
+                                                ; switcher need this reg.\n\
         "
 
 #ifdef CONF_DSOUND
-        "
-                jsr _dsound_handler             ; call sound handler
+        "\n\
+                jsr _dsound_handler             ; call sound handler\n\
         "
 #endif // CONF_DSOUND
 
 #ifdef CONF_LNP
-        "
-                mov.w @_lnp_timeout_counter,r6  ; check LNP timeout counter
-                subs #0x1,r6
-                mov.w r6,r6                     ; subs doesn't change flags!
-                bne sys_noreset
-                
-                  jsr _lnp_integrity_reset
-                  mov.w @_lnp_timeout,r6        ; reset timeout
-
-              sys_noreset:
-                mov.w r6,@_lnp_timeout_counter
+        "\n\
+                mov.w @_lnp_timeout_counter,r6  ; check LNP timeout counter\n\
+                subs #0x1,r6\n\
+                mov.w r6,r6                     ; subs doesn't change flags!\n\
+                bne sys_noreset\n\
+                \n\
+                  jsr _lnp_integrity_reset\n\
+                  mov.w @_lnp_timeout,r6        ; reset timeout\n\
+\n\
+              sys_noreset:\n\
+                mov.w r6,@_lnp_timeout_counter\n\
         "
 #endif // CONF_LNP
 
 #ifdef CONF_DKEY
-        "
-                jsr _dkey_handler
+        "\n\
+                jsr _dkey_handler\n\
         "
 #endif // CONF_DKEY
 
 #ifndef CONF_TM
 #ifdef CONF_BATTERY_INDICATOR
-        "
-                mov.w @_battery_refresh_counter,r6
-                subs #0x1,r6
-                bne batt_norefresh
-
-                  jsr _battery_refresh
-                  mov.w @_battery_refresh_period,r6
-
-              batt_norefresh:
-                mov.w r6,@_battery_refresh_counter
+        "\n\
+                mov.w @_battery_refresh_counter,r6\n\
+                subs #0x1,r6\n\
+                bne batt_norefresh\n\
+\n\
+                  jsr _battery_refresh\n\
+                  mov.w @_battery_refresh_period,r6\n\
+\n\
+              batt_norefresh:\n\
+                mov.w r6,@_battery_refresh_counter\n\
         "
 #endif // CONF_BATTERY_INDICATOR
 #endif // CONF_TM
 
 #ifdef CONF_AUTOSHUTOFF
-        "
-                mov.w @_auto_shutoff_counter,r6
-                subs  #0x1,r6
-                bne auto_notshutoff
-
-                  jsr _autoshutoff_check
-                  mov.w @_auto_shutoff_period,r6
-                  
-              auto_notshutoff:
-                  mov.w r6,@_auto_shutoff_counter
+        "\n\
+                mov.w @_auto_shutoff_counter,r6\n\
+                subs  #0x1,r6\n\
+                bne auto_notshutoff\n\
+\n\
+                  jsr _autoshutoff_check\n\
+                  mov.w @_auto_shutoff_period,r6\n\
+                  \n\
+              auto_notshutoff:\n\
+                  mov.w r6,@_auto_shutoff_counter\n\
         "
 #endif // CONF_AUTOSHUTOFF
 
 #ifdef CONF_VIS
-        "
-                mov.b @_vis_refresh_counter,r6l
-                dec r6l
-                bne vis_norefresh
-                
-                  jsr _vis_handler
-                  mov.b @_vis_refresh_period,r6l
-                  
-              vis_norefresh:
-                mov.b r6l,@_vis_refresh_counter
+        "\n\
+                mov.b @_vis_refresh_counter,r6l\n\
+                dec r6l\n\
+                bne vis_norefresh\n\
+                \n\
+                  jsr _vis_handler\n\
+                  mov.b @_vis_refresh_period,r6l\n\
+                  \n\
+              vis_norefresh:\n\
+                mov.b r6l,@_vis_refresh_counter\n\
         "
 #endif // CONF_VIS
 
 #ifdef CONF_LCD_REFRESH
-        "
-                mov.b @_lcd_refresh_counter,r6l
-                dec r6l
-                bne lcd_norefresh
-                
-                  jsr _lcd_refresh_next_byte
-                  mov.b @_lcd_refresh_period,r6l
-                  
-              lcd_norefresh:
-                mov.b r6l,@_lcd_refresh_counter
+        "\n\
+                mov.b @_lcd_refresh_counter,r6l\n\
+                dec r6l\n\
+                bne lcd_norefresh\n\
+                \n\
+                  jsr _lcd_refresh_next_byte\n\
+                  mov.b @_lcd_refresh_period,r6l\n\
+                  \n\
+              lcd_norefresh:\n\
+                mov.b r6l,@_lcd_refresh_counter\n\
         "
 #endif // CONF_LCD_REFRESH
-        "
-                bclr  #2,@0x91:8                ; reset compare B IRQ flag
+        "\n\
+                bclr  #2,@0x91:8                ; reset compare B IRQ flag\n\
         "
 #ifdef CONF_TM
-        "
-                pop r0                          ; if fallthrough, pop r0
-              _task_switch_handler:
-                push r0                         ; save r0
-
-                mov.b @_tm_current_slice,r6l
-                dec r6l
-                bne sys_noswitch                ; timeslice elapsed?
-
-                  mov.w @_kernel_critsec_count,r6 ; check critical section
-                  beq sys_switch                ; ok to switch
-                  mov.b #1,r6l                  ; wait another tick
-                  jmp sys_noswitch              ; don't switch
-
-                sys_switch:
-                  mov.w @_tm_switcher_vector,r6
-                  jsr @r6                       ; call task switcher
-                  
-              _systime_tm_return:
-                mov.b @_tm_timeslice,r6l        ; new timeslice
-
-              sys_noswitch:
-                mov.b r6l,@_tm_current_slice
+        "\n\
+                pop r0                          ; if fallthrough, pop r0\n\
+              _task_switch_handler:\n\
+                push r0                         ; save r0\n\
+\n\
+                mov.b @_tm_current_slice,r6l\n\
+                dec r6l\n\
+                bne sys_noswitch                ; timeslice elapsed?\n\
+\n\
+                  mov.w @_kernel_critsec_count,r6 ; check critical section\n\
+                  beq sys_switch                ; ok to switch\n\
+                  mov.b #1,r6l                  ; wait another tick\n\
+                  jmp sys_noswitch              ; don't switch\n\
+\n\
+                sys_switch:\n\
+                  mov.w @_tm_switcher_vector,r6\n\
+                  jsr @r6                       ; call task switcher\n\
+                  \n\
+              _systime_tm_return:\n\
+                mov.b @_tm_timeslice,r6l        ; new timeslice\n\
+\n\
+              sys_noswitch:\n\
+                mov.b r6l,@_tm_current_slice\n\
         "
 #endif // CONF_TM
 
 #ifdef CONF_DMOTOR
-        "
-                jsr _dm_handler                 ; call motor driver
+        "\n\
+                jsr _dm_handler                 ; call motor driver\n\
         "
 #endif // CONF_DMOTOR
 
-        "
-                pop r0
-                bclr  #3,@0x91:8                ; reset compare A IRQ flag
-                rts
+        "\n\
+                pop r0\n\
+                bclr  #3,@0x91:8                ; reset compare A IRQ flag\n\
+                rts\n\
         "
 );
 #endif // DOXYGEN_SHOULD_SKIP_THIS
@@ -349,20 +349,20 @@ void systime_set_timeslice(unsigned char slice) {
  *  0, while upper 16bits were already read)
  */
 extern time_t get_system_up_time(void);
-__asm__("
-.text
-.align 1
-.global _get_system_up_time
-_get_system_up_time:
-    push  r2
-  try_again:
-    mov.w @_sys_time+2, r1
-    mov.w @_sys_time,   r0
-    mov.w @_sys_time+2, r2
-    cmp   r2, r1
-    bne try_again
-    pop   r2
-    rts
+__asm__("\n\
+.text\n\
+.align 1\n\
+.global _get_system_up_time\n\
+_get_system_up_time:\n\
+    push  r2\n\
+  try_again:\n\
+    mov.w @_sys_time+2, r1\n\
+    mov.w @_sys_time,   r0\n\
+    mov.w @_sys_time+2, r2\n\
+    cmp   r2, r1\n\
+    bne try_again\n\
+    pop   r2\n\
+    rts\n\
 ");
 
 #endif // CONF_TIME

@@ -30,44 +30,44 @@ atomic_t kernel_critsec_count;
     \sa locked_decrement
  */
 int locked_check_and_increment(atomic_t* counter, tdata_t** tid);
-__asm__("
-.text
-.global _locked_check_and_increment
-        _locked_check_and_increment:
-          push.w r4
-          stc    ccr, r4h
-          orc    #0x80, ccr
-          mov.b  @r0, r4l
-          beq    lci_get_lock
-
-          push.w r2
-          push.w r3
-          mov.w  @_ctid, r2
-          mov.w  @r1, r3
-          sub.w  r3, r2
-          bne    lci_cant_lock
-
-          pop.w  r3
-          pop.w  r2
-          bra    lci_get_lock
-
-        lci_cant_lock:
-          pop.w  r3
-          pop.w  r2
-          mov.w  #0xffff, r0
-          bra    lci_done
-
-        lci_get_lock:
-          inc    r4l
-          mov.b  r4l, @r0
-          mov.w  @_ctid, r0 
-          mov.w  r0, @r1 
-          sub.w  r0, r0
-
-        lci_done:
-          ldc    r4h, ccr
-          pop.w  r4
-          rts
+__asm__("\n\
+.text\n\
+.global _locked_check_and_increment\n\
+        _locked_check_and_increment:\n\
+          push.w r4\n\
+          stc    ccr, r4h\n\
+          orc    #0x80, ccr\n\
+          mov.b  @r0, r4l\n\
+          beq    lci_get_lock\n\
+\n\
+          push.w r2\n\
+          push.w r3\n\
+          mov.w  @_ctid, r2\n\
+          mov.w  @r1, r3\n\
+          sub.w  r3, r2\n\
+          bne    lci_cant_lock\n\
+\n\
+          pop.w  r3\n\
+          pop.w  r2\n\
+          bra    lci_get_lock\n\
+\n\
+        lci_cant_lock:\n\
+          pop.w  r3\n\
+          pop.w  r2\n\
+          mov.w  #0xffff, r0\n\
+          bra    lci_done\n\
+\n\
+        lci_get_lock:\n\
+          inc    r4l\n\
+          mov.b  r4l, @r0\n\
+          mov.w  @_ctid, r0 \n\
+          mov.w  r0, @r1 \n\
+          sub.w  r0, r0\n\
+\n\
+        lci_done:\n\
+          ldc    r4h, ccr\n\
+          pop.w  r4\n\
+          rts\n\
         ");
 
 //! wakeup when critical section is available

@@ -84,26 +84,26 @@ static unsigned char lcd_shadow[LCD_DATA_OFFSET + LCD_DATA_SIZE];
 */
 void lcd_number(int i,lcd_number_style n,lcd_comma_style c  );
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.globl _lcd_number
-_lcd_number:
-        push r6         ; save r6
-    
-        push r2         ; comma_style  -> stack
-        push r0         ; number       -> stack
-    
-        mov.w r1,r6     ; number_style -> r6
-    
-        jsr @lcd_number ; call ROM
-    
-        adds #0x02,sp   ; clear stack
-        adds #0x02,sp
-        
-        pop r6          ; restore r6
-        rts
-        
+__asm__("\n\
+.text\n\
+.align 1\n\
+.globl _lcd_number\n\
+_lcd_number:\n\
+        push r6         ; save r6\n\
+    \n\
+        push r2         ; comma_style  -> stack\n\
+        push r0         ; number       -> stack\n\
+    \n\
+        mov.w r1,r6     ; number_style -> r6\n\
+    \n\
+        jsr @lcd_number ; call ROM\n\
+    \n\
+        adds #0x02,sp   ; clear stack\n\
+        adds #0x02,sp\n\
+        \n\
+        pop r6          ; restore r6\n\
+        rts\n\
+        \n\
        ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 

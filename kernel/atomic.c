@@ -10,17 +10,17 @@
  * @see atomic_dec
  */
 void atomic_inc(atomic_t* counter);
-__asm__("
-.text
-.globl _atomic_inc
-       _atomic_inc:
-	stc   ccr, r1h				; save flags
-	orc   #0x80, ccr			; disable all but NMI
-	mov.b @r0, r1l
-	inc   r1l
-	mov.b r1l, @r0
-	ldc   r1h, ccr				; restore flags
-	rts
+__asm__("\n\
+.text\n\
+.globl _atomic_inc\n\
+       _atomic_inc:\n\
+	stc   ccr, r1h				; save flags\n\
+	orc   #0x80, ccr			; disable all but NMI\n\
+	mov.b @r0, r1l\n\
+	inc   r1l\n\
+	mov.b r1l, @r0\n\
+	ldc   r1h, ccr				; restore flags\n\
+	rts\n\
 ");
 
 /**
@@ -31,16 +31,16 @@ __asm__("
  * @see atomic_inc
  */
 void atomic_dec(atomic_t* counter);
-__asm__("
-.text
-.globl _atomic_dec
-       _atomic_dec:
-         stc   ccr, r1h
-         orc   #0x80, ccr
-         mov.b @r0, r1l
-         dec   r1l
-         mov.b r1l, @r0
-         ldc   r1h, ccr
-         rts
+__asm__("\n\
+.text\n\
+.globl _atomic_dec\n\
+       _atomic_dec:\n\
+         stc   ccr, r1h\n\
+         orc   #0x80, ccr\n\
+         mov.b @r0, r1l\n\
+         dec   r1l\n\
+         mov.b r1l, @r0\n\
+         ldc   r1h, ccr\n\
+         rts\n\
 ");
 #endif

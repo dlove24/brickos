@@ -103,37 +103,37 @@ void integrity_check(void) {
 */
 void tm_switcher(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.globl _tm_switcher
-_tm_switcher:
-      ; r6 saved by ROM
-      ; r0 saved by system timer handler
-
-      mov.w r1,@-r7                           ; save registers
-      mov.w r2,@-r7 
-      mov.w r3,@-r7 
-      mov.w r4,@-r7 
-      mov.w r5,@-r7 
-
-      mov.w r7,r0                             ; pass sp
-
-      jsr _tm_scheduler                       ; call scheduler
-
-_tm_switcher_return:    
-      mov.w r0,r7                             ; set new sp
-
-      mov.w @r7+,r5
-      mov.w @r7+,r4
-      mov.w @r7+,r3
-      mov.w @r7+,r2
-      mov.w @r7+,r1
-
-      ; r0 will be restored by system timer handler
-      ; r6 will be restored by ROM
-
-      rts                                     ; return to new task
+__asm__("\n\
+.text\n\
+.align 1\n\
+.globl _tm_switcher\n\
+_tm_switcher:\n\
+      ; r6 saved by ROM\n\
+      ; r0 saved by system timer handler\n\
+\n\
+      mov.w r1,@-r7                           ; save registers\n\
+      mov.w r2,@-r7 \n\
+      mov.w r3,@-r7 \n\
+      mov.w r4,@-r7 \n\
+      mov.w r5,@-r7 \n\
+\n\
+      mov.w r7,r0                             ; pass sp\n\
+\n\
+      jsr _tm_scheduler                       ; call scheduler\n\
+\n\
+_tm_switcher_return:    \n\
+      mov.w r0,r7                             ; set new sp\n\
+\n\
+      mov.w @r7+,r5\n\
+      mov.w @r7+,r4\n\
+      mov.w @r7+,r3\n\
+      mov.w @r7+,r2\n\
+      mov.w @r7+,r1\n\
+\n\
+      ; r0 will be restored by system timer handler\n\
+      ; r6 will be restored by ROM\n\
+\n\
+      rts                                     ; return to new task\n\
 ");
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
 
@@ -270,26 +270,26 @@ size_t *tm_scheduler(size_t *old_sp) {
 */
 extern void yield(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.globl _yield
-.align 1
-_yield:
-      stc     ccr,r0h                ; to fake an IRQ, we have to
-      push    r0                     ; store the registers
-      orc     #0x80,ccr              ; disable interrupts
-
-      push    r6                     ; store r6
-
-      mov.w   #0x04d4,r0             ; store rom return addr
-      push    r0
-
-      push    r0                     ; store r0 (destroyed by call.)
-
-      mov.w   #_systime_tm_return,r0 ; store systime return addr
-      push    r0
-
-      jmp     @_tm_switcher          ; call task switcher
+__asm__("\n\
+.text\n\
+.globl _yield\n\
+.align 1\n\
+_yield:\n\
+      stc     ccr,r0h                ; to fake an IRQ, we have to\n\
+      push    r0                     ; store the registers\n\
+      orc     #0x80,ccr              ; disable interrupts\n\
+\n\
+      push    r6                     ; store r6\n\
+\n\
+      mov.w   #0x04d4,r0             ; store rom return addr\n\
+      push    r0\n\
+\n\
+      push    r0                     ; store r0 (destroyed by call.)\n\
+\n\
+      mov.w   #_systime_tm_return,r0 ; store systime return addr\n\
+      push    r0\n\
+\n\
+      jmp     @_tm_switcher          ; call task switcher\n\
 ");
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
 
@@ -298,12 +298,12 @@ _yield:
 */
 extern int tm_idle_task(int argc,char **argv) __attribute__ ((noreturn));
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-_tm_idle_task:
-      sleep
-      bra _tm_idle_task
+__asm__("\n\
+.text\n\
+.align 1\n\
+_tm_idle_task:\n\
+      sleep\n\
+      bra _tm_idle_task\n\
 ");
 #endif  // DOXYGEN_SHOULD_SKIP_THIS
 

@@ -67,9 +67,9 @@ extern "C" {
 extern inline int dbutton(void)
 {
   int rv;
-  __asm__ __volatile__("
-      	mov.b @_PORT4,%0l
-	mov.b @_PORT7,%0h
+  __asm__ __volatile__("\n\
+      	mov.b @_PORT4,%0l\n\
+	mov.b @_PORT7,%0h\n\
 "	      :"=r"(rv)	// output
 	      :	      	// input
 	      :"cc"	// clobbered

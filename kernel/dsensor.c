@@ -480,96 +480,96 @@ void ds_mux_handler() {
 //
 extern void ds_handler(void);
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-_ds_handler:
-   ; r6 saved by ROM
-
-   mov.b @_ds_channel,r6l	; r6l = current channel
-
-   mov.b @_ds_activation,r6h	; r6h = activation bitmask
-   btst r6l,r6h			; activate output?
-   beq ds_noset
-       bset r6l,@_PORT6:8	; activate output of last port scanned
- ds_noset:
+__asm__("\n\
+.text\n\
+.align 1\n\
+_ds_handler:\n\
+   ; r6 saved by ROM\n\
+\n\
+   mov.b @_ds_channel,r6l	; r6l = current channel\n\
+\n\
+   mov.b @_ds_activation,r6h	; r6h = activation bitmask\n\
+   btst r6l,r6h			; activate output?\n\
+   beq ds_noset\n\
+       bset r6l,@_PORT6:8	; activate output of last port scanned\n\
+ ds_noset:\n\
         "
 #ifdef CONF_DSENSOR_ROTATION
-        "
-   mov.b @_ds_rotation,r6h	; r6h = rotation bitmask
-   btst r6l,r6h			; process rotation sensor?
-   beq ds_norot
-
-     push r0			; save r0..r3
-     push r1
-     push r2
-     push r3			; r4..r6 saved by gcc if necessary
-
-     jsr _ds_rotation_handler	; process rotation sensor
-
-     pop r3
-     pop r2
-     pop r1
-     pop r0
- ds_norot:
+        "\n\
+   mov.b @_ds_rotation,r6h	; r6h = rotation bitmask\n\
+   btst r6l,r6h			; process rotation sensor?\n\
+   beq ds_norot\n\
+\n\
+     push r0			; save r0..r3\n\
+     push r1\n\
+     push r2\n\
+     push r3			; r4..r6 saved by gcc if necessary\n\
+\n\
+     jsr _ds_rotation_handler	; process rotation sensor\n\
+\n\
+     pop r3\n\
+     pop r2\n\
+     pop r1\n\
+     pop r0\n\
+ ds_norot:\n\
         "
 #endif
 
 #ifdef CONF_DSENSOR_MUX
-        "
-   mov.b @_ds_mux,r6h	; r6h = mux bitmask
-   btst r6l,r6h			; process mux sensor?
-   beq ds_nomux
-
-     push r0			; save r0..r3
-     push r1
-     push r2
-     push r3			; r4..r6 saved by gcc if necessary
-
-     jsr _ds_mux_handler	; process mux sensor
-
-     pop r3
-     pop r2
-     pop r1
-     pop r0
- ds_nomux:
+        "\n\
+   mov.b @_ds_mux,r6h	; r6h = mux bitmask\n\
+   btst r6l,r6h			; process mux sensor?\n\
+   beq ds_nomux\n\
+\n\
+     push r0			; save r0..r3\n\
+     push r1\n\
+     push r2\n\
+     push r3			; r4..r6 saved by gcc if necessary\n\
+\n\
+     jsr _ds_mux_handler	; process mux sensor\n\
+\n\
+     pop r3\n\
+     pop r2\n\
+     pop r1\n\
+     pop r0\n\
+ ds_nomux:\n\
         "
 #endif
-        "
-   inc r6l			; next channel
-   and #0x03,r6l		; limit to 0-3
-
-   mov.b @_ds_activation,r6h	; r6h = activation bitmask
-   btst r6l,r6h			; activate output?
-   beq ds_nounset
-      bclr r6l,@_PORT6:8		; set output inactive for reading
- ds_nounset:
-
-   ; The settle time for reading the value from active sensor start here
-
-   ; moved here for helping timing problems
-   mov.b r6l,@_ds_channel	; store next channel
-
-   ; Added a delay loop for sensor settle time
-
-   mov.b #0x04, r6h		; delay loop
-settle:
-   nop				; each nop is a 2 state clock delay
-   dec.b r6h			; 2 states ?
-   bne settle			; 4 states
-
-   ; Total loop delay 32 states (?)
-
-   mov.b @_AD_CSR:8,r6h		; r6h = A/D CSR
-   and.b #0x7c,r6h		; reset scanmode and channel num
-   or.b  r6l,r6h		; scan next channel
-   mov.b r6h,@_AD_CSR:8		; put r6h back on A/D CSR
-
-   ; The settle time for reading the value from active sensor finish here
-
-   bset #0x5,@_AD_CSR:8		; go!
-
-   rts
+        "\n\
+   inc r6l			; next channel\n\
+   and #0x03,r6l		; limit to 0-3\n\
+\n\
+   mov.b @_ds_activation,r6h	; r6h = activation bitmask\n\
+   btst r6l,r6h			; activate output?\n\
+   beq ds_nounset\n\
+      bclr r6l,@_PORT6:8		; set output inactive for reading\n\
+ ds_nounset:\n\
+\n\
+   ; The settle time for reading the value from active sensor start here\n\
+\n\
+   ; moved here for helping timing problems\n\
+   mov.b r6l,@_ds_channel	; store next channel\n\
+\n\
+   ; Added a delay loop for sensor settle time\n\
+\n\
+   mov.b #0x04, r6h		; delay loop\n\
+settle:\n\
+   nop				; each nop is a 2 state clock delay\n\
+   dec.b r6h			; 2 states ?\n\
+   bne settle			; 4 states\n\
+\n\
+   ; Total loop delay 32 states (?)\n\
+\n\
+   mov.b @_AD_CSR:8,r6h		; r6h = A/D CSR\n\
+   and.b #0x7c,r6h		; reset scanmode and channel num\n\
+   or.b  r6l,r6h		; scan next channel\n\
+   mov.b r6h,@_AD_CSR:8		; put r6h back on A/D CSR\n\
+\n\
+   ; The settle time for reading the value from active sensor finish here\n\
+\n\
+   bset #0x5,@_AD_CSR:8		; go!\n\
+\n\
+   rts\n\
 ");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
