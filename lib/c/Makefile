@@ -1,31 +1,33 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile - allows you to keep the upper hand
-## (c) 1998 by Markus L. Noga <markus@noga.de>    
-##
+### ==========================================================================
+###  $Id: Makefile,v 1.4 2002/10/15 03:23:24 stephmo Exp $
+###  FILE: lib/c/Makefile - make the c suport library
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 # our target
 LIBTARGET = c
-LIBRARY   = lib$(LIBTARGET).a
 
-# sources & objects
+# sources 
 #
-# Cygwin B-20 can't compile printf.c
+# Cygwin B-20 can't compile printf.c   FIXME  This is busted in new evironment
 ifneq (,$(findstring $(OSTYPE),cygwin32))
 	SOURCES = memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c
 else
 	SOURCES = memcpy.c memset.c strcmp.c strcpy.c strlen.c random.c printf.c
 endif
 
-OBJECTS = $(SOURCES:.c=.o)
 
-
-##
+## 
 ## no user servicable parts below
 ##
 
+LIBRARY   = lib$(LIBTARGET).a
+
+OBJECTS = $(SOURCES:.c=.o)
+
+
 all: promote-stamp
-	@#  nothing more to be done here
+	@# nothing to do here but do it silently
 
 promote-stamp: $(LIBRARY)
 	cp -f $? ../
@@ -41,17 +43,17 @@ $(LIBRARY): $(OBJECTS)
 	makedepend -f - $(SOURCES) >.depend
 
 depend: .depend
-	@#  nothing more to be done here
+	@# nothing to do here but do it silently
 
 clean:
-	rm -f *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags *.a
+	rm -f *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s 
 
 realclean: clean
 	rm -f $(LIBRARY) ../$(LIBRARY) .depend
-	@rm -f install-stamp promote-stamp
+	@rm -f install-stamp promote-stamp tags TAGS
 
 install: install-stamp
-	@#  nothing more to be done here
+	@# nothing to do here but do it silently
 
 install-stamp: $(LIBRARY)
 	@if [ ! -d ${pkglibdir} ]; then \
@@ -60,5 +62,6 @@ install-stamp: $(LIBRARY)
 	cp -f $? ${pkglibdir}/$?
 	@touch $@
 
-# DO NOT DELETE
-
+### --------------------------------------------------------------------------
+###                        End of FILE: lib/c/Makefile
+### ==========================================================================

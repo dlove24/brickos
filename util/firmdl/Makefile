@@ -1,20 +1,8 @@
-# Makefile for firmdl3
-
-# The contents of this file are subject to the Mozilla Public License
-# Version 1.0 (the "License"); you may not use this file except in
-# compliance with the License. You may obtain a copy of the License at
-# http://www.mozilla.org/MPL/
-#
-# Software distributed under the License is distributed on an "AS IS"
-# basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
-# License for the specific language governing rights and limitations
-# under the License.
-#
-# The Original Code is Firmdl code, released October 3, 1998.
-#
-# The Initial Developer of the Original Code is Kekoa Proudfoot.
-# Portions created by Kekoa Proudfoot are Copyright (C) 1998, 1999
-# Kekoa Proudfoot. All Rights Reserved.
+### ==========================================================================
+###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  FILE: util/firmdl/Makefile - make firmware download utility
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 # specify environment before including the common stuff
 BUILDING_HOST_UTILS = true
@@ -61,3 +49,8 @@ realclean: clean
 	@rm -f install-stamp
 
 .PHONY: realclean clean install depend all
+
+
+### --------------------------------------------------------------------------
+###                   End of FILE: util/firmdl/Makefile
+### ==========================================================================

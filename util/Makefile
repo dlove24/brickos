@@ -1,14 +1,8 @@
-#
-# 2000.03.07 - Paolo Masetti <paolo.masetti@itlug.org>
-#
-#	- Conditional make based on $OS variable for Windows NT
-#	- Replaced firmdl3.c with firmdl dir (easier to port)
-#	- Fixed genlds & fixdeps dependencies
-#
-# 2000.06.17 - Paolo Masetti <paolo.masetti@itlug.org>
-#
-#	- Removed firmdl3.c compile for *nix
-#
+### ==========================================================================
+###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  FILE: util/Makefile - make the hosted utilities
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 # specify environment before including the common stuff
 BUILDING_HOST_UTILS = true
@@ -28,7 +22,7 @@ endif
 SUBDIRS = dll-src firmdl
 
 all:: $(TARGETS)
-	@#  nothing more to do here...
+	@# nothing to do here but do it silently
 
 all clean depend install realclean::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
@@ -50,7 +44,14 @@ install-stamp: $(TARGETS) $(UTILITY_SCRIPT)
 	cp -f $(UTILITY_SCRIPT) ${pkglibdir}
 	@touch $@
 
+tag::
+	@# nothing to do here but do it silently
+
 realclean:: clean
 	rm -f $(TARGETS)
 	@rm -f install-stamp
 
+
+### --------------------------------------------------------------------------
+###                         End of FILE: util/Makefile
+### ==========================================================================

@@ -1,12 +1,8 @@
-# Makefile - keep the upper hand.
-#
-# 2000.03.07 - Paolo Masetti <paolo.masetti@itlug.org>
-#
-#	- Conditional make for Windows NT (cygnwin)
-#	- $CC defined
-#	- Martin Corneluis (cornelius@csd.de) fix for lnp includes
-#	  see http://www.lugnet.com/robotics/rcx/legos/?n=498 for details
-#
+### ==========================================================================
+###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  FILE: util/dll-src/Makefile - make program download & link support utilities
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 # specify environment before including the common stuff
 BUILDING_HOST_UTILS = true
@@ -39,7 +35,7 @@ LIBS=
 CFLAGS+=-I. -I../../include/lnp
 
 all:  $(ALL_TARGETS)
-	@# nothing to be done, but silently
+	@# nothing to do here but do it silently
 
 clean:
 	rm -f *.o *~ *.bak 
@@ -52,10 +48,10 @@ realclean: clean
 	$(CC) -M $(CFLAGS) -c $(SRCS1) $(SRCS2) >.depend
 
 depend: .depend
-	@# nothing to be done, but silently
+	@# nothing to do here but do it silently
 
 install: install-stamp
-	@# nothing to be done, but silently
+	@# nothing to do here but do it silently
 
 install-stamp: $(ALL_TARGETS)
 	cp -f $(TARGET1) $(bindir)/$(EXE1)
@@ -87,4 +83,8 @@ $(TARGET2):  $(OBJS2)
 	$(CC) -o $@ $< $(CFLAGS)
 
 .PHONY: depend all clean realclean install
-# DO NOT DELETE
+
+
+### --------------------------------------------------------------------------
+###                   End of FILE: util/dll-src/Makefile
+### ==========================================================================
