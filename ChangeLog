@@ -1,6 +1,9 @@
 2003-02-13  Stephen M Moraco <stephmo@users.sourceforge.net>
 
+  * Applied Patches.  For more detail on each see the closed
+    patches still on file at the brickOS sourceforge project web
   * Applied Patch 651692: Add setjmp/longjmp (ANSI C support)
+  * Applied Patch 668115: Make brickOS work with up-to-date binutils
   * Applied Patch 673995: Patch brickos 0.2.6.09 for *BSD
 
 2003-01-11  Ed Manlove <emanlove@users.sourceforge.net>
@@ -316,4 +319,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.21 2003/02/14 05:40:50 stephmo Exp $
+$Id: ChangeLog,v 1.22 2003/02/14 05:48:49 stephmo Exp $
