@@ -1,3 +1,10 @@
+2004-02-16  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Fixed generation of installed Makefile.common had
+    to adjust filter removing all:: target so does not
+    check for ensure configured (add of depend to all
+    caused this target to no-longer be removed, is now)
+  
 2004-02-15  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * fixed lib/float/divsf3.s (Univ. submittal, see source file)
@@ -372,4 +379,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.38 2004/02/16 03:45:29 stephmo Exp $
+$Id: ChangeLog,v 1.39 2004/02/16 22:15:12 stephmo Exp $

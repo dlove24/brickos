@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.18 2004/02/16 21:55:32 stephmo Exp $
+###  $Id: Makefile,v 1.19 2004/02/16 22:15:12 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -84,7 +84,7 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 	@touch $@
 
 clean::
-	rm -f ../Makefile.user.dist ../Makefile.common.dist ../demo/Makefile.dist config.h.dist
+	rm -f ../Makefile.user.dist ../Makefile.common.dist ../demo/Makefile.dist ../demo/c++/Makefile.dist config.h.dist
 
 
 #!/bin/bash -p
