@@ -37,6 +37,12 @@ extern "C" {
 #if defined(CONF_TM) && defined(CONF_CRITICAL_SECTIONS)
 #include <sys/tm.h>
 
+/**
+ * The data type that allows for atomic count operations.
+ * \sa locked_decrement
+ */
+typedef volatile unsigned char atomic_t;
+
 #ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
 //! critical section data structure
 /*! tracks current count (level of nesting)
@@ -45,7 +51,7 @@ extern "C" {
     a critical section.
  */
 struct critsec {
-  unsigned char count;
+  atomic_t count;
   tdata_t* task;
 };
 #endif //  DOXYGEN_SHOULD_SKIP_INTERNALS
@@ -60,7 +66,7 @@ typedef struct critsec critsec_t;
     \return always 0 (currently)
     \sa locked_increment
  */
-extern int locked_decrement(volatile unsigned char* counter);
+extern int locked_decrement(atomic_t* counter);
 
 //! wakeup when critical section is available
 /*! wakeup function used to sleep a task until a critical

@@ -36,9 +36,9 @@ extern "C" {
 #include "../critsec.h"
 
 #if defined(CONF_TM)
-extern volatile unsigned char kernel_critsec_count;
-extern int locked_increment(volatile unsigned char* count);
-extern int locked_decrement(volatile unsigned char* count);
+extern atomic_t kernel_critsec_count;
+extern int locked_increment(atomic_t* count);
+extern int locked_decrement(atomic_t* count);
 #define INITIALIZE_KERNEL_CRITICAL_SECTION() kernel_critsec_count=0
 #define ENTER_KERNEL_CRITICAL_SECTION() locked_increment(&kernel_critsec_count)
 #define LEAVE_KERNEL_CRITICAL_SECTION() locked_decrement(&kernel_critsec_count)
