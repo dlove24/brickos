@@ -1,5 +1,5 @@
 ##
-## legOS - the independent LEGO Mindstorms OS
+## brickOS - the independent LEGO Mindstorms OS
 ## Makefile - allows you to keep the upper hand
 ## (c) 1998 by Markus L. Noga <markus@noga.de>
 ##
@@ -14,7 +14,7 @@ export BRICKOS_ROOT=$(shell cd . && pwd)/
 
 
 #
-#  makefile to build the legOS operating system and demo files
+#  makefile to build the brickOS operating system and demo files
 # 
 SUBDIRS=util lib boot demo
 

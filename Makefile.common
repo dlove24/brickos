@@ -1,5 +1,5 @@
 ##
-## legOS - the independent LEGO Mindstorms OS
+## brickOS - the independent LEGO Mindstorms OS
 ## Makefile.common - common make rules
 ## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>
 ##
@@ -14,6 +14,13 @@
 # DJGPP does not define OSTYPE
 # Newer version of Cygwin do not define OSTYPE
 #
+
+###
+###  by type
+###
+#  Debian/GNU Linux (on all 11 platforms)
+#    OSTYPE = linux-gnu , uname = Linux
+
 ifndef OSTYPE
 	# Last resort if uname is unavailable
 	OSTYPE=$(shell uname)
@@ -27,6 +34,15 @@ HMSTOOLDIR=/usr/local/crossgcc
 #   export HMSTOOLDIR=/usr; make -e 
 TOOLPREFIX=$(HMSTOOLDIR)/h8300-hitachi-hms/bin/h8300-hitachi-hms-
 SED_SFLAG=
+
+ifneq (,$(findstring $(OSTYPE),linux-gnu Linux))
+
+#  Debian GNU/Linux
+HMSTOOLDIR=/usr
+TOOLPREFIX=$(HMSTOOLDIR)/h8300-hitachi-hms/bin/h8300-hitachi-hms-
+SED_SFLAG=
+
+endif
 
 #
 # WindowsNT/Cygnwin, test against several values:
@@ -91,7 +107,7 @@ endif
 ifndef BRICKOS_ROOT
 #  export BRICKOS_ROOT=$(shell pwd | sed -e "s/brickos.*/brickos/")/
 #  export BRICKOS_ROOT=$(shell pwd | sed -e "s/brickos.*/brickos/i")/
-  export BRICKOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(brickos.*\)\\/.*/\1\2/$(SED_SFLAG)")/
+#  export BRICKOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(brickos.*\)\\/.*/\1\2/$(SED_SFLAG)")/
 
 endif
 

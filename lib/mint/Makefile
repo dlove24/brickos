@@ -1,5 +1,5 @@
 ##
-## legOS - the independent LEGO Mindstorms OS
+## brickOS - the independent LEGO Mindstorms OS
 ## Makefile - allows you to keep the upper hand
 ## (c) 1998 by Markus L. Noga <markus@noga.de>
 ##
