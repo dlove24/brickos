@@ -35,7 +35,6 @@ c++:
 realclean:
 	for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i realclean ; done
 	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
-	rm -f doc/html/*.html doc/html/*.gif doc/html/*.css doc/html/*.js doc/html/*.dot
 	rm -rf doc/html-c++ doc/html-c doc/rtf-c doc/rtf-c++ doc/rtf
 	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag  *.out
 
