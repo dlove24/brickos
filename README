@@ -31,8 +31,8 @@ For your own projects,
 
 In case anyone is wondering, dll is short for dynamic linker and loader.
 
-For more documentation, look in doc/ and on the web at
-http://legOS.sourceforge.net/HOWTO/
+For more documentation, see in docs on the web at
+http://brickOS.sourceforge.net/HOWTO/
 
 ------------------------------------------------------------------------
-legOS Copyright (C) 1998-2002 by Markus L. Noga <markus@noga.de>
+legOS/brickOS Copyright (C) 1998-2002 by Markus L. Noga <markus@noga.de>

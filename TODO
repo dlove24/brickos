@@ -1,4 +1,3 @@
-- change our name due to LEGO Company request
 - improve sensor detection.response times (see: priority patch, dat4 project)
 - add assignment of HOSTID for LNP at download time (firmdl3)
 - timeout handling needs improvement. if the RCX transmits data, the IR
@@ -13,13 +12,10 @@ Many, many ideas from the mailing list, mainly from Eddie & Paolo:
 - Implement event queues?
 - Implement a timer function?
 - Just rewrite battery task as a real task (systimer is oversized)
-- Introduce a new Makefile.Config with all Makefiles definitio and
-  test for presence of Perl during make process.
 - Debug functions via LNP. Paolo already have a prototype.
-- Remote control of RCX via LNP. Maybe better in a userspace task.
 
 Wishlist:
 - Standardize all platforms on gcc 2.95 for compatibility.
 - PHP-based web compiler hosted at sourceforge.
-- Finally, the PHP-based documentation commentary system I (Luis) keep
+- Finally, the PHP-based documentation commentary system Luis keeps
   promising.

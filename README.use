@@ -1,0 +1,39 @@
+brickOS README.use - easiest forms of interaction with source 
+
+Updated: 16 Oct 2002
+------------------------------------------------------------------------------
+
+The brickOS make system is written to accommodate the following styles 
+of use: 
+
+  (s1) A person who is only interested in writing code for robots which 
+       are running a pre-built brickOS. 
+
+  (s2a) A person who wants to reconfigure the brickOS operating system 
+        to enable devices or services not normally enabled in the
+		default build.
+
+  (s2b) A person who wants to experiment with the brickOS operating system 
+        directly, modifying and testing it 
+
+  (s3) A person who wants to do all of these from time to time. 
+
+
+------------------------------------------------------------------------------
+[s1] You want to get right to progranmming your creations and don't want to
+     experiment with modifying brickOS at this time.
+
+	 Get started by locating a pre-built environment if one exists.
+	 Install it and then off you go to create programs for your creations
+
+	 If a pre-built environment doesn't exist get the latest source 
+	 .tar.gz file.  unpack it then build and install it.
+
+	 After install, you are ready to start.  Rather than our describing 
+	 how to do this let's walk thru a quick example...
+
+	            ZZZZZZZZZZZZZZZ nore to do ZZZZZZZZZZZZZZZZZZ
+
+------------------------------------------------------------------------------
+                     End of FILE: README.use
+------------------------------------------------------------------------------
