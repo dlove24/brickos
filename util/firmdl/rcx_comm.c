@@ -165,7 +165,7 @@ static int nbread (FILEDESCR fd, void *buf, int maxlen, int timeout)
         }
 	}
 #else
-       if (tty_usb == 1)
+     if (tty_usb == 1)
 	 {
 	    // LegoUSB doesn't work with select(), so just set a read
 	    // timeout and then later check to see if the read timed out
@@ -173,33 +173,35 @@ static int nbread (FILEDESCR fd, void *buf, int maxlen, int timeout)
 
 	    ioctl(fd, _IOW('u', 0xc8, int), timeout);
 	 }
-       else
+     else
 	 {
-	FD_ZERO(&fds);
-	FD_SET(fd, &fds);
+		FD_ZERO(&fds);
+		FD_SET(fd, &fds);
 
-	tv.tv_sec = timeout / 1000;
-	tv.tv_usec = (timeout % 1000) * 1000;
+		tv.tv_sec = timeout / 1000;
+		tv.tv_usec = (timeout % 1000) * 1000;
 
-	if (select(fd+1, &fds, NULL, NULL, &tv) < 0) {
-	    perror("select");
-	    exit(1);
-	}
-	if (!FD_ISSET(fd, &fds))
-	    break;
-	 }
+		if (select(fd+1, &fds, NULL, NULL, &tv) < 0) {
+		    perror("select");
+		    exit(1);
+		}
+		if (!FD_ISSET(fd, &fds))
+		    break;
+		}
 
-	count = read(fd, &bufp[len], maxlen - len);
+		count = read(fd, &bufp[len], maxlen - len);
 
-        // If no data was read from a USB tower and the read() timed out,
-	// go ahead and assume we are done reading data.
-        if (tty_usb == 1 && count == -1 && errno == ETIMEDOUT)
-	 break;
-
-	if (count < 0) {
-	    perror("read");
-	    exit(1);
-	}
+	    // If no data was read from a USB tower and the read() timed out,
+		// go ahead and assume we are done reading data.
+        if (tty_usb == 1 && count == -1 && errno == ETIMEDOUT) 
+		{
+			break;
+		}
+	
+		if (count < 0) {
+		    perror("read");
+		    exit(1);
+		}
 
         len += count;
 #endif
@@ -214,7 +216,7 @@ static void rx_flush(FILEDESCR fd)
 {
 #if defined(_WIN32)
     if (tty_usb == 0) {
-	PurgeComm(fd, PURGE_RXABORT | PURGE_RXCLEAR);
+	  PurgeComm(fd, PURGE_RXABORT | PURGE_RXCLEAR);
     } else {
       char echo[BUFFERSIZE];
       nbread(fd, echo, BUFFERSIZE, 200);
@@ -274,11 +276,12 @@ FILEDESCR rcx_init(char *tty, int is_fast)
     if (__comm_debug) printf("mode = %s\n", is_fast ? "fast" : "slow");
 
 #if defined(_WIN32)
+	// have windows platform I/O
     if ((fd = CreateFile(tty, GENERIC_READ | GENERIC_WRITE,
                               0, NULL, OPEN_EXISTING,
                               0, NULL)) == INVALID_HANDLE_VALUE) {
-	fprintf(stderr, "Error %lu: Opening %s\n", (unsigned long) GetLastError(), tty);
-	exit(1);
+		fprintf(stderr, "Error %lu: Opening %s\n", (unsigned long) GetLastError(), tty);
+		exit(1);
     }
 
     //These settings don't apply to the USB tower, so if{} them out.
@@ -309,7 +312,7 @@ FILEDESCR rcx_init(char *tty, int is_fast)
     } // usb
 
 #else
-
+	// have linux platform I/O
     if ((fd = open(tty, O_RDWR)) < 0) {
 		fprintf(stderr,"ERROR: tty=%s, ",tty);
 		perror("open");
@@ -317,29 +320,23 @@ FILEDESCR rcx_init(char *tty, int is_fast)
     }
 
     if (tty_usb == 0){
-    if (!isatty(fd)) {
-	close(fd);
-	fprintf(stderr, "%s: not a tty\n", tty);
-	exit(1);
-    }
+	    if (!isatty(fd)) {
+			close(fd);
+			fprintf(stderr, "%s: not a tty\n", tty);
+			exit(1);
+	    }
 
-    memset(&ios, 0, sizeof(ios));
+	    memset(&ios, 0, sizeof(ios));
 
-    if (is_fast) {
-	ios.c_cflag = CREAD | CLOCAL | CS8;
-	cfsetispeed(&ios, B4800);
-	cfsetospeed(&ios, B4800);
-    }
-    else {
-	ios.c_cflag = CREAD | CLOCAL | CS8 | PARENB | PARODD;
-	cfsetispeed(&ios, B2400);
-	cfsetospeed(&ios, B2400);
-    }
+	    ios.c_cflag = CREAD | CLOCAL | CS8 | (is_fast ? 0 : PARENB | PARODD);
+	
+	    cfsetispeed(&ios, is_fast ? B4800 : B2400);
+	    cfsetospeed(&ios, is_fast ? B4800 : B2400);
 
-    if (tcsetattr(fd, TCSANOW, &ios) == -1) {
-	perror("tcsetattr");
-	exit(1);
-    }
+	    if (tcsetattr(fd, TCSANOW, &ios) == -1) {
+			perror("tcsetattr");
+			exit(1);
+	    }
     }
 #endif
 
