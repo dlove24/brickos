@@ -1,5 +1,5 @@
 #!/bin/bash -p
-# $Id: configure,v 1.4 2002/10/23 06:04:31 stephmo Exp $
+# $Id: configure,v 1.5 2002/10/23 06:22:42 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
@@ -9,6 +9,7 @@
 # 21.10.02	-	Version 1.0	Updates	  S. Moraco
 #										stephen@debian.org
 #
+echo ""
 echo "Welcome to the brickOS Makefile configurator."
 echo "Attempting to find the Hitachi gcc compiler. (This may take some time.)"
 echo ""
@@ -84,22 +85,6 @@ fi
 TOOLPREFIX=$(echo $HMSFULL | sed "s/gcc.*//")
 
 echo " - Toolprefix = "$TOOLPREFIX
-#
-# look for .brickOS subdir in home dir, create it if not found
-#
-RCDIR=$HOME/.brickos
-VARS_FSPEC="$RCDIR/Makefile.vars"
-if ! test -d "$RCDIR"
-then
-  echo " - BrickOS hidden directory not found, creating it..."
-  mkdir "$RCDIR"
-  if ! test -d "$RCDIR"
-  then
-     echo "ERROR- Failed to create [$RCDIR]"
-     exit 2
-  fi
-fi
-
 
 #
 #  look for .exe in the compiler name. This indicates Windows environment
@@ -107,6 +92,7 @@ fi
 #
 case "$HMSFULL" in
 *.exe) 
+	   echo " - Found Cygwin/DJGPP system"
        SED_SFLAG=1
        EXT=.exe
        CC=gcc
@@ -115,6 +101,7 @@ case "$HMSFULL" in
 	   ;;
 
 *)     
+	   echo " - Found Linux/Unix system"
        SED_SFLAG=""
        EXT=""
        CC=cc
@@ -122,11 +109,16 @@ case "$HMSFULL" in
 	   CFLG_PE=""
 	   ;;
 esac
+echo ""
 
 MAKEDEPEND="\$(CC) -M" 
 BRICKOS_ROOT=`pwd`
 
-cat Makefile.common | awk -v sedFlag=$SED_FLAG \
+CURR_MAKEFILE=Makefile.common
+NEW_MAKEFILE=${CURR_MAKEFILE}.new
+PRIOR_MAKEFILE=${CURR_MAKEFILE}.bak
+
+cat $CURR_MAKEFILE | awk -v sedFlag=$SED_FLAG \
                           -v ext=$EXT \
 						  -v cc=$CC \
 						  -v cflags="$CFLAGS" \
@@ -161,17 +153,22 @@ cat Makefile.common | awk -v sedFlag=$SED_FLAG \
 						  	print $0
 						  }
 						  END {
-						  }' >Makefile.common.new
+						  }' >$NEW_MAKEFILE
 
-cmp -s Makefile.common Makefile.common.new
+cmp -s $CURR_MAKEFILE $NEW_MAKEFILE
 RET_CODE=$?
 if test $RET_CODE == 1
 then
-	rm -f Makefile.common.bak
-	mv Makefile.common Makefile.common.bak
-	mv Makefile.common.new Makefile.common
+	rm -f $NEW_MAKEFILE
+	mv $CURR_MAKEFILE $NEW_MAKEFILE
+	mv $NEW_MAKEFILE $CURR_MAKEFILE
+else
+	rm -f $NEW_MAKEFILE
+	echo "configure: no configuration changes needed, nothing done."
+	echo ""
 fi
 
-touch .configured.flg
+touch .configured.flg	#  tell Make system we are now configured
 
 exit 0
+
