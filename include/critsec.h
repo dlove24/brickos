@@ -60,7 +60,7 @@ typedef struct critsec critsec_t;
     \return always 0 (currently)
     \sa locked_increment
  */
-extern int locked_decrement(unsigned char* counter);
+extern int locked_decrement(volatile unsigned char* counter);
 
 //! wakeup when critical section is available
 /*! wakeup function used to sleep a task until a critical

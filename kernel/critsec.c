@@ -24,7 +24,7 @@ volatile unsigned char kernel_critsec_count;
     \return always 0 (currently)
     \sa locked_decrement
  */
-int locked_increment(unsigned char* counter);
+int locked_increment(volatile unsigned char* counter);
 __asm__("
 .text
 .globl _locked_increment
@@ -49,7 +49,7 @@ __asm__("
     \return always 0 (currently)
     \sa locked_increment
  */
-int locked_decrement(unsigned char* counter);
+int locked_decrement(volatile unsigned char* counter);
 __asm__("
 .text
 .globl _locked_decrement

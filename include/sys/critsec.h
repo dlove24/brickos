@@ -37,8 +37,8 @@ extern "C" {
 
 #if defined(CONF_TM)
 extern volatile unsigned char kernel_critsec_count;
-extern int locked_increment(unsigned char* count);
-extern int locked_decrement(unsigned char* count);
+extern int locked_increment(volatile unsigned char* count);
+extern int locked_decrement(volatile unsigned char* count);
 #define INITIALIZE_KERNEL_CRITICAL_SECTION() kernel_critsec_count=0
 #define ENTER_KERNEL_CRITICAL_SECTION() locked_increment(&kernel_critsec_count)
 #define LEAVE_KERNEL_CRITICAL_SECTION() locked_decrement(&kernel_critsec_count)
