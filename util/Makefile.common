@@ -22,7 +22,7 @@ CFLAGS=-O2 -Wall
 #
 # Windows/Cygnwin, test against several values:
 #
-ifneq (,$(findstring $(OSTYPE),cygwin32 cygwin WindowsNT Windows_NT)||$(findstring CYGWIN,$(OSTYPE)))
+ifneq (,$(strip $(findstring $(OSTYPE),cygwin32 cygwin WindowsNT Windows_NT) $(findstring CYGWIN,$(OSTYPE))))
 	EXT=.exe
 	CC =gcc
 	CFLAGS+=-D_WIN32
