@@ -1,18 +1,22 @@
-#!/bin/bash -p
-# $Id: configure,v 1.9 2004/01/25 04:34:52 stephmo Exp $
+#!/bin/sh -p
+# $Id: configure,v 1.10 2004/01/25 05:25:45 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
 # 15.10.02	-	Version 1.0		M. Obenland
-#										obenland@t-online.de
+#						obenland@t-online.de
 #
 # 21.10.02	-	Version 1.0	Updates	  S. Moraco
-#										stephen@debian.org
+#						stephen@debian.org
 #
-# 31.10.02  -  Version 1.0a Changed name seperation routine
+# 31.10.02  -  Version 1.0a Changed name separation routine
 #                           to use dirname / basename to handle
 #                           'gcc' in pathname    M. Obenland
 #                           obenland@t-online.de
+#
+# 01.06.03  -  Version 1.10 Changed array of search paths to a list
+#                           for compatibility with POSIX /bin/sh
+#                           F. Gifford fgiff@users.sourceforge.net
 #
 
 echo ""
@@ -25,26 +29,24 @@ echo ""
 #    so can avoid expensive search
 #
 #   known PATHs in which h8*gcc may be found
-TOOL_PATH[0]="/usr/local/bin";
-TOOL_PATH[1]="/usr/h8300-hitachi-hms/bin";
-TOOL_PATH[2]="/usr/bin";
-TOOL_PATH[3]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
+TOOL_PATH="/usr/local/bin
+           /usr/bin
+           /usr/h8300-hitachi-hms/bin
+           /usr/local/crossgcc/h8300-hitachi-hms/bin"
 
 #   known PREFIXs of h8*gcc
-TOOL_PREFIX[0]="h8300-hms-";
-TOOL_PREFIX[1]="h8300-hitachi-hms-";
-TOOL_PREFIX[2]="h8300hms-";
+TOOL_PREFIX="h8300-hms-
+             h8300hms-
+             h8300-hitachi-hms-"
 
 HMSFULL=""
-pathIndex=0
 #  for each path, do...
-while test $pathIndex -lt ${#TOOL_PATH[*]}
+for TOOL_PATH_CANDIDATE in $TOOL_PATH
 do
-  prefixIndex=0
   #  for each basename prefix. do...
-  while test $prefixIndex -lt ${#TOOL_PREFIX[*]}
+  for TOOL_PREFIX_CANDIDATE in $TOOL_PREFIX
   do
-    GCCBASE="${TOOL_PATH[$pathIndex]}/${TOOL_PREFIX[$prefixIndex]}gcc"
+    GCCBASE="$TOOL_PATH_CANDIDATE/${TOOL_PREFIX_CANDIDATE}gcc"
     #echo "(DBG)Testing GCCBASE=[$GCCBASE]"
     #  for each suffix (.exe and empty str), do...
     for EXT in ".exe" ""
@@ -60,15 +62,12 @@ do
     then
       break  #  have answer, exit middle
     fi
-    prefixIndex="`expr $prefixIndex + 1`"  #  increment our prefixIndex
   done
   if test -n "$HMSFULL"
   then
     break  #  have answer, exit outer loop
   fi
-  pathIndex="`expr $pathIndex + 1`"  #  increment our pathIndex
 done
-
 
 #
 #  if didn't find in expected location...
@@ -105,19 +104,19 @@ echo " - Toolprefix = "$TOOLPREFIX
 case "$HMSFULL" in
 *.exe)
 	   echo " - Found Cygwin/DJGPP system"
-       SED_SFLAG=1
-       EXT=.exe
-       CC=gcc
-       CFLAGS=-D_WIN32
+	   SED_SFLAG=1
+	   EXT=.exe
+	   CC=gcc
+	   CFLAGS=-D_WIN32
 	   CFLG_PE='+'
 	   ;;
 
 *)
 	   echo " - Found Linux/Unix system"
-       SED_SFLAG=""
-       EXT=""
-       CC=cc
-       CFLAGS="-O2 -Wall"
+	   SED_SFLAG=""
+	   EXT=""
+	   CC=cc
+	   CFLAGS="-O2 -Wall"
 	   CFLG_PE=""
 	   ;;
 esac
@@ -169,7 +168,7 @@ cat $CURR_MAKEFILE | awk -v sedFlag=$SED_FLAG \
 
 cmp -s $CURR_MAKEFILE $NEW_MAKEFILE
 RET_CODE=$?
-if test $RET_CODE == 1
+if test $RET_CODE -eq 1
 then
 	rm -f $PRIOR_MAKEFILE
 	mv $CURR_MAKEFILE $PRIOR_MAKEFILE
