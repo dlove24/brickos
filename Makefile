@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.18 2002/10/23 08:00:02 stephmo Exp $
+###  $Id: Makefile,v 1.19 2002/10/24 03:18:16 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -39,7 +39,7 @@ depend tag clean realclean uninstall::
 realclean:: clean
 	rm -f tags TAGS *.bak
 
-doc docs-install::
+docs-build docs-install::
 	$(MAKE) $(MFLAGS) -C doc $@
 
 
@@ -166,9 +166,9 @@ Doxyfile-kern-report: .Doxyfile-kern-doneflag
 #
 #  make all API documentation
 #
-api-doc: html-c html-c++ html-kern
+api-docs-build: html-c html-c++ html-kern
 
-docs: doc api-doc
+docs: docs-build api-docs-build
 
 #
 #  make distribution files for all API documentation
