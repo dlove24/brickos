@@ -1,3 +1,9 @@
+2003-03-01  Paolo Masetti <paolom@users.sourceforge.net>
+
+  * Fixed executables list in util\makefiles. Now make strip works.
+  * Revised doc/INSTALL-cygwin.sgml to reflect actual release.
+  * Changed filename in comments for demo/rover.c.
+
 2003-02-24  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * Adjusted motor direction display on LCD (fix brake display)
@@ -336,4 +342,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.27 2003/02/25 04:29:06 stephmo Exp $
+$Id: ChangeLog,v 1.28 2003/03/02 16:48:26 paolom Exp $

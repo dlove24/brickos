@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
+###  $Id: Makefile,v 1.7 2003/03/02 16:48:27 paolom Exp $
 ###  FILE: util/Makefile - make the hosted utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -9,7 +9,7 @@ BUILDING_HOST_UTILS = true
 include ../Makefile.common
 
 # Define here the executable files to be build
-EXECUTABLES    = fontdesign 
+EXECUTABLES    = fontdesign dll firmdl3
 UTILITY_SCRIPT = merge-map
 
 # Needed for DOS/WIN32 platforms

@@ -1,4 +1,4 @@
-/*! \file   simple-rover.c
+/*! \file   rover.c
     \brief  A simple rover demo
     \author Markus L. Noga <markus@noga.de>
 
