@@ -93,56 +93,56 @@ static void print_header(FILE *f,
 		         const char *now,const char *kernel_name,
 			 unsigned ram,unsigned kernlen, unsigned ramlen) {
     fprintf(f,
-"/*
- * 
- *  dynamic linker command file
- *  generated: %s
- *  kernel   : %s
- *  app start: 0x%04x
- * 
- *  BrickOS for LEGO(R) Mindstorms(TM)
- *  Originally: legOS - the independent LEGO Mindstorms OS
- *              (c) 1999 by Markus L. Noga <markus@noga.de>    
- * 
- */
-
-OUTPUT_FORMAT(\"symbolsrec\")
-OUTPUT_ARCH(h8300)
-ENTRY(\"_main\")
-
-MEMORY {
-  rom   : o = 0x0000, l = 0x8000
-  kern  : o = 0x8000, l = 0x%04x
-  ram   : o = 0x%04x, l = 0x%04x
-  stack : o = 0xfefc, l = 0x0004
-  eight : o = 0xff00, l = 0x0100
-}
-
-SECTIONS {
-
-  .rom : {
-    /* used rom functions */
-    
-    _rom_reset_vector = 0x0000;
-        
-    _reset        = 0x03ae ;
-    lcd_show      = 0x1b62 ;
-    lcd_hide      = 0x1e4a ;
-    lcd_number    = 0x1ff2 ;
-    lcd_clear     = 0x27ac ;
-    power_init    = 0x2964 ;
-    sound_system  = 0x299a ;
-    power_off     = 0x2a62 ;
-    sound_playing = 0x3ccc ;
-
-    _rom_dummy_handler   = 0x046a ;
-    _rom_ocia_handler    = 0x04cc ;
-    _rom_ocia_return     = 0x04d4 ;
-    
-  } > rom
-
-  .kernel :	{
-    /* kernel symbols (relative to 0x8000) */
+"/*\n\
+ * \n\
+ *  dynamic linker command file\n\
+ *  generated: %s\n\
+ *  kernel   : %s\n\
+ *  app start: 0x%04x\n\
+ * \n\
+ *  BrickOS for LEGO(R) Mindstorms(TM)\n\
+ *  Originally: legOS - the independent LEGO Mindstorms OS\n\
+ *              (c) 1999 by Markus L. Noga <markus@noga.de>    \n\
+ * \n\
+ */\n\
+\n\
+OUTPUT_FORMAT(\"symbolsrec\")\n\
+OUTPUT_ARCH(h8300)\n\
+ENTRY(\"_main\")\n\
+\n\
+MEMORY {\n\
+  rom   : o = 0x0000, l = 0x8000\n\
+  kern  : o = 0x8000, l = 0x%04x\n\
+  ram   : o = 0x%04x, l = 0x%04x\n\
+  stack : o = 0xfefc, l = 0x0004\n\
+  eight : o = 0xff00, l = 0x0100\n\
+}\n\
+\n\
+SECTIONS {\n\
+\n\
+  .rom : {\n\
+    /* used rom functions */\n\
+    \n\
+    _rom_reset_vector = 0x0000;\n\
+        \n\
+    _reset        = 0x03ae ;\n\
+    lcd_show      = 0x1b62 ;\n\
+    lcd_hide      = 0x1e4a ;\n\
+    lcd_number    = 0x1ff2 ;\n\
+    lcd_clear     = 0x27ac ;\n\
+    power_init    = 0x2964 ;\n\
+    sound_system  = 0x299a ;\n\
+    power_off     = 0x2a62 ;\n\
+    sound_playing = 0x3ccc ;\n\
+\n\
+    _rom_dummy_handler   = 0x046a ;\n\
+    _rom_ocia_handler    = 0x04cc ;\n\
+    _rom_ocia_return     = 0x04d4 ;\n\
+    \n\
+  } > rom\n\
+\n\
+  .kernel :	{\n\
+    /* kernel symbols (relative to 0x8000) */\n\
 ",
     now,kernel_name,ram,
     kernlen,ram,ramlen);
@@ -152,128 +152,128 @@ SECTIONS {
 //! print the linker script footer.
 static void print_footer(FILE *f) {
   fprintf(f,
-"    /* end of kernel symbols */
-  }  > kern
-      
-  .text BLOCK(2) :	{
-    ___text = . ;
-    *(.text) 	      /* must start with text for clean entry */			
-    *(.rodata)
-    *(.strings)
-    *(.vectors)       /* vectors region (dummy) */
-    *(.persist)
-
-    ___text_end = . ;
-  }  > ram
-
-  .tors BLOCK(2) : {
-    ___ctors = . ;
-    *(.ctors)
-    ___ctors_end = . ;
-    ___dtors = . ;
-    *(.dtors)
-    ___dtors_end = . ;
-  }  > ram
-
-  .data BLOCK(2) : {
-    ___data = . ;
-    *(.data)
-    *(.tiny)
-    ___data_end = . ;
-  }  > ram
-
-  .bss BLOCK(2) : {
-    ___bss = . ;
-    *(.bss)
-    *(COMMON)
-    ___bss_end = ALIGN(2) ;
-  }  >ram
-
-  .stack : {
-    _stack = . ; 
-    *(.stack)
-  }  > topram
-
-  .eight 0xff00: {
-    *(.eight)
-
-    /* on-chip module registers (relative to 0xff00) */
-
-    _T_IER = 0x90 ;
-    _T_CSR = 0x91 ;
-    _T_CNT = 0x92 ;
-    _T_OCRA = 0x94 ;
-    _T_OCRB = 0x94 ;
-    _T_CR = 0x96 ;
-    _T_OCR = 0x97 ;
-    _T_ICRA = 0x98 ;
-    _T_ICRB = 0x9a ;
-    _T_ICRC = 0x9c ;
-    _T_ICRD = 0x9e ;
-    _WDT_CSR = 0xa8 ;
-    _WDT_CNT = 0xa9 ;
-    _PORT1_PCR = 0xac ;
-    _PORT2_PCR = 0xad ;
-    _PORT3_PCR = 0xae ;
-    _PORT1_DDR = 0xb0 ;
-    _PORT2_DDR = 0xb1 ;
-    _PORT1 = 0xb2 ;
-    _PORT2 = 0xb3 ;
-    _PORT3_DDR = 0xb4 ;
-    _PORT4_DDR = 0xb5 ;
-    _PORT3 = 0xb6 ;
-    _PORT4 = 0xb7 ;
-    _PORT5_DDR = 0xb8 ;
-    _PORT6_DDR = 0xb9 ;
-    _PORT5 = 0xba ;
-    _PORT6 = 0xbb ;
-    _PORT7 = 0xbe ;
-    _STCR = 0xc3 ;
-    _SYSCR = 0xc4 ;
-    _T0_CR = 0xc8 ;
-    _T0_CSR = 0xc9 ;
-    _T0_CORA = 0xca ;
-    _T0_CORB = 0xcb ;
-    _T0_CNT = 0xcc ;
-    _T1_CR = 0xd0 ;
-    _T1_CSR = 0xd1 ;
-    _T1_CORA = 0xd2 ;
-    _T1_CORB = 0xd3 ;
-    _T1_CNT = 0xd4 ;
-    _S_MR = 0xd8 ;
-    _S_BRR = 0xd9 ;
-    _S_CR = 0xda ;
-    _S_TDR = 0xdb ;
-    _S_SR = 0xdc ;
-    _S_RDR = 0xdd ;
-    _AD_A = 0xe0 ;
-    _AD_A_H = 0xe0 ;
-    _AD_A_L = 0xe1 ;
-    _AD_B = 0xe2 ;
-    _AD_B_H = 0xe2 ;
-    _AD_B_L = 0xe3 ;
-    _AD_C = 0xe4 ;
-    _AD_C_H = 0xe4 ;
-    _AD_C_L = 0xe5 ;
-    _AD_D = 0xe6 ;
-    _AD_D_H = 0xe6 ;
-    _AD_D_L = 0xe7 ;
-    _AD_CSR = 0xe8 ;
-    _AD_CR = 0xe9 ;
-    
-    /* end of on-chip module registers */
-    
-  }  > eight
-
-  .stab 0 (NOLOAD) : {
-    [ .stab ]
-  }
-
-  .stabstr 0 (NOLOAD) : {
-    [ .stabstr ]
-  }
-
-} /* SECTIONS */
+"    /* end of kernel symbols */\n\
+  }  > kern\n\
+      \n\
+  .text BLOCK(2) :	{\n\
+    ___text = . ;\n\
+    *(.text) 	      /* must start with text for clean entry */			\n\
+    *(.rodata)\n\
+    *(.strings)\n\
+    *(.vectors)       /* vectors region (dummy) */\n\
+    *(.persist)\n\
+\n\
+    ___text_end = . ;\n\
+  }  > ram\n\
+\n\
+  .tors BLOCK(2) : {\n\
+    ___ctors = . ;\n\
+    *(.ctors)\n\
+    ___ctors_end = . ;\n\
+    ___dtors = . ;\n\
+    *(.dtors)\n\
+    ___dtors_end = . ;\n\
+  }  > ram\n\
+\n\
+  .data BLOCK(2) : {\n\
+    ___data = . ;\n\
+    *(.data)\n\
+    *(.tiny)\n\
+    ___data_end = . ;\n\
+  }  > ram\n\
+\n\
+  .bss BLOCK(2) : {\n\
+    ___bss = . ;\n\
+    *(.bss)\n\
+    *(COMMON)\n\
+    ___bss_end = ALIGN(2) ;\n\
+  }  >ram\n\
+\n\
+  .stack : {\n\
+    _stack = . ; \n\
+    *(.stack)\n\
+  }  > topram\n\
+\n\
+  .eight 0xff00: {\n\
+    *(.eight)\n\
+\n\
+    /* on-chip module registers (relative to 0xff00) */\n\
+\n\
+    _T_IER = 0x90 ;\n\
+    _T_CSR = 0x91 ;\n\
+    _T_CNT = 0x92 ;\n\
+    _T_OCRA = 0x94 ;\n\
+    _T_OCRB = 0x94 ;\n\
+    _T_CR = 0x96 ;\n\
+    _T_OCR = 0x97 ;\n\
+    _T_ICRA = 0x98 ;\n\
+    _T_ICRB = 0x9a ;\n\
+    _T_ICRC = 0x9c ;\n\
+    _T_ICRD = 0x9e ;\n\
+    _WDT_CSR = 0xa8 ;\n\
+    _WDT_CNT = 0xa9 ;\n\
+    _PORT1_PCR = 0xac ;\n\
+    _PORT2_PCR = 0xad ;\n\
+    _PORT3_PCR = 0xae ;\n\
+    _PORT1_DDR = 0xb0 ;\n\
+    _PORT2_DDR = 0xb1 ;\n\
+    _PORT1 = 0xb2 ;\n\
+    _PORT2 = 0xb3 ;\n\
+    _PORT3_DDR = 0xb4 ;\n\
+    _PORT4_DDR = 0xb5 ;\n\
+    _PORT3 = 0xb6 ;\n\
+    _PORT4 = 0xb7 ;\n\
+    _PORT5_DDR = 0xb8 ;\n\
+    _PORT6_DDR = 0xb9 ;\n\
+    _PORT5 = 0xba ;\n\
+    _PORT6 = 0xbb ;\n\
+    _PORT7 = 0xbe ;\n\
+    _STCR = 0xc3 ;\n\
+    _SYSCR = 0xc4 ;\n\
+    _T0_CR = 0xc8 ;\n\
+    _T0_CSR = 0xc9 ;\n\
+    _T0_CORA = 0xca ;\n\
+    _T0_CORB = 0xcb ;\n\
+    _T0_CNT = 0xcc ;\n\
+    _T1_CR = 0xd0 ;\n\
+    _T1_CSR = 0xd1 ;\n\
+    _T1_CORA = 0xd2 ;\n\
+    _T1_CORB = 0xd3 ;\n\
+    _T1_CNT = 0xd4 ;\n\
+    _S_MR = 0xd8 ;\n\
+    _S_BRR = 0xd9 ;\n\
+    _S_CR = 0xda ;\n\
+    _S_TDR = 0xdb ;\n\
+    _S_SR = 0xdc ;\n\
+    _S_RDR = 0xdd ;\n\
+    _AD_A = 0xe0 ;\n\
+    _AD_A_H = 0xe0 ;\n\
+    _AD_A_L = 0xe1 ;\n\
+    _AD_B = 0xe2 ;\n\
+    _AD_B_H = 0xe2 ;\n\
+    _AD_B_L = 0xe3 ;\n\
+    _AD_C = 0xe4 ;\n\
+    _AD_C_H = 0xe4 ;\n\
+    _AD_C_L = 0xe5 ;\n\
+    _AD_D = 0xe6 ;\n\
+    _AD_D_H = 0xe6 ;\n\
+    _AD_D_L = 0xe7 ;\n\
+    _AD_CSR = 0xe8 ;\n\
+    _AD_CR = 0xe9 ;\n\
+    \n\
+    /* end of on-chip module registers */\n\
+    \n\
+  }  > eight\n\
+\n\
+  .stab 0 (NOLOAD) : {\n\
+    [ .stab ]\n\
+  }\n\
+\n\
+  .stabstr 0 (NOLOAD) : {\n\
+    [ .stabstr ]\n\
+  }\n\
+\n\
+} /* SECTIONS */\n\
 "
     ); 
 }
