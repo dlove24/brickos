@@ -40,9 +40,9 @@ main(int argc,
 #else // CONF_DSOUND
 #warning sound.C requires CONF_DSOUND
 #warning sound demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
   return 0;
 }

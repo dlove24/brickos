@@ -40,9 +40,9 @@ main(int argc,
 #else // CONF_DSENSOR
 #warning touch.pressed.Sensor.C requires CONF_DSENSOR
 #warning touch.pressed.Sensor demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
   return 0;
 }

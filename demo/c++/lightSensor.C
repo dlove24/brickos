@@ -39,10 +39,10 @@ main(int argc,
 #else // CONF_DSENSOR
 #warning lightSensor.C requires CONF_DSENSOR
 #warning lightSensor demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
-  return 0;
+    return 0;
 }
 #endif // CONF_DSENSOR

@@ -37,7 +37,7 @@ main(int argc,
   return 0;
 }
 #else
-#warning rotationSensor.C requires CONF_DSENSOR, CONF_DSENSOR_ROTATION
+#warning rotationSensor.C requires CONF_DSENSOR and CONF_DSENSOR_ROTATION
 #warning rotationSensor.C demo will do nothing.
 int
 main(int argc,

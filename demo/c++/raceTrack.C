@@ -63,11 +63,11 @@ main(int argc,
   return 0;
 }
 #else // CONF_DMOTOR && CONF_DSENSOR
-#warning raceTrack.C requires CONF_DMOTOR && CONF_DSENSOR
+#warning raceTrack.C requires CONF_DMOTOR and CONF_DSENSOR
 #warning raceTrack demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
   return 0;
 }

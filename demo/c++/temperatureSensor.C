@@ -40,9 +40,9 @@ main(int argc,
 #else // CONF_DSENSOR
 #warning temperatureSensor.C requires CONF_DSENSOR
 #warning temperatureSensor demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
 	return 0;
 }

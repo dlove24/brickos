@@ -39,7 +39,7 @@ main(int argc,
   return 0;
 }
 #else
-#warning rotation.velocity.Sensor.C requires CONF_DSENSOR, CONF_DSENSOR_VELOCITY
+#warning rotation.velocity.Sensor.C requires CONF_DSENSOR and CONF_DSENSOR_VELOCITY
 #warning rotation.velocity.Sensor.C demo will do nothing.
 int
 main(int argc,

@@ -53,9 +53,9 @@ main(int argc,
 #else // CONF_DMOTOR
 #warning motor.C requires CONF_DMOTOR
 #warning motor demo will do nothing
-int 
-main(int argc, 
-     char **argv) 
+int
+main(int argc,
+     char **argv)
 {
   return 0;
 }
