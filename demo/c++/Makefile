@@ -24,26 +24,29 @@ DOBJECTS=
 include $(ROOTDIR)Makefile.common
 include $(ROOTDIR)Makefile.user
 
-.PHONY: all html depend tag clean realclean
 
 all: $(PROGRAMS)
+	@# nothing to do here but do it silently
 
-# doc/html subdirectory
-html:
-	doxygen Doxyfile
-
-depend .depend:
+.depend: *.[cC]
 	$(MAKEDEPEND) *.[cC] > .depend
 
+depend: .depend
+
+#  NOTE: --format=1 is not supported on Linux ([ce]tags from emacs2[01] packages)
+#   please set in your own environment
 tag:
-	ctags *.[cC] $(ROOTDIR)include/*.h $(ROOTDIR)include/*/*.h
-	etags *.[cC] $(ROOTDIR)include/*.h $(ROOTDIR)include/*/*.h 
+	-ctags *.[cC] $(ROOTDIR)include/*.h $(ROOTDIR)include/*/*.h
+	-etags *.[cC] $(ROOTDIR)include/*.h $(ROOTDIR)include/*/*.h 
 
 clean:
-	rm -rf .depend* *.o *.dis *.dis2 *~ *.bak *.tgz *.s tags *.ds1 *.ds2 *.dmap *.dcoff *.srec *.map *.coff
+	rm -f *.o *.dis *.dis2 *~ *.bak *.tgz *.s *.ds1 *.ds2 *.dmap *.dcoff
+	rm -f *.srec *.map *.coff
 
 realclean: clean
-	rm -f *.lx
+	rm -f *.lx .depend tags TAGS
+
+.PHONY: all depend tag clean realclean
 
 # depencencies
 #

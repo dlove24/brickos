@@ -1,50 +1,55 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile - allows you to keep the upper hand
-## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>    
-##
+### ==========================================================================
+###  $Id: Makefile,v 1.5 2002/10/15 06:55:24 stephmo Exp $
+###  FILE: demo/Makefile - make the C Language Demo Programs
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
 
 # name for the brickOS kernel
 KERNEL=../boot/brickOS
 
 PROGRAMS=helloworld.lx rover.lx linetrack.lx robots.lx c++.lx sound.lx trailerbot.lx
+
 # extra dynamic sources
 DOBJECTS=
 
-.PHONY: all c++ html depend tag clean realclean
-
-all: $(PROGRAMS) c++
+all:: $(PROGRAMS) 
 
 include ../Makefile.common
 include ../Makefile.user
 
-# doc/html subdirectory
+#  for these targets, pass them on to C++ dir, too
+all clean realclean depend::
+	$(MAKE) -C c++ $@
 
-c++:
-	$(MAKE) -C c++ all
-
-html:
-	doxygen Doxyfile
-
-depend:
+.depend: *.c
 	$(MAKEDEPEND) *.c > .depend
 
-.depend:
-	$(MAKEDEPEND) *.c > .depend
+depend:: .depend
 
+install:
+	@# nothing to do here but do it silently
+
+#  NOTE: --format=1 is not supported on Linux ([ce]tags in emacs2[01] packages)
+#   please set in your own environment
 tag:
-	ctags --format=1 *.c include/*.h include/*/*.h *.c
+	-ctags *.c ../include/*.h ../include/*/*.h 
+	-etags *.c ../include/*.h ../include/*/*.h 
 
-clean:
-	rm -rf .depend* *.o *.dis *.dis2 *~ *.bak *.tgz *.s tags *.ds1 *.ds2 *.dmap *.dcoff *.srec *.map *.coff
-	$(MAKE) -C c++ $@
+clean::
+	rm -f *.o *.dis *.dis2 *~ *.bak *.tgz *.s *.ds1 *.ds2 *.dmap *.dcoff 
+	rm -f *.srec *.map *.coff
 
-realclean: clean
-	rm -f *.lx
-	$(MAKE) -C c++ $@
+realclean:: clean
+	rm -f *.lx .depend tags TAGS
+
+.PHONY: all depend tag clean realclean
 
 # depencencies
 #
 ifndef NODEPS
 include .depend
 endif
+
+### --------------------------------------------------------------------------
+###                          End of FILE: demo/Makefile
+### ==========================================================================
