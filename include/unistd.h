@@ -39,6 +39,7 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
+#ifdef CONF_TM
 /*!  start task executing (with passed paramters)
  *    called from user code
  *  \param code_start the entry-point of the new task
@@ -51,6 +52,28 @@ extern "C" {
 extern tid_t execi(int (*code_start) (int, char **), int argc, char **argv,
 		   priority_t priority, size_t stack_size);
 
+/*! signal shutdown for a task
+ * \param tid TaskId of task to be notified
+ */
+extern void shutdown_task(tid_t tid);
+
+/*! signal shutdown for many tasks
+ * \param flags indicating...
+ * \todo research {flags}, then fix this documentation
+ */
+extern void shutdown_tasks(tflags_t flags);
+
+/*! kill specified (tid) task
+ * \param tid TaskId of task to be killed
+ * \todo  FIXME: this belongs in a different header
+ */
+extern void kill(tid_t tid);
+
+/*! kill all tasks with priority less than or equal equal to p, excluding self.
+ *  \param p priority of tasks at which or below we kill tasks
+ *  \sideeffect All tasks meeting this criteria are killed
+ */
+extern void killall(priority_t p);
 
 /*!  exit task, returning code
  * \param code the exit code to return to the caller
@@ -68,7 +91,6 @@ extern void yield(void);
  *  \return wakeup() return value
  *  \note wakeup function is called in task scheduler context
  */
-#ifdef CONF_TM
 extern wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data);
 
 
@@ -96,34 +118,10 @@ extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
   return res;
 }
 
-
 // Replacement for sleep/msleep if no TM 
 #define	sleep(s)	delay(1000*(s))
 #define msleep(s)	delay(s)
 #endif
-
-/*! signal shutdown for a task
- * \param tid TaskId of task to be notified
- */
-extern void shutdown_task(tid_t tid);
-
-/*! signal shutdown for many tasks
- * \param flags indicating...
- * \todo research {flags}, then fix this documentation
- */
-extern void shutdown_tasks(tflags_t flags);
-
-/*! kill specified (tid) task
- * \param tid TaskId of task to be killed
- * \todo  FIXME: this belongs in a different header
- */
-extern void kill(tid_t tid);
-
-/*! kill all tasks with priority less than or equal equal to p, excluding self.
- *  \param p priority of tasks at which or below we kill tasks
- *  \sideeffect All tasks meeting this criteria are killed
- */
-extern void killall(priority_t p);
 
 #ifdef  __cplusplus
 }
