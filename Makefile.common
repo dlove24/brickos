@@ -74,10 +74,10 @@ export COMPILER_PATH=$(DJGPP_PATH)/cross/bin;$(DJGPP_PATH)/cross/h8300-hms/bin
 #
 endif
 
-# legOS root directory autodetection
+# brickos root directory autodetection
 # if this fails, use:
 #
-# LEGOS_ROOT=$(HOME)/legOS/
+# BRICKOS_ROOT=$(HOME)/brickos/
 #
 # 2000.03.11 - Paolo Masetti <paolo.masetti@itlug.org>
 #
@@ -88,17 +88,16 @@ endif
 #     - Added a better handling for multiple legos directories.
 #       Thanks to Steve Morris <sjm@judgement.com> for hint.
 #
-ifndef LEGOS_ROOT
-#  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/")/
-#  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/i")/
-  export LEGOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(legOS.*\)\\/.*/\1\2/$(SED_SFLAG)")/
+ifndef BRICKOS_ROOT
+#  export BRICKOS_ROOT=$(shell pwd | sed -e "s/brickos.*/brickos/")/
+#  export BRICKOS_ROOT=$(shell pwd | sed -e "s/brickos.*/brickos/i")/
+  export BRICKOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(brickos.*\)\\/.*/\1\2/$(SED_SFLAG)")/
 
 endif
 
-#
-#
+# ---------------------------------------------------------------------------
 # safe to leave everything below untouched
-#
+# ---------------------------------------------------------------------------
 #
 
 # options
@@ -107,11 +106,11 @@ CWARN =-Wall
 #
 # 2000.03.12 - Paolo Masetti <paolo.masetti@itlug.org>
 #
-#	- Added -I$(LEGOS_ROOT)include/lnp in respect of
+#	- Added -I$(BRICKOS_ROOT)include/lnp in respect of
 #	  Martin Corneluis (cornelius@csd.de) fix for lnp includes
 #	  see http://www.lugnet.com/robotics/rcx/legos/?n=498 for details
 #
-CINC  =-I$(LEGOS_ROOT)include -I$(LEGOS_ROOT)include/lnp -I.
+CINC  =-I$(BRICKOS_ROOT)include -I$(BRICKOS_ROOT)include/lnp -I.
 
 CFLAGS=$(COPT) $(CWARN) $(CINC) $(CDEFINES)
 CXXFLAGS=-DCXX $(CFLAGS)
@@ -143,10 +142,10 @@ OBJDUMP=$(TOOLPREFIX)objdump
 CC=$(TOOLPREFIX)gcc
 CXX=$(TOOLPREFIX)g++
 
-MERGEMAP	=$(LEGOS_ROOT)util/merge-map
-GENLDS 	=$(LEGOS_ROOT)util/genlds
-FIXDEPS	=$(LEGOS_ROOT)util/fixdeps
-MAKELX	=$(LEGOS_ROOT)util/makelx
+MERGEMAP	=$(BRICKOS_ROOT)util/merge-map
+GENLDS 	=$(BRICKOS_ROOT)util/genlds
+FIXDEPS	=$(BRICKOS_ROOT)util/fixdeps
+MAKELX	=$(BRICKOS_ROOT)util/makelx
 MAKEDEPEND	=$(CC) -M $(CINC)
 
 ###
@@ -162,11 +161,11 @@ MAKEDEPEND	=$(CC) -M $(CINC)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # how to compile C kernel sources
-%.o: $(LEGOS_ROOT)kernel/%.c
+%.o: $(BRICKOS_ROOT)kernel/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # how to generate an assembly listing of a kernel source
-%.s: $(LEGOS_ROOT)kernel/%.c
+%.s: $(BRICKOS_ROOT)kernel/%.c
 	$(CC) $(CFLAGS) -c $< -S
 
 # how to compile C++ source

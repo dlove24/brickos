@@ -6,7 +6,7 @@
 
 ROOTDIR = ../../
 
-KERNEL = $(ROOTDIR)boot/legOS
+KERNEL = $(ROOTDIR)boot/brickOS
 
 PROGRAMS = \
 	rover.lx \

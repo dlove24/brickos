@@ -4,8 +4,8 @@
 ## (c) 1998, 1999 by Markus L. Noga <markus@noga.de>    
 ##
 
-# name for the legOS kernel
-KERNEL=../boot/legOS
+# name for the brickOS kernel
+KERNEL=../boot/brickOS
 
 PROGRAMS=helloworld.lx rover.lx linetrack.lx robots.lx c++.lx sound.lx trailerbot.lx
 # extra dynamic sources

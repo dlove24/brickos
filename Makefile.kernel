@@ -16,7 +16,7 @@ LIBS=-lc -lmint
 #LIBS=--whole-archive -lc -lmint -lfloat
 
 # linker command files for kernel
-LDFLAGS=-T $(LEGOS_ROOT)h8300.rcx -relax -L$(LEGOS_ROOT)lib
+LDFLAGS=-T $(BRICKOS_ROOT)h8300.rcx -relax -L$(BRICKOS_ROOT)lib
 
 #
 # 2002.05.12 - Ted Hess <thess@users.sourceforge.net>

@@ -61,7 +61,7 @@ int lx_write(const lx_t *lx,const unsigned char *filename) {
 
   // write ID
   //
-  ASSURED_WRITE(fd,"legOS",6);
+  ASSURED_WRITE(fd,"brickOS",8);
   // write header data in MSB
   //
   for(i=0; i<HEADER_FIELDS; i++) {
@@ -99,7 +99,7 @@ int lx_read(lx_t *lx,const unsigned char *filename) {
   // check ID
   //
   ASSURED_READ(fd,buffer,6);
-  if(strcmp(buffer,"legOS")) {
+  if(strcmp(buffer,"brickOS")) {
     close(fd);
     return -1;
   }

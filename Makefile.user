@@ -10,7 +10,7 @@ LIBS=-lc -lmint -lfloat -lc++
 
 # linker command files dynamic executables.
 DYNAMIC_LDS =$(KERNEL).lds
-DLDFLAGS    =-T $(DYNAMIC_LDS) -relax -L$(LEGOS_ROOT)lib
+DLDFLAGS    =-T $(DYNAMIC_LDS) -relax -L$(BRICKOS_ROOT)lib
 
 # base addresses to determine relocation info.
 BASE1=0xb000

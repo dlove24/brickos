@@ -5,12 +5,12 @@
 ##
 
 #  distribution name (all lower-case by convention)
-PACKAGE = legos
+PACKAGE = brickos
 #  version of this release, let's use the verision from our VERSION file
 VERSION = $(shell cat VERSION)
 
 #  set this once to accommodate our new dir name
-export LEGOS_ROOT=$(shell cd . && pwd)/
+export BRICKOS_ROOT=$(shell cd . && pwd)/
 
 
 #

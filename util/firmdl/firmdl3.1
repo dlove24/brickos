@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH firmdl3 1 "January  6, 2001" "legOS" "legOS Utility"
+.TH firmdl3 1 "January  6, 2001" "brickOS" "brickOS Utility"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" ---------------------------------------
@@ -29,7 +29,7 @@ This manual page documents the
 .B firmdl3
 kernel download command.
 .P
-\fBfirmdl3\fP is a program which is used to download the legOS kernel (firmware).
+\fBfirmdl3\fP is a program which is used to download the brickOS kernel (firmware).
 .B firmdl3
 Supports single and quad rate downloading (quad-rate is default).
 .P
@@ -81,35 +81,35 @@ RCXTTY is equivalent the using the -tty command-line option.
 .B firmdl3
 is a simple command to use.  The following examples show most of the uses.
 .P
-\fBEx1:\fP download the legos kernal to ttyS0.
+\fBEx1:\fP download the brickOS kernal to ttyS0.
 .sp
 .nf
-   $ firmdl3 -tty=/dev/ttyS0 /usr/lib/legos/legOS.srec
+   $ firmdl3 -tty=/dev/ttyS0 /usr/lib/brickos/brickOS.srec
    Transferring "Fast Download Image" to RCX...
    100%
-   Transferring "/usr/lib/legos/legOS.srec" to RCX...
+   Transferring "/usr/lib/brickos/brickOS.srec" to RCX...
    100%
    $
 .fi
 .P
-\fBEx2:\fP download the legos kernal to ttyS1 (set env var 1st).
+\fBEx2:\fP download the brickOS kernal to ttyS1 (set env var 1st).
 .sp
 .nf
    $ export RCXTTY=/dev/ttyS1
-   $ firmdl3 /usr/lib/legos/legOS.srec
+   $ firmdl3 /usr/lib/brickos/brickOS.srec
    Transferring "Fast Download Image" to RCX...
    100%
-   Transferring "/usr/lib/legos/legOS.srec" to RCX...
+   Transferring "/usr/lib/brickos/brickOS.srec" to RCX...
    100%
    $
 .fi
 .P
-\fBEx3:\fP download the legos kernal using slow protocol (assumes
+\fBEx3:\fP download the brickOS kernal using slow protocol (assumes
 RCXTTY is already set).
 .sp
 .nf
-   $ firmdl3 --slow /usr/lib/legos/legOS.srec
-   Transferring "/usr/lib/legos/legOS.srec" to RCX...
+   $ firmdl3 --slow /usr/lib/brickos/brickOS.srec
+   Transferring "/usr/lib/brickos/brickOS.srec" to RCX...
    100%
    $
 .fi
@@ -122,7 +122,7 @@ seeing all the bytes fly by? ;-)
 .\"
 .SH ERROR MESSAGES
 .P
-(excerpt from legOS HOWTO)
+(excerpt from brickOS HOWTO)
 .TP
 .B delete firmware failed
 Because of a limitation in the Lego firmware, \fBfirmdl3\fP cannot delete LegOS.
@@ -148,7 +148,7 @@ You forgot to plug the tower in, most likely.
 .TP
 .B unlock firmware failed
 This indicates that there was a slight corruption in the download. Clear
-legOS and download it again.
+brickOS and download it again.
 .TP
 .B no response from RCX
 This error should be called "you forgot to turn on your RCX, moron." If I

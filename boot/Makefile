@@ -6,8 +6,8 @@
 
 ## Modification to allow perl-less compilation by Luis Villa 07/17/00
 
-# legOS kernel used (w/o extension)
-KERNEL=legOS
+# brickOS kernel used (w/o extension)
+KERNEL=brickOS
 
 # uncomment out the first line if you need a kernel disassembly file.
 # This will not work on Windows unless you have perl installed.
@@ -22,10 +22,10 @@ html:
 	doxygen Doxyfile
 
 .depend:
-	$(MAKEDEPEND) $(LEGOS_ROOT)kernel/*.c > .depend
+	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
 
 depend:
-	$(MAKEDEPEND) $(LEGOS_ROOT)kernel/*.c > .depend
+	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
 
 tag:
 	ctags --format=1 *.c include/*.h include/*/*.h *.c
