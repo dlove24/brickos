@@ -435,11 +435,14 @@ gotkey:
 				if ((c = getchar()) != KEY_VIEW) goto gotkey;
 				cputw(mm_free_mem());
 				if ((c = getchar()) != KEY_VIEW) goto gotkey;
-			
+
+#if defined(CONF_DSENSOR)
 				cputs("batt");
 				if ((c = getchar()) != KEY_VIEW) goto gotkey;
 				lcd_int(get_battery_mv());
 				if ((c = getchar()) != KEY_VIEW) goto gotkey;
+#endif // CONF_DSENSOR
+
 				clear=1;
 				break;
 		}
@@ -468,10 +471,12 @@ int lrkey_handler(unsigned int etype, unsigned int key) {
 		// Keydown events dispatched here
 		if (etype == LREVT_KEYON) {
 			switch (key) {
+#ifdef CONF_DSOUND
 				case LRKEY_BEEP:
 					// Need high pitched beep-beep
 					dsound_system(0);
 					break;
+#endif // CONF_DSOUND
 				
 				case LRKEY_P5:
 					pnr++;
@@ -505,7 +510,8 @@ int lrkey_handler(unsigned int etype, unsigned int key) {
 					 cputs("NONE");
 					}
 					break;
-				
+
+#if defined(CONF_DMOTOR)				
 				// Motor on commands
 				case LRKEY_A1:
 					// A Motor fwd
@@ -531,6 +537,7 @@ int lrkey_handler(unsigned int etype, unsigned int key) {
 					// C Motor rev
 					motor_c_dir(rev);
 					break;
+#endif // CONF_DMOTOR
 				default:
 					// Not consumed
 					return 0;
@@ -545,6 +552,7 @@ int lrkey_handler(unsigned int etype, unsigned int key) {
 		// Keyup events dispatched here
 		if (etype == LREVT_KEYOFF) {
 			switch (key) {
+#if defined(CONF_DMOTOR)
 				case LRKEY_A1:
 				case LRKEY_A2:
 					// Shut off A motor
@@ -560,6 +568,7 @@ int lrkey_handler(unsigned int etype, unsigned int key) {
 					// Shut off C motor
 					motor_c_dir(brake);
 					break;
+#endif // CONF_DMOTOR
 				case LRKEY_P1:
 				case LRKEY_P2:
 				case LRKEY_P3:

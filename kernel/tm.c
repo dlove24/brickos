@@ -327,7 +327,6 @@ int tm_man_task(int argc, char **argv)
     msleep(500);
   }
 }
-#endif // CONF_VIS
 
 #ifdef CONF_BATTERY_INDICATOR
 //! the battery task
@@ -348,6 +347,7 @@ int tm_battery_task(int argc, char **argv) {
   }
 }
 #endif // CONF_BATTERY_INDICATOR
+#endif // CONF_VIS
 
 //! init task management
 /*! called in single tasking mode before task setup.
@@ -374,11 +374,11 @@ void tm_init(void) {
 
 #ifdef CONF_VIS
   execi(&tm_man_task, 0, NULL, 1, IDLE_STACK_SIZE);
-#endif // CONF_VIS
 
 #ifdef CONF_BATTERY_INDICATOR
   execi(&tm_battery_task, 0, NULL, 1, IDLE_STACK_SIZE);
 #endif // CONF_BATTERY_INDICATOR
+#endif // CONF_VIS
 
   systime_set_timeslice(TM_DEFAULT_SLICE);
 } 

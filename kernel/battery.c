@@ -46,11 +46,13 @@ unsigned int battery_refresh_period  = 2000;  //!< LCD refresh period in ms
 //
 ///////////////////////////////////////////////////////////////////////
 
+#if defined(CONF_DSENSOR)
 int get_battery_mv()
 {
     long b = ds_scale(BATTERY) * 0xABD4L;
     return (int)(b / 0x618L);
 }
+#endif // CONF_DSENSOR
 
 #ifdef CONF_BATTERY_INDICATOR
 // battery indicator handed by kernel task when CONF_TM
