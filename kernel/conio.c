@@ -378,6 +378,10 @@ void cputw(unsigned word)
     cputc_hex(word & 0x0f, i);
     word >>= 4;
   }
+
+#if !defined(CONF_LCD_REFRESH)
+  lcd_refresh();
+#endif
 }
 
 #ifdef CONF_ASCII
@@ -398,6 +402,10 @@ void cputs(char *s)
     cputc(*(s++), i--);
   while (i >= 1)
     cputc_native(0, i--);
+
+#if !defined(CONF_LCD_REFRESH)
+  lcd_refresh();
+#endif
 }
 
 //! clear user portion of screen

@@ -86,6 +86,9 @@
 #define PROG_MIN	1
 #define PROG_MAX	8
 
+#define ADDR_MIN	0
+#define ADDR_MAX	15
+
 #define DEFAULT_DEST  	0
 #define DEFAULT_PROGRAM	PROG_MIN
 #define DEFAULT_SRCPORT 0
@@ -99,6 +102,7 @@ typedef enum {
   CMDdata,   	      	//!< 1+>3: b[nr] s[offset] array[data]
   CMDrun,     	      	//!< 1+ 1: b[nr]
   CMDirmode,			//!< 1+ 1: b[0=near/1=far]
+  CMDsethost,			//!< 1+ 1: b[hostaddr]
   CMDlast     	      	//!< ?
 } packet_cmd_t;
 
@@ -118,6 +122,7 @@ static const struct option long_options[]={
   {"srcport",required_argument,0,'s'},
   {"tty",    required_argument,0,'t'},
   {"irmode", required_argument,0,'i'},
+  {"node"  , required_argument,0,'n'},
   {"execute",no_argument      ,0,'e'},
   {"verbose",no_argument      ,0,'v'},
   {0        ,0                ,0,0  }
@@ -136,12 +141,14 @@ volatile unsigned short relocate_to=0;
 unsigned int  rcxaddr = DEFAULT_DEST,
               prog    = DEFAULT_PROGRAM,
               srcport = DEFAULT_SRCPORT,
+              hostaddr = DEFAULT_DEST,
 		  irmode  = -1;
   
 int run_flag=0;
 int verbose_flag=0;
 int tty_usb=0;
 int pdelete_flag=0;
+int hostaddr_flag=0;
 
 void io_handler(void);
 
@@ -361,20 +368,29 @@ int main(int argc, char **argv) {
   unsigned char buffer[256+3]="";
   char *tty=NULL;
 
-  while((opt=getopt_long(argc, argv, "r:p:d:s:t:i:ev",
+  while((opt=getopt_long(argc, argv, "r:p:d:s:t:i:n:ev",
                         (struct option *)long_options, &option_index) )!=-1) {
     switch(opt) {
       case 'e':
         run_flag=1;
         break;
       case 'r':
-        sscanf(optarg,"%x",&rcxaddr);
+        sscanf(optarg,"%d",&rcxaddr);
+		if (rcxaddr > ADDR_MAX || rcxaddr < ADDR_MIN) {
+			fprintf(stderr, "LNP host address not in range 0..15\n");
+			return -1;
+		}
+		rcxaddr = (rcxaddr << 4) & CONF_LNP_HOSTMASK;
         break;
       case 'p':
         sscanf(optarg,"%d",&prog);
         break;
       case 's':
-        sscanf(optarg,"%x",&srcport);
+        sscanf(optarg,"%d",&srcport);
+		if (srcport > ADDR_MAX || srcport < ADDR_MIN) {
+			fprintf(stderr, "LNP port number not in range 0..15\n");
+			return -1;
+		}
         break;
       case 't':
         sscanf(optarg,"%s",buffer);
@@ -385,6 +401,14 @@ int main(int argc, char **argv) {
       case 'd':
         sscanf(optarg,"%d",&prog);
         pdelete_flag=1;
+        break;
+      case 'n':
+        sscanf(optarg,"%d",&hostaddr);
+		if (hostaddr > ADDR_MAX || hostaddr < ADDR_MIN) {
+			fprintf(stderr, "LNP host address not in range 0..15\n");
+			return -1;
+		}
+        hostaddr_flag=1;
         break;
       case 'v':
         verbose_flag=1;
@@ -399,19 +423,24 @@ int main(int argc, char **argv) {
 
   // load executable
   //      
-  if(argc-optind<1 && !pdelete_flag) {
+  if(((argc-optind < 1) && !(pdelete_flag || hostaddr_flag)) ||
+	 ((argc-optind > 0 ) && (pdelete_flag || hostaddr_flag)))
+  {
     char *usage_string =
+	"Options:\n"
 	"  -p<prognum>  , --program=<prognum>   set destination program to <prognum>\n"
-	"  -r<rcxadress>, --rcxaddr=<rcxadress> set RCX address to <rcxaddress>\n"
-	"  -s<srcadress>, --srcport=<srcadress> set RCX sourceport to <srcaddress>\n"
+	"  -r<rcxaddr>  , --rcxaddr=<rcxaddr>   send to RCX host address <rcxaddr>\n"
+	"  -s<srcport>  , --srcport=<srcport>   send to RCX source port <srcport>\n"
 	"  -t<comport>  , --tty=<comport>       set IR Tower com port <comport>\n"
 #if defined(_WIN32)
 	"  -t<usb>      , --tty=<usb>           set IR Tower USB mode \n"
 #endif
-	"  -d<prognum>  , --delete=<prognum>    delete program <prognum> from memory\n"
 	"  -i<0/1>      , --irmode=<0/1>        set IR mode near(0)/far(1) on RCX\n"
 	"  -e           , --execute             execute program after download\n"
 	"  -v           , --verbose             verbose mode\n"
+	"\nCommands:\n"
+	"  -d<prognum>  , --delete=<prognum>    delete program <prognum> from memory\n"
+	"  -n<hostaddr> , --node=<hostaddr>     set LNP host address in brick\n"
 	"\n"
 	"Default COM port or USB support can be set using environment variable RCXTTY.\n"
 	"Eg:\tset RCXTTY=COM2\n"
@@ -419,14 +448,14 @@ int main(int argc, char **argv) {
 	"\n"
 	;
 
-	fprintf(stderr, "usage: %s [options] file.lx\n", argv[0]);
+	fprintf(stderr, "usage: %s [options] [command | file.lx]\n", argv[0]);
 	fprintf(stderr, usage_string);
 
     return -1;
   }
 
-  // Ignore filename if -dn given
-  if (!pdelete_flag) {
+  // Ignore filename if -dn or -na given
+  if (!(pdelete_flag || hostaddr_flag)) {
     filename=argv[optind++];
     if(lx_read(&lx,filename)) {
       fprintf(stderr,"unable to load legOS executable from %s.\n",filename);
@@ -468,6 +497,20 @@ int main(int argc, char **argv) {
       fputs("error setting IR mode to far\n",stderr);
       return -1;
     }
+  }
+  
+  // Set LNP host address
+  if (hostaddr_flag) {
+    if(verbose_flag)
+	  fputs("\nset LNP host address", stderr);
+	buffer[0] = CMDsethost;
+	buffer[1] = hostaddr;
+	if(lnp_assured_write(buffer,2,rcxaddr,srcport)) {
+      fputs("error setting host address\n",stderr);
+      return -1;
+	}
+	fprintf(stderr, "LNP host address set to %d\n", hostaddr);
+	return 0;
   }
   
   if(verbose_flag)

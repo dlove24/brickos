@@ -77,6 +77,7 @@ typedef enum {
   CMDdata,   	      	//!< 1+>3: b[nr] s[offset] array[data]
   CMDrun,     	      	//!< 1+ 1: b[nr]
   CMDirmode,		//!< 1+ 1: b[0=near/1=far]
+  CMDsethost,			//!< 1+ 1: b[hostaddr]
   CMDlast     	      	//!< ?
 } packet_cmd_t;
 

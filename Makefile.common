@@ -91,7 +91,8 @@ endif
 ifndef LEGOS_ROOT
 #  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/")/
 #  export LEGOS_ROOT=$(shell pwd | sed -e "s/legOS.*/legOS/i")/
-  export LEGOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(legOS\).*/\1\2/$(SED_SFLAG)")/
+  export LEGOS_ROOT=$(shell pwd | sed -e "s/\(.*\)\(legOS.*\)\\/.*/\1\2/$(SED_SFLAG)")/
+
 endif
 
 #
@@ -112,7 +113,7 @@ CWARN =-Wall
 #
 CINC  =-I$(LEGOS_ROOT)include -I$(LEGOS_ROOT)include/lnp -I.
 
-CFLAGS=$(COPT) $(CWARN) $(CINC)
+CFLAGS=$(COPT) $(CWARN) $(CINC) $(CDEFINES)
 CXXFLAGS=-DCXX $(CFLAGS)
 
 ##

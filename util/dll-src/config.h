@@ -46,7 +46,7 @@
 #define CONF_LNP		//!< legOS networking protocol
 //#define CONF_LNP_VIS		//!< display LNP activity
 //#define CONF_LNP_FAST        //!< enable 4800 bps LNP
-#define CONF_LNP_HOSTADDR 0x80	//!< LNP host address
+#define CONF_LNP_HOSTADDR 0x8	//!< LNP host address
 #define CONF_LNP_HOSTMASK 0xf0	//!< LNP host mask
 
 // drivers

@@ -75,6 +75,10 @@ static sem_t buf_sem;
 #endif
 #endif
 
+//! LNP host address (may be changed by dll utility --node=a option)
+//! Default vaule in config.h may be overidden at compile type
+unsigned char lnp_hostaddr = (CONF_LNP_HOSTADDR << 4) & CONF_LNP_HOSTMASK;
+
 //! the timeout counter in ms
 volatile unsigned short lnp_timeout_counter;
 
@@ -225,7 +229,7 @@ int lnp_addressing_write(const unsigned char *data,unsigned char length,
   lnp_checksum_step( c, lnp_buffer[1]=length+2 );
   lnp_checksum_step( c, lnp_buffer[2]=dest );
   lnp_checksum_step( c, lnp_buffer[3]=
-                   (LNP_HOSTADDR | (srcport & LNP_PORTMASK)) );
+                   (lnp_hostaddr | (srcport & LNP_PORTMASK)) );
   lnp_buffer[length+4] = c;
 
   r = lnp_logical_write(lnp_buffer,length+5);
@@ -261,7 +265,7 @@ void lnp_receive_packet(const unsigned char *data) {
       if(length>2) {
     		unsigned char dest=*(data++);
 
-    		if(LNP_HOSTADDR == (dest & LNP_HOSTMASK)) {
+    		if(lnp_hostaddr == (dest & LNP_HOSTMASK)) {
     		  unsigned char port=dest & LNP_PORTMASK;
     		  addrh = lnp_addressing_handler[port];
     		  if(addrh) {

@@ -19,6 +19,14 @@ BASE2=0xb210
 # Add config.h to include path.
 CINC +=-I$(dir $(KERNEL))
 
+#
+# 2002.05.12 - Ted Hess <thess@users.sourceforge.net>
+#
+#	- Allow setting LNP Host Address on command line
+ifdef LNP_HOSTADDR
+CDEFINES =-DCONF_LNP_HOSTADDR=$(LNP_HOSTADDR)
+endif
+
 ############ new dynamic executables stuff
 
 # how to build executables dynamically linked to the kernel 

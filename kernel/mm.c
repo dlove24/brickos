@@ -187,7 +187,7 @@ void *malloc(size_t size) {
 void free(void *the_ptr) {
   	size_t *ptr=the_ptr;
 #ifndef CONF_TM
-      	size_T *p2,*next;
+      	size_t *p2,*next;
 #endif	
 	
 	if(ptr==NULL || (((size_t)ptr)&1) )

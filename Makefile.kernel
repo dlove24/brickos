@@ -18,6 +18,14 @@ LIBS=-lc -lmint
 # linker command files for kernel
 LDFLAGS=-T $(LEGOS_ROOT)h8300.rcx -relax -L$(LEGOS_ROOT)lib
 
+#
+# 2002.05.12 - Ted Hess <thess@users.sourceforge.net>
+#
+#	- Allow setting LNP Host Address on command line
+ifdef LNP_HOSTADDR
+CDEFINES =-DCONF_LNP_HOSTADDR=$(LNP_HOSTADDR)
+endif
+
 ############ kernel stuff
 
 # how to build coff kernel (for symbols, disassembly etc)

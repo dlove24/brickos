@@ -31,6 +31,7 @@ tag:
 	ctags --format=1 *.c include/*.h include/*/*.h *.c
 
 clean:
+	rm -f *.srec *.o *.lds *.dis *.coff *.map *.dis2
 
 realclean:
 	rm -rf .depend* *.o *.dis *~ *.bak *.tgz *.s tags *.dcoff *.dmap *.dsrec *.dis2

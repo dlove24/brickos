@@ -46,7 +46,12 @@
 //
 #define CONF_LNP		//!< legOS networking protocol
 // #define CONF_LNP_FAST        //!< enable 4800 bps LNP
-#define CONF_LNP_HOSTADDR 0x00	//!< LNP host address
+// Can override with compile-time option
+#if !defined(CONF_LNP_HOSTADDR)
+#define CONF_LNP_HOSTADDR	0	//!< LNP host address
+#endif
+
+// 16 nodes x 16 ports (affects size of lnp_addressing_handler[] table)
 #define CONF_LNP_HOSTMASK 0xf0	//!< LNP host mask
 
 // remote control services

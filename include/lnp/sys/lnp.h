@@ -40,7 +40,6 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-#define LNP_HOSTADDR  	CONF_LNP_HOSTADDR   //!< the LNP host address (config.h)
 #define LNP_HOSTMASK 	CONF_LNP_HOSTMASK   //!< the LNP host mask (config.h)
 
 //! LNP port mask is derived from host mask

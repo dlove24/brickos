@@ -83,6 +83,9 @@ extern volatile lnp_integrity_handler_t lnp_integrity_handler;
 //! addressing layer packets may be directed to a variety of ports.
 extern volatile lnp_addressing_handler_t lnp_addressing_handler[];
 
+//! LNP host address
+extern unsigned char lnp_hostaddr;
+
 #ifdef CONF_RCX_PROTOCOL
 //! packets from remote have no ports
 extern lnp_remote_handler_t lnp_remote_handler;
@@ -106,6 +109,12 @@ extern inline void lnp_addressing_set_handler(unsigned char port, lnp_addressing
   if (!(port & CONF_LNP_HOSTMASK))	// sanity check.
 
     lnp_addressing_handler[port] = handler;
+}
+
+//! set new LNP host address
+extern inline void lnp_set_hostaddr(unsigned char host)
+{
+    lnp_hostaddr = ((host << 4) & CONF_LNP_HOSTMASK);
 }
 
 #ifdef CONF_RCX_PROTOCOL

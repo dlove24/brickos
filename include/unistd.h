@@ -65,16 +65,6 @@ extern void yield(void);
 //
 #ifdef CONF_TM
 extern wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data);
-#else
-extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
-{
-  wakeup_t res;
-
-  while (!(res = wakeup(data)))
-	/* wait */;
-  return res;
-}
-#endif
 
 //! delay execution allowing other tasks to run.
 /*! \param sec sleep duration in seconds
@@ -89,6 +79,20 @@ extern unsigned int sleep(unsigned int sec);
    \bug interruptions not implemented.
  */
 extern unsigned int msleep(unsigned int msec);
+#else
+extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
+{
+  wakeup_t res;
+
+  while (!(res = wakeup(data)))
+	/* wait */;
+  return res;
+}
+
+// Replacement for sleep/msleep if no TM
+#define	sleep(s)	delay(1000*(s))
+#define msleep(s)	delay(s)
+#endif
 
 //! kill a process
 // FIXME: this belongs in a different header

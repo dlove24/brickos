@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH dll 1 "January  6, 2001" "legOS" "legOS Utility"
+.TH dll 1 "May  12, 2002" "legOS" "legOS Utility"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" ---------------------------------------
@@ -22,7 +22,7 @@ dll \- A user-program downloader for the RCX.
 .\"
 .SH SYNOPSIS
 .B dll
-.RI [ options ] " {file}.lx"
+.RI [ options ] " command | {file}.lx"
 .\"
 .SH DESCRIPTION
 This manual page documents the
@@ -47,17 +47,17 @@ Execute program after download.
 .B \-i{0|1}, \-\-irmode={0|1}
 Set IR mode (on RCX) to near(0) or far(1)
 .TP
-.B \-p{0-7}, \-\-program={0-7}
-Download program to program-slot-number {0-7}
+.B \-p{1-8}, \-\-program={1-8}
+Download program to program-slot-number {1-8}
 .br
 .sp
 NOTE: LegOS supports 8 program slots where the Mindstorms original firmware only supports 5.
 .TP
-.B \-r{rcxaddress}, \-\-rcxaddr={rcxaddress}
-Set RCX address to {rcxaddress}.  Useful when using LNP.
+.B \-r{hostaddress}, \-\-rcxaddr={hostaddress}
+Send to RCX LNP at host address {0-15}.  Default is 0. See also \--node={hostaddress}
 .TP
-.B \-s{srcaddress}, \-\-srcport={srcaddress}
-Set RCX sourceport to {srcaddress}.  Useful when using LNP.
+.B \-s{srcport}, \-\-srcport={srcport}
+Send to RCX LNP source port {0-15}
 .TP
 .B \-t{ttydevice} \-\-tty={ttydevice}
 Specify serial tty device where IR tower is connected.
@@ -67,6 +67,14 @@ NOTE: The environment variable RCXTTY may be used in place of \-tty
 .TP
 .B \-v, \-\-verbose
 Enable verbose output
+.\"
+.SH COMMANDS
+.TP
+.B \-d{1-8}, \-\-delete={1-8}
+Delete program from program-slot-number {1-8}
+.TP
+.B \-n{hostaddress}, \-\-node={hostaddress}
+Set RCX LNP host address to {0-15}
 .\"
 .SH ENVIRONMENT VARIABLES
 .B dll

@@ -81,7 +81,8 @@ const unsigned char min_length[]={
    8,   // CMDoffsets
    4,   // CMDdata
    2,   // CMDrun
-   2    // CMDirmode
+   2,   // CMDirmode
+   2	// CMDsethost
 };
 
 static program_t programs[PROG_MAX];      //!< the programs
@@ -190,6 +191,14 @@ static int packet_consumer(int argc, char *argv[]) {
      continue;
    }
 
+   // Is this a request to change host address
+   if (cmd == CMDsethost) {
+	   // ACK before we change our address
+	   lnp_addressing_write(&acknowledge,1,packet_src,0);
+	   lnp_set_hostaddr(buffer[1]);
+	   continue;
+   }
+
    // Get program number, validate value
    if((cmd > CMDacknowledge) && (cmd <= CMDrun)) {
      nr = buffer[1];
@@ -281,6 +290,7 @@ static int packet_consumer(int argc, char *argv[]) {
        debugs("run");
        if(program_valid(nr)) {
          cprog = nr;
+         program_stop(0);
          program_run(nr);
 
          debugs("OK");
@@ -360,9 +370,10 @@ gotkey:
 	  // if program running, stop it
 	  clear=1;
 	  program_stop(1);
-	} else if(program_valid(cprog))
+	} else if(program_valid(cprog)) {
+	  program_stop(0);
 	  program_run(cprog);
-	else {
+	} else {
 	  cputs("NONE");
 	  clear=1;
 	}

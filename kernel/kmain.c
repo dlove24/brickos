@@ -118,7 +118,9 @@ extern inline void show_off(void) {
 void kmain(void) __attribute__((noreturn));
 void kmain(void)
 {
+#ifdef CONF_DKEY
   int c;
+#endif
 
   reset_vector = rom_reset_vector;
   memset(&__bss, 0, &__bss_end - &__bss);
