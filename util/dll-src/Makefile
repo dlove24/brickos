@@ -55,7 +55,7 @@ depend: .depend
 install: install-stamp
 	@# nothing to be done, but silently
 
-install-stamp:
+install-stamp: $(ALL_TARGETS)
 	cp -f $(TARGET1) $(bindir)/$(EXE1)
 	@if [ ! -d ${pkglibdir} ]; then \
 		mkdir -p ${pkglibdir}; \

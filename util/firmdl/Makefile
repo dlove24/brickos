@@ -16,42 +16,45 @@
 # Portions created by Kekoa Proudfoot are Copyright (C) 1998, 1999
 # Kekoa Proudfoot. All Rights Reserved.
 
-#
-# 2000.03.12 - Paolo Masetti <paolo.masetti@itlug.org>
-#
-#	- Conditional make based on $OSTYPE variable for Windows NT (cygnwin32)
-#
+FIRMDL3 = firmdl3$(EXT)
+MKIMG = mkimg$(EXT)
+MAN1 = firmdl3.1
 
-TARGET1 = firmdl3$(EXT)
+ALL_TARGETS = ../$(FIRMDL3) $(MKIMG) 
 
 include ../Makefile.common
 
-all: fastdl.h ../$(TARGET1)
+all: fastdl.h $(ALL_TARGETS)
 	@# nothing to do here but do it silently
 
-mkimg$(EXT): mkimg.o srec.o
+$(MKIMG): mkimg.o srec.o
 	$(CC) $^ -o $@ $(CFLAGS)
 
-../firmdl3$(EXT): firmdl.o srec.o rcx_comm.o
+../$(FIRMDL3): firmdl.o srec.o rcx_comm.o
 	$(CC) $^ -o $@ $(CFLAGS)
 
-fastdl.h: mkimg$(EXT) fastdl.srec
-	./mkimg$(EXT) fastdl.srec > $@
+fastdl.h: $(MKIMG) fastdl.srec
+	./$(MKIMG) fastdl.srec > $@
 
 depend:
 	@# nothing to do here but do it silently
 
-install-stamp: ../$(TARGET1)
-	cp -f ../$(TARGET1) ${bindir}
-	@touch $@
-
-install: all install-stamp 
+install: install-stamp 
 	@# nothing to do here but do it silently
+
+install-stamp: $(ALL_TARGETS) $(MAN1)
+	cp -f ../$(FIRMDL3) $(bindir)
+	@if [ ! -d ${mandir}/man1 ]; then \
+		mkdir -p ${mandir}/man1; \
+	fi
+	cp -f $(MAN1) $(mandir)/man1/$(MAN1)
+	@touch $@
 
 clean:
 	rm -f *.o *~ *.bak
 
 realclean: clean
-	@rm -f fastdl.h mkimg$(EXT) ../firmdl3$(EXT) install-stamp
+	rm -f fastdl.h $(ALL_TARGETS)
+	@rm -f install-stamp
 
 .PHONY: realclean clean install depend all

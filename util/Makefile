@@ -17,13 +17,14 @@
 include Makefile.common
 
 # Define here the executable files to be build
-EXECUTABLES = fontdesign 
+EXECUTABLES    = fontdesign 
+UTILITY_SCRIPT = merge-map
 
 # Needed for DOS/WIN32 platforms
 ifdef EXT
-	TARGETS=$(addsuffix $(EXT),$(EXECUTABLES))
+	TARGETS = $(addsuffix $(EXT),$(EXECUTABLES))
 else
-	TARGETS=$(EXECUTABLES)
+	TARGETS = $(EXECUTABLES)
 endif
 
 SUBDIRS = dll-src firmdl
@@ -43,8 +44,12 @@ fontdesign$(EXT):	fontdesign.c
 
 install:: install-stamp
 
-install-stamp: $(TARGETS)
-	cp -f fontdesign$(EXT) ${pkglibdir}
+install-stamp: $(TARGETS) $(UTILITY_SCRIPT)
+	@if [ ! -d ${pkglibdir} ]; then \
+		mkdir -p ${pkglibdir}; \
+	fi
+	cp -f $(TARGETS) ${pkglibdir}
+	cp -f $(UTILITY_SCRIPT) ${pkglibdir}
 	@touch $@
 
 realclean:: clean
