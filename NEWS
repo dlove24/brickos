@@ -1,14 +1,14 @@
 Our Next Release (work pending):
 --------------------------------
-* we will change our name from legOS to ...
+* we are changing our name from legOS to brickOS
 * we are releasing our first cut at automatic generation of API docs
    and updating our HOWTO
 * adding (optional, compile-in) support for 3rd party sensors
 
 
-News for upcoming legOS-0.2.7: (number may change)
+News for upcoming brickos-1.0.0: 
 --------------------------------------------------
-* LNP Parser for RCX firmware protocol op-codes based on work from Zhengrong Zang
+* LNP Parser for RCX firmware protocol op-codes based on work fm Zhengrong Zang
 * dll: NEW -dn or --delete=n option deletes a program from memory
 * dll: default program is 1. zero no longer exists from dll point of view
 * New added full support for LEGO Remote Control 
