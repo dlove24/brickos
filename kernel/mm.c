@@ -86,7 +86,8 @@ size_t mm_try_join(size_t *ptr) {
 void mm_defrag() {
   size_t *ptr = &mm_start;
 #ifdef CONF_TM
-  sem_wait(&mm_semaphore);      // tasksafe
+  if (sem_wait(&mm_semaphore) == -1)
+  	return;
 #endif
   while(ptr >= &mm_start) {
     if(*ptr == MM_FREE)
@@ -155,7 +156,8 @@ void *malloc(size_t size) {
   size=(size+1)>>1;       // only multiples of 2
   
 #ifdef CONF_TM
-  sem_wait(&mm_semaphore);      // tasksafe
+  if (sem_wait(&mm_semaphore) == -1)
+  	return NULL;
 #endif
   ptr=mm_first_free;
   
@@ -276,7 +278,8 @@ void mm_reaper() {
   // pass 2: defragment free areas
   // this may alter free blocks
 #ifdef CONF_TM
-  sem_wait(&mm_semaphore);      // tasksafe
+  if (sem_wait(&mm_semaphore) == -1)
+  	return;
 #endif
   ptr=&mm_start;
   while(ptr>=&mm_start) {
@@ -295,7 +298,8 @@ int mm_free_mem(void) {
   size_t *ptr;
   
 #ifdef CONF_TM
-  sem_wait(&mm_semaphore);
+  if (sem_wait(&mm_semaphore) == -1)
+  	return 0;
 #endif
 
   // Iterate through the free list

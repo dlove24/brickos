@@ -17,6 +17,7 @@
 #include <c++/Sound.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 //
 // This is a simple example of a two motor rover which moves forward for
@@ -32,7 +33,7 @@ main(int argc,
 {
   MotorPair m(Motor::A, Motor::C);
 
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < 10 && !shutdown_requested(); ++i) {
     if (i % 2) {
       m.forward();
 #ifdef CONF_DSOUND

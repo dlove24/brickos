@@ -41,8 +41,8 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef unsigned char tstate_t;                 //!< task state type
-typedef unsigned char tflags_t;                 //!< task flags type
+typedef volatile unsigned char tstate_t;                 //!< task state type
+typedef volatile unsigned char tflags_t;                 //!< task flags type
 
 typedef unsigned char priority_t;               //!< task priority type
 
@@ -66,9 +66,10 @@ typedef unsigned long wakeup_t;                 //!< wakeup data area type
 // task flags
 //
 
-#define T_KERNEL  (1 << 0)                      //!< kernel task
-#define T_USER    (1 << 1)                      //!< user task
-#define T_IDLE    (1 << 2)                      //!< idle task
+#define T_KERNEL  	(1 << 0)                    //!< kernel task
+#define T_USER    	(1 << 1)                    //!< user task
+#define T_IDLE    	(1 << 2)                    //!< idle task
+#define T_SHUTDOWN	(1 << 7)                    //!< shutdown requested
 
 
 #define DEFAULT_STACK_SIZE  512                 //!< that's enough.

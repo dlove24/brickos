@@ -36,6 +36,7 @@
 #include <dmotor.h>
 #include <dsound.h>
 #include <conio.h>
+#include <sys/tm.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -117,14 +118,15 @@ wakeup_t lr_waitdata(wakeup_t data)
 //! lr_thread just sits waiting for data, processing it as it arrives
 int lr_thread(int argc, char *argv[]) {
   unsigned int lr_keys;
-  while(1) {
-    wait_event(&lr_waitdata,0);
-    // Snatch input before calling user handler
-    lr_keys = lr_data;
-    // Have local copy of input data, allow buffer to refill
-    lr_dataready = 0;
-    // Call user handler
-    lr_process(lr_keys);
+  while(!shutdown_requested()) {
+    if (wait_event(&lr_waitdata, 0) != 0) {
+      // Snatch input before calling user handler
+      lr_keys = lr_data;
+      // Have local copy of input data, allow buffer to refill
+      lr_dataready = 0;
+      // Call user handler
+      lr_process(lr_keys);
+    }
   }
   return 0;
 }

@@ -60,10 +60,10 @@ pchain_t *priority_head;                        //!< head of task priority chain
 tdata_t td_single;                              //!< single task data
 tdata_t *ctid;                                  //!< ptr to current task data
 
-volatile unsigned int nb_tasks;                 //!< number of tasks
+volatile unsigned int nb_tasks;               //!< number of tasks
 volatile unsigned int nb_system_tasks;          //!< number of system (kernel) tasks
 
-sem_t task_sem;                                 //!< task data structure protection
+sem_t task_sem;                               //!< task data structure protection
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -113,18 +113,18 @@ _tm_switcher:
       ; r6 saved by ROM
       ; r0 saved by system timer handler
 
-      mov.w r1,@-r7                             ; save registers
+      mov.w r1,@-r7                           ; save registers
       mov.w r2,@-r7 
       mov.w r3,@-r7 
       mov.w r4,@-r7 
       mov.w r5,@-r7 
 
-      mov.w r7,r0                               ; pass sp
+      mov.w r7,r0                             ; pass sp
 
-      jsr _tm_scheduler                         ; call scheduler
+      jsr _tm_scheduler                       ; call scheduler
 
 _tm_switcher_return:    
-      mov.w r0,r7                               ; set new sp
+      mov.w r0,r7                             ; set new sp
 
       mov.w @r7+,r5
       mov.w @r7+,r4
@@ -135,9 +135,9 @@ _tm_switcher_return:
       ; r0 will be restored by system timer handler
       ; r6 will be restored by ROM
 
-      rts                                       ; return to new task
+      rts                                     ; return to new task
 ");
-#endif	// DOXYGEN_SHOULD_SKIP_THIS
+#endif  // DOXYGEN_SHOULD_SKIP_THIS
 
 
 //! the task scheduler
@@ -147,7 +147,7 @@ _tm_switcher_return:
     actual context switches performed by tm_switcher (assembler wrapper)
 */
 size_t *tm_scheduler(size_t *old_sp) {
-  tdata_t  *next;                               // next task to execute
+  tdata_t  *next;                             // next task to execute
   pchain_t *priority;
   wakeup_t tmp;
   
@@ -183,8 +183,8 @@ size_t *tm_scheduler(size_t *old_sp) {
     // We're on that stack frame being freed right now,
     // but nobody can interrupt us anyways.
     //
-    free(ctid->stack_base);                     // free stack
-    free(ctid);                                 // free task data
+    free(ctid->stack_base);                   // free stack
+    free(ctid);                               // free task data
 
     //
     // FIXME: exit code?
@@ -236,6 +236,10 @@ size_t *tm_scheduler(size_t *old_sp) {
       break;
     
     if(next->tstate==T_WAITING) {
+      if ((next->tflags & T_SHUTDOWN) != 0) {
+        next->wakeup_data = 0;
+        break;
+      }
       tmp = next->wakeup(next->wakeup_data);
       if( tmp != 0) {
         next->wakeup_data = tmp;
@@ -263,7 +267,7 @@ size_t *tm_scheduler(size_t *old_sp) {
     } else
       next=next->next;
   }
-  ctid=next->priority->ctid=next;               // execute next task
+  ctid=next->priority->ctid=next;             // execute next task
   ctid->tstate=T_RUNNING;
 
   sem_post(&task_sem);
@@ -280,24 +284,23 @@ __asm__("
 .globl _yield
 .align 1
 _yield:
-      stc ccr,r0h                               ; to fake an IRQ, we have to
+      stc			ccr,r0h                      	    ; to fake an IRQ, we have to
       push    r0                                ; store the registers
-      orc #0x80,ccr                             ; disable interrupts
+      orc			#0x80,ccr                      	  ; disable interrupts
 
       push    r6                                ; store r6
 
-      mov.w #0x04d4,r0                          ; store rom return addr
+      mov.w		#0x04d4,r0                        ; store rom return addr
       push    r0
 
       push    r0                                ; store r0 (destroyed by call.)
 
-      mov.w #_systime_tm_return,r0              ; store systime return addr
+      mov.w		#_systime_tm_return,r0            ; store systime return addr
       push    r0
 
-      jmp @_tm_switcher                         ; call task switcher
+      jmp 		@_tm_switcher                  	  ; call task switcher
 ");
-#endif	// DOXYGEN_SHOULD_SKIP_THIS
-  
+#endif  // DOXYGEN_SHOULD_SKIP_THIS
 
 //! the idle system task
 /*! infinite sleep instruction to conserve power
@@ -311,7 +314,7 @@ _tm_idle_task:
       sleep
       bra _tm_idle_task
 ");
-#endif	// DOXYGEN_SHOULD_SKIP_THIS
+#endif  // DOXYGEN_SHOULD_SKIP_THIS
 
 #ifdef CONF_VIS
 //! the man system task
@@ -321,7 +324,7 @@ int tm_man_task(int argc, char **argv)
 {
   int state=0;
 
-  while(1) {
+  while (!shutdown_requested()) {
     if(nb_tasks > nb_system_tasks) state ^= 1; else state=0;
     lcd_show(state == 0 ? man_stand : man_run);
 #ifndef CONF_LCD_REFRESH
@@ -329,6 +332,7 @@ int tm_man_task(int argc, char **argv)
 #endif // CONF_LCD_REFRESH
     msleep(500);
   }
+  return 0;
 }
 
 #ifdef CONF_BATTERY_INDICATOR
@@ -338,7 +342,7 @@ int tm_man_task(int argc, char **argv)
 int tm_battery_task(int argc, char **argv) {
   int bmv;
 
-  while(1) {
+  while (!shutdown_requested()) {
     bmv=get_battery_mv();
 
     if(bmv>BATTERY_NORMAL_THRESHOLD_MV)
@@ -348,6 +352,7 @@ int tm_battery_task(int argc, char **argv) {
 
     msleep(2000);
   }
+  return 0;
 }
 #endif // CONF_BATTERY_INDICATOR
 #endif // CONF_VIS
@@ -392,7 +397,7 @@ void tm_init(void) {
 /*! (called in single tasking mode after task setup)
 */
 void tm_start(void) {
-  disable_irqs();                               // no interruptions, please
+  disable_irqs();                             // no interruptions, please
 
   systime_set_switcher(&tm_switcher);
   yield();                                      // go!
@@ -463,13 +468,13 @@ tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
 
   *(--sp)=(size_t) code_start;        // entry point   < these two are for
   *(--sp)=0;                          // ccr           < rte in ROM
-  *(--sp)=0;                          // r6        < pop r6 in ROM
+  *(--sp)=0;                          // r6      < pop r6 in ROM
   *(--sp)=(size_t)
-          &rom_ocia_return;           // ROM return < rts in systime_handler
+          &rom_ocia_return;         // ROM return < rts in systime_handler
 
-  *(--sp)=(size_t) argc;              // r0       < pop r0 in systime handler
+  *(--sp)=(size_t) argc;              // r0     < pop r0 in systime handler
   *(--sp)=(size_t)              
-          &systime_tm_return;         // systime return < rts in tm_switcher
+          &systime_tm_return;       // systime return < rts in tm_switcher
 
   *(--sp)=(size_t) argv;              // r1..r5 < pop r1..r5 in tm_switcher
   *(--sp)=0;
@@ -477,11 +482,17 @@ tid_t execi(int (*code_start)(int,char**),int argc, char **argv,
   *(--sp)=0;
   *(--sp)=0;
 
-  td->sp_save=sp;                     // save sp for tm_switcher
+  td->sp_save=sp;                   // save sp for tm_switcher
   td->tstate=T_SLEEPING;              // task is waiting for execution
   td->parent=ctid;                    // set parent
 
-  sem_wait(&task_sem);
+  if (sem_wait(&task_sem) == -1)
+  {
+    free(td);
+    free(sp);
+    free(newpchain);
+    return -1;
+  }
 
   ppchain=NULL;
   for(  pchain = priority_head;
@@ -603,6 +614,33 @@ unsigned int sleep(unsigned int sec)
   return 0;
 }
 
+void shutdown_task(tid_t tid) {
+  tdata_t *td=(tdata_t*) tid;
+  td->tflags |= T_SHUTDOWN;
+}
+
+void shutdown_tasks(tflags_t flags) {
+  pchain_t* pchain;
+  tdata_t* td;
+  
+  if (sem_wait(&task_sem) == -1)
+    return;
+    
+  pchain = priority_head;
+  while (pchain != NULL) {
+    td = pchain->ctid;
+    do {
+      if ((td->tflags & flags) != 0) {
+        // signal shutdown
+        //
+        td->tflags |= T_SHUTDOWN;
+      }
+      td = td->next;
+    } while (td != pchain->ctid);
+    pchain = pchain->next;
+  }  
+  sem_post(&task_sem);
+}
 
 //! kill specified task
 /*! \param tid must be valid process ID, or undefined behaviour will result!
@@ -615,7 +653,8 @@ void kill(tid_t tid) {
     // when the task is switched to the next time,
     // make it exit immediatlely.
     
-    sem_wait(&task_sem);
+    if (sem_wait(&task_sem) == -1)
+      return;
     *( (td->sp_save) + SP_RETURN_OFFSET )=(size_t) &exit;
     td->tstate=T_SLEEPING;    // in case it's waiting.
     sem_post(&task_sem);
@@ -633,7 +672,8 @@ void killall(priority_t prio) {
   if (prio == PRIO_HIGHEST)
     flags = T_IDLE;
 
-  sem_wait(&task_sem);
+  if (sem_wait(&task_sem) == -1)
+    return;
 
   // find first chain with smaller or equal priority.
   //

@@ -96,6 +96,12 @@ extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
 #define msleep(s)	delay(s)
 #endif
 
+//! signal shutdown for a task
+extern void shutdown_task(tid_t tid);
+
+//! signal shutdown for many tasks
+extern void shutdown_tasks(tflags_t flags);
+
 //! kill specified (tid) task
 // FIXME: this belongs in a different header
 //

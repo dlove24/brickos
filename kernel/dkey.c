@@ -28,6 +28,7 @@
 #ifdef CONF_DKEY
 
 #include <unistd.h>
+#include <sys/tm.h>
 
 #ifdef CONF_AUTOSHUTOFF
 #include <sys/timeout.h>
@@ -107,9 +108,9 @@ wakeup_t dkey_pressed(wakeup_t data) {
   if (idle_powerdown) { // if idle too long, say the OFF key was pressed
     dkey = KEY_ONOFF;
     return KEY_ONOFF;
-  } else
+  }
 #endif
-    return (dkey & (unsigned char)data);
+  return (dkey & (unsigned char)data);
 }
 
 //! wakeup if all of the given keys are released.

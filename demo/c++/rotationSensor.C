@@ -19,6 +19,7 @@
 #include <c++/RotationSensor.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 // This program reads the rotation sensor and displays the hex value on
 /// the display every 10 ms
@@ -29,7 +30,7 @@ main(int argc,
 {
   RotationSensor r(RotationSensor::S2, 0);
 
-  while (1) {
+  while (!shutdown_requested()) {
     cputw(r.pos());
     delay(10);
   }

@@ -19,6 +19,7 @@
 #include <c++/TouchSensor.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 // This program reads the touch sensor and displays the hex value on
 /// the display every 10 ms
@@ -29,7 +30,7 @@ main(int argc,
 {
   TouchSensor t(TouchSensor::S2);
 
-  while (1) {
+  while (!shutdown_requested()) {
     cputw(t.pressed());
     delay(10);
   }

@@ -145,7 +145,8 @@ wakeup_t msg_received(wakeup_t m);
 extern inline unsigned char get_msg(void)
 {
    clear_msg();
-   wait_event(msg_received, 0);
+   if (wait_event(msg_received, 0) == 0)
+     return 0;
    return lnp_rcx_message;
 }
 

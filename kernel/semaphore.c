@@ -64,7 +64,8 @@ int sem_wait(sem_t * sem) {
 	// check if semaphore is available, if not, go to sleep
 	
 	if(sem_trywait(sem))
-		wait_event(sem_event_wait,(unsigned long) ((unsigned)sem));
+		if (wait_event(sem_event_wait,(unsigned long) ((unsigned)sem)) == 0)
+			return -1;
 	
 	return 0;
 }

@@ -190,10 +190,10 @@ int lnp_integrity_write(const unsigned char *data,unsigned char length) {
 
 #ifndef CONF_HOST
 #ifdef CONF_TM
-  sem_wait(&buf_sem);
+	if (sem_wait(&buf_sem) == -1)
+		return 0;
 #endif
 #endif
-
 
   c = lnp_checksum_copy( lnp_buffer+2, data, length);
   lnp_checksum_step( c, lnp_buffer[0]=0xf0 );
@@ -201,6 +201,7 @@ int lnp_integrity_write(const unsigned char *data,unsigned char length) {
   lnp_buffer[length+2] = c;
 
   r = lnp_logical_write(lnp_buffer,length+3);
+  
 #ifndef CONF_HOST
 #ifdef CONF_TM
   sem_post(&buf_sem);
@@ -220,7 +221,8 @@ int lnp_addressing_write(const unsigned char *data,unsigned char length,
 
 #ifndef CONF_HOST
 #ifdef CONF_TM
-  sem_wait(&buf_sem);
+  if (sem_wait(&buf_sem) == -1)
+  	return 0;
 #endif
 #endif
 
@@ -233,6 +235,7 @@ int lnp_addressing_write(const unsigned char *data,unsigned char length,
   lnp_buffer[length+4] = c;
 
   r = lnp_logical_write(lnp_buffer,length+5);
+  
 #ifndef CONF_HOST
 #ifdef CONF_TM
   sem_post(&buf_sem);
@@ -551,7 +554,8 @@ int send_msg(unsigned char msg)
 
 #ifndef CONF_HOST
 #ifdef CONF_TM
-  sem_wait(&buf_sem);
+  if (sem_wait(&buf_sem) == -1)
+  	return 0;
 #endif
 #endif
 
@@ -566,6 +570,7 @@ int send_msg(unsigned char msg)
   lnp_buffer[8]=(unsigned char) (0x08-msg);
 
   r = lnp_logical_write(lnp_buffer,9);
+  
 #ifndef CONF_HOST
 #ifdef CONF_TM
   sem_post(&buf_sem);

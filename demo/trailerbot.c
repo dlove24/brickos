@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <dmotor.h>
 #include <dsensor.h>
+#include <sys/tm.h>
 
 /*
  * Physical characteristics of the robot.
@@ -194,21 +195,21 @@ void array_initialization()
   for(i=0; i<ANGLES; i++)
     {
       for(j=0; j<MOVEMENTS; j++)
-	{
-	  for(k=0; k<ANGLES; k++)
-	    {
-	      steering_results[i][j][k] = (1/ANGLES);
-	    }
-	}
+  {
+    for(k=0; k<ANGLES; k++)
+      {
+        steering_results[i][j][k] = (1/ANGLES);
+      }
+  }
     }
 
   /*all q_scores are set to 0, since we have "learned" nothing.*/
   for(i=0; i<ANGLES; i++)
     {
       for(j=0; j<MOVEMENTS; j++)
-	{
-	  q_score[i][j] = 0;
-	}
+  {
+    q_score[i][j] = 0;
+  }
     }
 }
 
@@ -334,13 +335,13 @@ void move()
       msleep(500);
 
       for(i=0; i<MOVEMENTS; i++)
-	{
-	  if(q_score[initial_angle][i] > max_q_score)
-	    {
-	      max_q_score = q_score[initial_angle][i];
-	      next_movement = i;
-	    }
-	}
+  {
+    if(q_score[initial_angle][i] > max_q_score)
+      {
+        max_q_score = q_score[initial_angle][i];
+        next_movement = i;
+      }
+  }
     }
   else
     {
@@ -459,54 +460,54 @@ void q_score_update()
   float max_q_score;
   
   for(i=0; i<ANGLES; i++)
+  {
+    for(j=0; j<MOVEMENTS; j++)
     {
-      for(j=0; j<MOVEMENTS; j++)
-	{
-	  /*are we doing a bad thing?*/	  
-	  if((i>=FAR_LEFT)||(i<=FAR_RIGHT)||(REVERSE==j))
-	    {
-	      reward = 0;
-	    }
-	  /*are we in "heaven?"*/
-	  else if(HEAVEN==i)
-	    {
-	      reward = HEAVEN_REWARD;
-	    }
-	  /*if not, we get rewarded normally*/
-	  else
-	    {
-	      reward = 1;
-	    }
+    	/*are we doing a bad thing?*/   
+	    if((i>=FAR_LEFT)||(i<=FAR_RIGHT)||(REVERSE==j))
+      {
+        reward = 0;
+      }
+  	  /*are we in "heaven?"*/
+	    else if(HEAVEN==i)
+      {
+        reward = HEAVEN_REWARD;
+      }
+	    /*if not, we get rewarded normally*/
+  	  else
+      {
+        reward = 1;
+      }
 
-	  /*
-	   * This code "looks ahead" to see two things:
-	   * 1) What possibility do we have of getting to 
-	   *    all possible angles?
-	   * 2) Once we get to those angles, what is the best 
-	   *    possible outcome?
-	   * These two pieces of information are combined and 
-	   * stored in q_sum. 
-	   */
+	    /*
+  	   * This code "looks ahead" to see two things:
+    	 * 1) What possibility do we have of getting to 
+	     *    all possible angles?
+  	   * 2) Once we get to those angles, what is the best 
+    	 *    possible outcome?
+	     * These two pieces of information are combined and 
+  	   * stored in q_sum. 
+    	 */
 
-	  q_sum = 0;
+    	q_sum = 0;
 
-	  for(k=0; k<ANGLES; k++)
-	    {
-	      max_q_score = 0;
-	      for(l=0; l<MOVEMENTS; l++)
-		{
-		  if(q_score[k][l] > max_q_score)
-		    {
-		      max_q_score = q_score[k][l];
-		    } 
-		}
-	      q_sum += (steering_results[i][j][k]*max_q_score);
-	    }
-	  
-	  /*store the new expected q_score*/
-	  q_score[i][j] = reward+(GAMMA*q_sum);
-	}
-    }
+	    for(k=0; k<ANGLES; k++)
+      {
+        max_q_score = 0;
+        for(l=0; l<MOVEMENTS; l++)
+  		  {
+      		if(q_score[k][l] > max_q_score)
+	        {
+  	        max_q_score = q_score[k][l];
+    	    } 
+		    }
+        q_sum += (steering_results[i][j][k]*max_q_score);
+      }
+    
+	    /*store the new expected q_score*/
+  	  q_score[i][j] = reward+(GAMMA*q_sum);
+	  }
+  }
 }
 
 /*
@@ -550,26 +551,27 @@ int main(int argc, char **argv)
   /*We have to fill the probability arrays with "correct" information*/
   array_initialization();
 
-  while(1)
-    {
+  while (!shutdown_requested())
+  {
       
-      /*We are going.*/
-      cputs("move");
-      msleep(500);
-      move();
+    /*We are going.*/
+    cputs("move");
+    msleep(500);
+    move();
 
-      /*We are now calculating q-scores.*/
-      cputs("score");
+    /*We are now calculating q-scores.*/
+    cputs("score");
 
-      for(k=0; k<KAPPA; k++)
-	{
-	  q_score_update();
-	}
-    }
+    for(k=0; k<KAPPA; k++)
+  	{
+	    q_score_update();
+  	}
+  }
 
   cls();
   return 0;
 }
+
 #else
 #warning trailerbot.c requires CONF_DMOTOR, CONF_DSENSOR, CONF_DSENSOR_ROTATION
 #warning trailerbot demo will do nothing

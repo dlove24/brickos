@@ -20,6 +20,7 @@
 #include <c++/LightSensor.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 //
 // This is a naive example of a rover which follows a dark line
@@ -41,7 +42,7 @@ main(int argc,
   cputw (lightLevel);
   sleep(2);
 
-  while (1) {
+  while (!shutdown_requested()) {
     m.forward(speed);
     while (1) {
       const unsigned int value(l.get());

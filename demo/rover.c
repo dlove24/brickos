@@ -36,6 +36,7 @@
 #include <dmotor.h>
 
 #include <sys/lcd.h>
+#include <sys/tm.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -50,7 +51,7 @@ wakeup_t sensor_press_wakeup(wakeup_t data);
 int main(int argc, char *argv[]) {
   int dir=0;
 
-  while(1) {
+  while (!shutdown_requested()) {
     motor_a_speed(2*MAX_SPEED/3);		// go!
     motor_c_speed(2*MAX_SPEED/3);
 
@@ -59,40 +60,42 @@ int main(int argc, char *argv[]) {
 
     cputs("fwwd ");
 
-    wait_event(&sensor_press_wakeup,0);
+    if (wait_event(&sensor_press_wakeup, 0) != 0) {
+	    if(SENSOR_1<0xf000)    	      // keep in mind.
+  	    dir=0;
+    	else
+      	dir=1;
 
-    if(SENSOR_1<0xf000)    	      // keep in mind.
-      dir=0;
-    else
-      dir=1;
+	    // back up
+  	  //
+    	motor_a_dir(rev);
+	    motor_c_dir(rev);
 
-    // back up
-    //
-    motor_a_dir(rev);
-    motor_c_dir(rev);
+  	  cputs("rev  ");
 
-    cputs("rev  ");
+	    msleep(500);
 
-    msleep(500);
+  	  motor_a_speed(MAX_SPEED);		// go!
+    	motor_c_speed(MAX_SPEED);
 
-    motor_a_speed(MAX_SPEED);		// go!
-    motor_c_speed(MAX_SPEED);
+	    if(dir==1) {
+  	    motor_c_dir(fwd);
+    	  cputs("left ");
+	    } else {
+  	    motor_a_dir(fwd);
+    	  cputs("right");
+	    }
 
-    if(dir==1) {
-      motor_c_dir(fwd);
-      cputs("left ");
-    } else {
-      motor_a_dir(fwd);
-      cputs("right");
-    }
-
-    msleep(500);
+	    msleep(500);
+	  }
   }
+  
+  return 0;
 }
 
 wakeup_t sensor_press_wakeup(wakeup_t data) {
-        lcd_refresh();
-	return SENSOR_1<0xf000 || SENSOR_3<0xf000;
+	lcd_refresh();
+	return (SENSOR_1<0xf000) || (SENSOR_3<0xf000);
 }
 
 #else

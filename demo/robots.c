@@ -4,6 +4,7 @@
 #if defined(CONF_DSOUND)
 
 #include <dsound.h>
+#include <sys/tm.h>
 
 //! "wir sind die roboter" theme by Kraftwerk
 static const note_t robots[] = { 
@@ -14,9 +15,9 @@ static const note_t robots[] = {
 };
     
 int main(int argc,char *argv[]) {
-  while(1) {
-    dsound_play(robots);
-    wait_event(dsound_finished,0);
+  while (!shutdown_requested()) {
+    if (wait_event(dsound_finished,0) != 0)
+	    dsound_play(robots);
   }
   return 0;
 }

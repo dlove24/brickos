@@ -28,7 +28,7 @@ main(int argc,
 {
   RotationSensor r(RotationSensor::S2, 0);
 
-  while (1) {
+  while (!shutdown_requested()) {
 #ifdef CONF_DSENSOR_VELOCITY
     cputw(r.velocity());
 #else

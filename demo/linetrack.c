@@ -36,6 +36,7 @@
 
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 #include <dsensor.h>
 #include <dmotor.h>
@@ -71,26 +72,27 @@ static void follow_line() {
   int dir=0;
   
   
-  while(1) {
+  while (!shutdown_requested()) {
     motor_a_speed(NORMAL_SPEED);
     motor_c_speed(NORMAL_SPEED);
     motor_a_dir(fwd);
     motor_c_dir(fwd);
     
-    wait_event(bright_found,BRIGHT_THRESH);
-    
-    if(dir==0)
-      motor_a_dir(rev);
-    else
-      motor_c_dir(rev);
+    if (wait_event(bright_found,BRIGHT_THRESH) != 0)
+    {    
+	    if(dir==0)
+  	    motor_a_dir(rev);
+	    else
+  	    motor_c_dir(rev);
 #ifdef STRAIGHT_LINE
-     dir=!dir;
+    		dir=!dir;
 #endif
         
-    motor_a_speed(TURN_SPEED);
-    motor_c_speed(TURN_SPEED);
+	    motor_a_speed(TURN_SPEED);
+  	  motor_c_speed(TURN_SPEED);
     
-    wait_event(dark_found,DARK_THRESH);
+    	wait_event(dark_found,DARK_THRESH);
+    }
   }
 }
 

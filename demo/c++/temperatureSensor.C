@@ -19,6 +19,7 @@
 #include <c++/TemperatureSensor.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 // This program reads the temperature sensor and displays the hex value on
 /// the display every 100 ms
@@ -29,7 +30,7 @@ main(int argc,
 {
   TemperatureSensor t(Sensor::S2);
 
-  while (1) {
+  while (!shutdown_requested()) {
     const int a(t.tenths());
     cputw(a);
     delay(100);

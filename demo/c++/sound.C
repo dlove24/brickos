@@ -21,12 +21,13 @@
 #include <c++/Sound.H>
 #include <conio.h>
 #include <unistd.h>
+#include <sys/tm.h>
 
 int 
 main(int argc, 
      char **argv) 
 {
-  while (1) {
+  while (!shutdown_requested()) {
     Sound::beep();
     cputs ("Beep");
     sleep(1);

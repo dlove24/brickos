@@ -3,6 +3,7 @@
 #include <config.h>
 #if defined(CONF_DSOUND)
 #include <dsound.h>
+#include <sys/tm.h>
 
 /*array of notes that make up the refrain*/
 /*of Devil with a Blue Dress*/
@@ -65,9 +66,9 @@ int main(int argc,char *argv[]) {
   dsound_set_duration(40);
 
   /*now, we play it*/
-  while(1) {
-    dsound_play(devil);
-    wait_event(dsound_finished,0);
+  while (!shutdown_requested()) {
+    if (wait_event(dsound_finished,0) != 0)
+    	dsound_play(devil);
     sleep(1);
   }
 

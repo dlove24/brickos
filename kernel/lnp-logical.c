@@ -262,37 +262,38 @@ int lnp_logical_write(const void* buf,size_t len) {
   unsigned char tmp;
 
 #ifdef CONF_TM
-  sem_wait(&tx_sem);
+  if (sem_wait(&tx_sem) == -1)
+  	return tx_state;
 #endif
 
 #ifdef CONF_AUTOSHUTOFF
   shutoff_restart();
 #endif
 
-  wait_event(write_allow,0);
+	if (wait_event(write_allow,0) != 0)
+	{
+	  lnp_timeout_reset();
 
-  lnp_timeout_reset();
+  	tx_verify=tx_ptr=buf;                 // what to transmit
+	  tx_end=buf+len;
 
-  tx_verify=tx_ptr=buf;                 // what to transmit
-  tx_end=buf+len;
+	  tx_state=TX_ACTIVE;
+	  S_SR&=~(SSR_TRANS_EMPTY | SSR_TRANS_END); // clear flags
+	  S_CR|=SCR_TRANSMIT | SCR_TX_IRQ | SCR_TE_IRQ; // enable transmit & irqs
 
-  tx_state=TX_ACTIVE;
-  S_SR&=~(SSR_TRANS_EMPTY | SSR_TRANS_END); // clear flags
-  S_CR|=SCR_TRANSMIT | SCR_TX_IRQ | SCR_TE_IRQ; // enable transmit & irqs
+	  wait_event(write_complete,0);
 
-  wait_event(write_complete,0);
-
-  // determine delay before next transmission
-  //
-  if(tx_state==TX_IDLE)
-    tmp=LNP_WAIT_TXOK;
-  else
-    tmp=LNP_WAIT_COLL + ( ((unsigned char) 0x0f) &
-        ( ((unsigned char) len)+
-          ((unsigned char*)buf)[len-1]+
-          ((unsigned char) sys_time)    ) );
-  allow_tx=sys_time+tmp;
-
+	  // determine delay before next transmission
+	  //
+	  if(tx_state==TX_IDLE)
+	    tmp=LNP_WAIT_TXOK;
+	  else
+	    tmp=LNP_WAIT_COLL + ( ((unsigned char) 0x0f) &
+	        ( ((unsigned char) len)+
+	          ((unsigned char*)buf)[len-1]+
+	          ((unsigned char) sys_time)    ) );
+	  allow_tx=sys_time+tmp;
+	}
 
 #ifdef CONF_TM
   sem_post(&tx_sem);
