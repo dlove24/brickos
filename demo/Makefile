@@ -1,10 +1,11 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/16 14:47:18 stephmo Exp $
+###  $Id: Makefile,v 1.7 2002/10/17 05:05:40 stephmo Exp $
 ###  FILE: demo/Makefile - make the C Language Demo Programs
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
 
 # name for the brickOS kernel
+# #LIBDIR#         ###   DO NOT REMOVE THIS LINE  ###
 KERNEL=../boot/brickOS
 
 PROGRAMS=helloworld.lx rover.lx linetrack.lx robots.lx c++.lx sound.lx trailerbot.lx
