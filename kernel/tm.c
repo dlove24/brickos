@@ -557,9 +557,9 @@ wakeup_t wait_event(wakeup_t (*wakeup)(wakeup_t),wakeup_t data) {
 /*! \param data time to wakeup encoded as a wakeup_t
 */
 static wakeup_t tm_sleep_wakeup(wakeup_t data) {
-  time_t remaining = ((time_t)data) - sys_time;
+  time_t remaining = ((time_t)data) - get_system_up_time();
 
-  if (((time_t)data)<=sys_time)
+  if (((time_t)data) <= get_system_up_time())
   {
     tm_timeslice = TM_DEFAULT_SLICE;
     return -1;
@@ -578,8 +578,8 @@ static wakeup_t tm_sleep_wakeup(wakeup_t data) {
 unsigned int msleep(unsigned int msec)
 {
 #if defined(CONF_TIME) && defined(CONF_TM)
-  if (wait_event(&tm_sleep_wakeup, sys_time + MSECS_TO_TICKS(msec)) == 0)
-    return (MSECS_TO_TICKS(msec) - sys_time);
+  if (wait_event(&tm_sleep_wakeup, get_system_up_time() + MSECS_TO_TICKS(msec)) == 0)
+    return (MSECS_TO_TICKS(msec) - get_system_up_time());
 #else
   delay(msec);
 #endif

@@ -114,7 +114,7 @@ void rx_core(void) {
   if(tx_state<TX_ACTIVE) {
     // foreign bytes
     //
-    new_tx = sys_time+LNP_BYTE_SAFE;
+    new_tx = get_system_up_time()+LNP_BYTE_SAFE;
     if (new_tx > allow_tx) allow_tx = new_tx;
     lnp_integrity_byte(S_RDR);
   } else {
@@ -146,7 +146,7 @@ void rxerror_core(void) {
   time_t new_tx;
   if(tx_state<TX_ACTIVE) {
     lnp_integrity_reset();
-    new_tx = sys_time+LNP_BYTE_SAFE;
+    new_tx = get_system_up_time()+LNP_BYTE_SAFE;
     if (new_tx > allow_tx) allow_tx = new_tx;
   } else {
     txend_handler();
@@ -246,7 +246,7 @@ void lnp_logical_init(void) {
 
 
 static wakeup_t write_allow(wakeup_t data) {
-  return sys_time >= *((volatile time_t*)&allow_tx);
+  return get_system_up_time() >= *((volatile time_t*)&allow_tx);
 }
 
 static wakeup_t write_complete(wakeup_t data) {
@@ -291,8 +291,8 @@ int lnp_logical_write(const void* buf,size_t len) {
 	    tmp=LNP_WAIT_COLL + ( ((unsigned char) 0x0f) &
 	        ( ((unsigned char) len)+
 	          ((unsigned char*)buf)[len-1]+
-	          ((unsigned char) sys_time)    ) );
-	  allow_tx=sys_time+tmp;
+	          ((unsigned char) get_system_up_time())    ) );
+	  allow_tx=get_system_up_time()+tmp;
 	}
 
 #ifdef CONF_TM

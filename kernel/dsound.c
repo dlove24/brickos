@@ -126,11 +126,11 @@ HANDLER_WRAPPER("dsound_handler","dsound_core");
 //! sound core, called from ????
 void dsound_core(void) {
 #endif
-  if(sys_time>=dsound_next_time) {
+  if (get_system_up_time() >= dsound_next_time) {
     
     if(internote) {
       play_pause();
-      dsound_next_time=sys_time + dsound_internote_ms;
+      dsound_next_time = get_system_up_time() + dsound_internote_ms;
       
       internote=0;
       return;
@@ -145,7 +145,7 @@ void dsound_core(void) {
 	else
 	  play_pause();
 	
-	dsound_next_time=sys_time + dsound_16th_ms * dsound_next_note->length
+	dsound_next_time = get_system_up_time() + dsound_16th_ms * dsound_next_note->length
 	                          - dsound_internote_ms;
 	dsound_next_note++;
 	internote=1;

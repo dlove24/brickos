@@ -84,6 +84,7 @@ void systime_set_switcher(void* switcher);
 void systime_set_timeslice(unsigned char slice);
 #endif	// CONF_TM
 
+time_t get_system_up_time(void);
 #endif  // CONF_TIME
 
 #ifdef  __cplusplus

@@ -132,17 +132,12 @@ _subsystem_handler:
                 push r0                         ; both motors & task
                                                 ; switcher need this reg.
         "
-#ifdef CONF_DMOTOR
-        "
-                jsr _dm_handler                 ; call motor driver
-"
-#endif
 
 #ifdef CONF_DSOUND
         "
                 jsr _dsound_handler             ; call sound handler
         "
-#endif
+#endif // CONF_DSOUND
 
 #ifdef CONF_LNP
         "
@@ -157,13 +152,13 @@ _subsystem_handler:
               sys_noreset:
                 mov.w r6,@_lnp_timeout_counter
         "
-#endif
+#endif // CONF_LNP
 
 #ifdef CONF_DKEY
         "
                 jsr _dkey_handler
         "
-#endif
+#endif // CONF_DKEY
 
 #ifndef CONF_TM
 #ifdef CONF_BATTERY_INDICATOR
@@ -178,8 +173,8 @@ _subsystem_handler:
               batt_norefresh:
                 mov.w r6,@_battery_refresh_counter
         "
-#endif
-#endif
+#endif // CONF_BATTERY_INDICATOR
+#endif // CONF_TM
 
 #ifdef CONF_AUTOSHUTOFF
         "
@@ -193,7 +188,7 @@ _subsystem_handler:
               auto_notshutoff:
                   mov.w r6,@_auto_shutoff_counter
         "
-#endif
+#endif // CONF_AUTOSHUTOFF
 
 #ifdef CONF_VIS
         "
@@ -207,7 +202,7 @@ _subsystem_handler:
               vis_norefresh:
                 mov.b r6l,@_vis_refresh_counter
         "
-#endif
+#endif // CONF_VIS
 
 #ifdef CONF_LCD_REFRESH
         "
@@ -221,7 +216,7 @@ _subsystem_handler:
               lcd_norefresh:
                 mov.b r6l,@_lcd_refresh_counter
         "
-#endif
+#endif // CONF_LCD_REFRESH
         "
                 bclr  #2,@0x91:8                ; reset compare B IRQ flag
         "
@@ -250,7 +245,14 @@ _subsystem_handler:
               sys_noswitch:
                 mov.b r6l,@_tm_current_slice
         "
-#endif
+#endif // CONF_TM
+
+#ifdef CONF_DMOTOR
+        "
+                jsr _dm_handler                 ; call motor driver
+        "
+#endif // CONF_DMOTOR
+
         "
                 pop r0
                 bclr  #3,@0x91:8                ; reset compare A IRQ flag
@@ -336,5 +338,22 @@ void systime_set_timeslice(unsigned char slice) {
 }
 
 #endif
+
+//! retrieve the current system time
+/*! \return number of msecs the system has been running
+ *  Since sys_time is 32bits, it takes more than one
+ *  instruction to retrieve; the NMI can fire mid
+ *  retrieval; causing the upper and lower 16bits to be
+ *  unmatched (lower 16bits could overflow and reset to
+ *  0, while upper 16bits were already read)
+ */
+time_t get_system_up_time(void) {
+  time_t time_a=sys_time;
+  time_t time_b=sys_time;
+  // if time_b is less than time_a then time_b contains
+  // a corrupt time value, return time_a instead.
+  if (time_a < time_b) return time_b;
+  else return time_a;
+}
 
 #endif // CONF_TIME

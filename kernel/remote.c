@@ -70,7 +70,7 @@ void lr_getdata(unsigned int x)
   }
 
   // Reset timeout
-  lr_timeoff = sys_time + LR_TIMEOUT;
+  lr_timeoff = get_system_up_time() + LR_TIMEOUT;
 }
 
 
@@ -106,7 +106,7 @@ void lr_process(unsigned int lr_keys)
 wakeup_t lr_waitdata(wakeup_t data)
 {
   // if time runs out, fake "all keys off"
-  if (sys_time > lr_timeoff && lr_curkeys != 0) {
+  if (get_system_up_time() > lr_timeoff && lr_curkeys != 0) {
     lr_data = 0;
     lr_dataready = 1;
   }
@@ -144,7 +144,7 @@ void lr_startup()
 {
   // start with all keys off, set initial timeout, clear user handler
   lr_curkeys = 0;
-  lr_timeoff = sys_time + LR_TIMEOUT;
+  lr_timeoff = get_system_up_time() + LR_TIMEOUT;
   lr_handler = NULL;
 
   // Start watcher thread, then tell lnp where we want remote data to go
