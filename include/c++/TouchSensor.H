@@ -24,6 +24,8 @@
 
 #include <c++/Sensor.H>
 
+#if defined(CONF_DSENSOR)
+
 /**
  * @class TouchSensor TouchSensor.H <c++/TouchSensor.H>
  * The Touch Sensor Class - using a touch sensor in passive mode 
@@ -45,4 +47,7 @@ public:
   bool pressed() const {return TOUCH(sensor);}
 };
 
+#else // CONF_DSENSOR
+#warning Enable CONF_DSENSOR to use TouchSensor.H
+#endif // CONF_DSENSOR
 #endif // _TouchSensor_H_

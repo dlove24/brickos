@@ -24,6 +24,8 @@
 
 #include <c++/Motor.H>
 
+#if defined(CONF_DMOTOR)
+
 // This class is for manipulating a simple pair of motors, that are the drive
 // motors for a rover.  i.e. you have a left and right motor which drive a
 // rover.  The left motor is spinning forwards to move forwards, while the
@@ -53,6 +55,7 @@
  * @short Pair-of-motors Control interface
  * @see Motor, Sound
  */
+ 
 class MotorPair {
 public:
   MotorPair(const Motor::Port lport, const Motor::Port rport)
@@ -114,4 +117,7 @@ private:
   const Motor mRight;
 };
 
+#else // CONF_DMOTOR
+#warning Enable CONF_DMOTOR to use MotorPair.H
+#endif // CONF_DMOTOR
 #endif // _MotorPair_H_

@@ -24,6 +24,8 @@
 
 #include <c++/Sensor.H>
 
+#if defined(CONF_DSENSOR)
+
 /**
  * @class TemperatureSensor TemperatureSensor.H <c++/TemperatureSensor.H>
  * This is class deals with temperature sensors
@@ -90,4 +92,7 @@ public:
   int degrees() const {return static_cast<int>(C());} 
 };
 
+#else // CONF_DSENSOR
+#warning Enable CONF_DSENSOR to use TemperatureSensor.H
+#endif // CONF_DSENSOR
 #endif // _TemperatureSensor_H_

@@ -24,6 +24,8 @@
 
 #include <sys/battery.h>
 
+#if defined(CONF_DSENSOR)
+
 /**
  * @class Battery Battery.H <c++/Battery.H>
  *
@@ -43,4 +45,7 @@ public:
   static int get() {return get_battery_mv();}
 };
 
+#else // CONF_DSENSOR
+#warning Enable CONF_DSENSOR to use Battery.H
+#endif // CONF_DSENSOR
 #endif // _Battery_H_

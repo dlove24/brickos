@@ -53,6 +53,8 @@
 
 #include <conio.h>
 #include <dmotor.h>
+ 
+#if defined(CONF_DMOTOR)
 
 
 /**
@@ -61,6 +63,7 @@
  * @short Motor Control interface
  * @see MotorPair, Sound
  */
+
 class Motor {
 public:
   enum Port { A, B, C }; 
@@ -90,4 +93,7 @@ private:
   void (*md)(const MotorDirection dir);
 };
 
+#else // CONF_DMOTOR
+#warning Enable CONF_DMOTOR to use Motor.H
+#endif // CONF_DMOTOR
 #endif // _Motor_H_

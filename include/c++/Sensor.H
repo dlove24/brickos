@@ -39,6 +39,8 @@
 #include <dsensor.h>
 #include <conio.h>
 
+#if defined(CONF_DSENSOR)
+
 /**
  * @class Sensor Sensor.H <c++/Sensor.H>
  * This is the base class for all sensors.
@@ -191,4 +193,8 @@ protected:
   volatile unsigned int& sensor;
 };
 
+#else // CONF_DSENSOR
+#warning Enable CONF_DSENSOR to use Sensor.H
+#endif // CONF_DSENSOR
 #endif // _Sensor_H_
+

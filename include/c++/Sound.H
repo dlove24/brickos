@@ -32,6 +32,8 @@
 
 #include <dsound.h>
 
+#if defined(CONF_DSOUND)
+
 /**
  * @class Sound Sound.H <c++/Sound.H>
  *
@@ -49,4 +51,7 @@ public:
   static void internote(const unsigned int len) {dsound_set_internote(len);}
 };
 
+#else
+#warning Enable CONF_DSOUND to use Sound.H
+#endif // CONF_DSOUND
 #endif // _Sound_H_

@@ -24,6 +24,8 @@
 
 #include <c++/Sensor.H>
 
+#if defined(CONF_DSENSOR)
+
 /**
  * @class LightSensor LightSensor.H <c++/LightSensor.H>
  * The Light Sensor Class - using a lightSensor in active mode
@@ -75,4 +77,7 @@ public:
   }
 };
 
+#else // CONF_DSENSOR
+#warning Enable CONF_DSENSOR to use LightSensor.H
+#endif // CONF_DSENSOR
 #endif // _LightSensor_H_

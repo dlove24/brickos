@@ -25,6 +25,7 @@
 #include <c++/Sensor.H>
 #include <dsensor.h>
 
+#if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
 
 /**
  * @class RotationSensor RotationSensor.H <c++/RotationSensor.H>
@@ -104,4 +105,7 @@ private:
 #endif // CONF_DSENSOR_VELOCITY
 };
 
+#else
+#warning Enable CONF_DSENSOR && CONF_DSENSOR_ROTATION to use RotationSensor.H
+#endif // CONF_DSENSOR, CONF_DSENSOR_ROTATION
 #endif // _RotationSensor_H_
