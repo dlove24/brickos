@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.7 2003/03/02 16:48:27 paolom Exp $
+###  $Id: Makefile,v 1.8 2003/03/02 18:00:41 paolom Exp $
 ###  FILE: util/Makefile - make the hosted utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -9,7 +9,7 @@ BUILDING_HOST_UTILS = true
 include ../Makefile.common
 
 # Define here the executable files to be build
-EXECUTABLES    = fontdesign dll firmdl3
+EXECUTABLES    = fontdesign
 UTILITY_SCRIPT = merge-map
 
 # Needed for DOS/WIN32 platforms
@@ -24,15 +24,16 @@ SUBDIRS = dll-src firmdl
 all:: $(TARGETS)
 	@# nothing to do here but do it silently
 
-all clean depend install realclean uninstall::
+all clean depend install realclean strip uninstall::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
 
 # remove debug symbols
-strip:
+strip::
 	strip $(TARGETS)
 
 # build our one local program
 fontdesign$(EXT):	fontdesign.c
+	$(CC) -o $@ $< $(CFLAGS)
 
 install:: install-stamp
 

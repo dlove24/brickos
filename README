@@ -4,6 +4,7 @@ This software will run on Linux and Windows (using the Cygwin tool suite.)
 
 To start with brickOS:
 
+- Type ./configure. Environment should be autodetected (hopefully).
 - Type make. Utilities, libraries, a default kernel and some demos will
   be made.
 - Pre-packaged binaries have been discontinued.
@@ -35,4 +36,4 @@ For more documentation, see in docs on the web at
 http://brickOS.sourceforge.net/HOWTO/
 
 ------------------------------------------------------------------------
-legOS/brickOS Copyright (C) 1998-2002 by Markus L. Noga <markus@noga.de>
+legOS/brickOS Copyright (C) 1998-2003 by Markus L. Noga <markus@noga.de>

@@ -1,7 +1,8 @@
-2003-03-01  Paolo Masetti <paolom@users.sourceforge.net>
+2003-03-02  Paolo Masetti <paolom@users.sourceforge.net>
 
-  * Fixed executables list in util\makefiles. Now make strip works.
+  * Fixed util\makefile(s). Now "make strip" works.
   * Revised doc/INSTALL-cygwin.sgml to reflect actual release.
+  * Added ./configure step in README.
   * Changed filename in comments for demo/rover.c.
 
 2003-02-24  Stephen M Moraco <stephmo@users.sourceforge.net>
@@ -342,4 +343,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.28 2003/03/02 16:48:26 paolom Exp $
+$Id: ChangeLog,v 1.29 2003/03/02 18:00:40 paolom Exp $

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/23 17:42:47 stephmo Exp $
+###  $Id: Makefile,v 1.9 2003/03/02 18:00:42 paolom Exp $
 ###  FILE: util/firmdl/Makefile - make firmware download utility
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -13,7 +13,6 @@ MKIMG = mkimg$(EXT)
 MAN1 = firmdl3.1
 
 ALL_TARGETS = ../$(FIRMDL3) $(MKIMG) 
-
 
 all:: fastdl.h $(ALL_TARGETS)
 	@# nothing to do here but do it silently
@@ -50,6 +49,10 @@ clean:
 realclean: clean
 	rm -f fastdl.h $(ALL_TARGETS)
 	@rm -f install-stamp
+
+# remove debug symbols
+strip:
+	strip $(ALL_TARGETS)
 
 .PHONY: realclean clean install depend all
 

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/23 17:42:46 stephmo Exp $
+###  $Id: Makefile,v 1.9 2003/03/02 18:00:41 paolom Exp $
 ###  FILE: util/dll-src/Makefile - make program download & link support utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -84,6 +84,10 @@ $(TARGET2):  $(OBJS2)
 
 ../%$(EXT): %.c
 	$(CC) -o $@ $< $(CFLAGS)
+
+# remove debug symbols
+strip:
+	strip $(ALL_TARGETS)
 
 .PHONY: depend all clean realclean install
 
