@@ -46,6 +46,7 @@ extern "C" {
 
 #ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
 /**
+ * The program control structure
  * @internal
  */
 typedef struct {
@@ -62,7 +63,7 @@ typedef struct {
   priority_t prio;    	//!< priority to run this program at
 
   size_t downloaded;  	//!< number of bytes downloaded so far.
-} program_t;  	      	//!< the program data type
+} program_t;
 
 /**
  * @internal

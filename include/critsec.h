@@ -37,6 +37,7 @@ extern "C" {
 #if defined(CONF_TM) && defined(CONF_CRITICAL_SECTIONS)
 #include <sys/tm.h>
 
+#ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
 //! critical section data structure
 /*! tracks current count (level of nesting)
     and the task that is in the critical section(s)
@@ -47,6 +48,7 @@ struct critsec {
   unsigned char count;
   tdata_t* task;
 };
+#endif //  DOXYGEN_SHOULD_SKIP_INTERNALS
 
 //! critical section type definition
 typedef struct critsec critsec_t;
