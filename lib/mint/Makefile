@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.4 2002/10/15 03:23:24 stephmo Exp $
+###  $Id: Makefile,v 1.5 2002/10/17 04:30:45 stephmo Exp $
 ###  FILE: lib/mint/Makefile - make the integer math library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -57,6 +57,10 @@ install-stamp: $(LIBRARY)
 	cp -f $? ${pkglibdir}/$?
 	@touch $@
 
+uninstall:
+	@rm -f install-stamp
+
+.PHONY: all promote-stamp depend clean realclean install install-stamp uninstall
 
 ### --------------------------------------------------------------------------
 ###                    End of FILE: lib/mint/Makefile
