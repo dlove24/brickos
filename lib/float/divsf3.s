@@ -20,6 +20,12 @@
  *  Kekoa Proudfoot. All Rights Reserved.
  *
  *  Contributor(s): Kekoa Proudfoot <kekoa@graphics.stanford.edu>
+ *
+ *	Includes bug fixes by Evgeni Krimer <krimer at tx.technion.ac.il>
+ *	and Roman Barsky <barsky at cs.technion.ac.il>
+ *	Project site - http://www.cs.technion.ac.il/~barsky/brickos.html
+ *	Last updated 26 Oct 2003 
+ *
  */
 
     .section .text
@@ -163,10 +169,22 @@ ___divsf3:
         ; If numerator >= denominator
 
         cmp.w   r0,r5           ; compare upper words (r5 ? r0)
-        bgt     if_4            ; greater than indicates true
-        blt     endif_4         ; less than indicates false
+        ;bgt     if_4           ; greater than indicates true
+                                ; NOTE that previous line compares
+                                ; signed which causes a bug 
+                                ; fixed by Krimer and Barsky
+        bhi     if_4            ; greater than indicates true
+        ;blt     endif_4        ; less than indicates false 
+                                ; NOTE that previous line compares
+                                ; signed which causes a bug  
+                                ; fixed by Krimer and Barsky
+        blo     endif_4         ; less than indicates false 
         cmp.w   r1,r6           ; compare lower words (r6 ? r1)
-        blt     endif_4         ; less than indicates false
+        ;blt     endif_4        ; less than indicates false
+                                ; NOTE that previous line compares
+                                ; signed which causes a bug
+                                ; fixed by Krimer and Barsky
+        blo     endif_4         ; less than indicates false
 
             if_4:
 
