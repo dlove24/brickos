@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: util/firmdl/Makefile - make firmware download utility
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -40,6 +40,9 @@ install-stamp: $(ALL_TARGETS) $(MAN1)
 	fi
 	cp -f $(MAN1) $(mandir)/man1/$(MAN1)
 	@touch $@
+
+uninstall:
+	rm -f $(mandir)/man1/$(MAN1) $(bindir)/$(FIRMDL3) install-stamp
 
 clean:
 	rm -f *.o *~ *.bak

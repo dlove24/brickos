@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/15 21:09:29 stephmo Exp $
+###  $Id: Makefile,v 1.9 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -13,12 +13,15 @@ KSOURCES=kmain.c mm.c systime.c tm.c semaphore.c conio.c lcd.c \
          timeout.c dkey.c dmotor.c dsensor.c dsound.c swmux.c\
          critsec.c
 
+KERNEL_TARGETS = $(KERNEL).srec \
+                 $(KERNEL).lds
+
 #
 # NOTE: uncomment out the first line if you need a kernel disassembly file.
 # This will not work on Windows unless you have perl installed.
 #
 #all: $(KERNEL).srec $(KERNEL).dis2 $(KERNEL).lds
-all: $(KERNEL).srec $(KERNEL).lds
+all: $(KERNEL_TARGETS)
 
 include ../Makefile.common
 
@@ -27,8 +30,29 @@ include ../Makefile.common
 
 depend: .depend
 
-install:
+install: install-stamp
 	@# nothing to do here but do it silently
+
+install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
+               ../include/* ../demo/Makefile ../demo/*.c ../demo/c++/*.C \
+			   config.h $(KERNEL_TARGETS) ../Makefile.user ../Makefile.common
+	cp -r ../include/* ${pkgincludedir}
+	@find ${pkgincludedir} -type d -name 'CVS' -depth -exec rm -rf {} \;
+	cp -f ../demo/Makefile ${pkgexampledir}
+	cp -r ../demo ${pkgexampledir}
+	@find ${pkgexampledir} -type d -name 'CVS' -depth -exec rm -rf {} \;
+	@find ${pkgexampledir} -type f -name '*.o' -depth -exec rm -f {} \;
+	@find ${pkgexampledir} -type f -name '*.ref' -depth -exec rm -f {} \;
+	cp -f $(KERNEL_TARGETS) ${pkglibdir}
+	cp -f config.h ${pkglibdir}
+	cp -f ../Makefile.user ../Makefile.common ${pkglibdir}
+	touch $@
+
+${pkgincludedir} ${pkgexampledir} ${pkglibdir}:
+	mkdir -p $@
+
+uninstall:
+	rm -rf ${pkglibdir} ${pkgincludedir} ${pkgdocdir} install-stamp
 
 tag:
 	@# nothing to do here but do it silently
@@ -38,7 +62,7 @@ clean:
 
 realclean:
 	rm -rf .depend* *.o *.dis *~ *.bak *.tgz *.s tags *.dcoff *.dmap *.dsrec *.dis2
-	rm -f  *.srec *.map *.coff *.lds
+	rm -f  *.srec *.map *.coff *.lds install-stamp
 
 .PHONY: all tag clean realclean depend
 

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: util/dll-src/Makefile - make program download & link support utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -66,6 +66,9 @@ install-stamp: $(ALL_TARGETS)
 	fi
 	cp -f $(MAN1) $(mandir)/man1/$(MAN1)
 	@touch $@
+
+uninstall:
+	rm -f install-stamp $(mandir)/man1/$(MAN1) $(bindir)/$(EXE1)
 
 $(TARGET1):  $(OBJS1)
 	$(CC) -o $@ $(OBJS1) $(LIBS) $(CFLAGS)

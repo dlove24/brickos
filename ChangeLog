@@ -1,6 +1,7 @@
 2002-10-16  Stephen M Moraco <stephmo@users.sourceforge.net>
 
-  * move Makefile.kernel into boot/Makefile (was only consumer)
+  * Move Makefile.kernel into boot/Makefile (was only consumer)
+  * Finish install targets, add uninstall target
 
 2002-10-15  Stephen M Moraco <stephmo@users.sourceforge.net>
 
@@ -289,4 +290,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.15 2002/10/15 21:09:29 stephmo Exp $
+$Id: ChangeLog,v 1.16 2002/10/15 22:03:45 stephmo Exp $

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.5 2002/10/15 03:23:24 stephmo Exp $
+###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: util/Makefile - make the hosted utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -24,7 +24,7 @@ SUBDIRS = dll-src firmdl
 all:: $(TARGETS)
 	@# nothing to do here but do it silently
 
-all clean depend install realclean::
+all clean depend install realclean uninstall::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
 
 # remove debug symbols

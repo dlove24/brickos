@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.9 2002/10/15 06:57:37 stephmo Exp $
+###  $Id: Makefile.common,v 1.10 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -29,6 +29,7 @@ pkglibdir = $(libdir)/${PACKAGE}
 pkgincludedir = $(includedir)/${PACKAGE}
 pkgdocdir = $(docdir)/${PACKAGE}
 pkghtmldir = $(pkgdocdir)/html
+pkgexampledir = $(pkgdocdir)/examples
 
 #
 # DJGPP does not define OSTYPE

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.12 2002/10/15 07:02:06 stephmo Exp $
+###  $Id: Makefile,v 1.13 2002/10/15 22:03:45 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -35,6 +35,10 @@ realclean:: clean
 
 doc docs-install::
 	$(MAKE) $(MFLAGS) -C doc $@
+
+uninstall::
+	$(MAKE) $(MFLAGS) -C boot $@
+	$(MAKE) $(MFLAGS) -C util $@
 
 
 #  API generation support using Doxygen
