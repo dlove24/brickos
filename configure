@@ -1,5 +1,5 @@
 #!/bin/bash -p
-# $Id: configure,v 1.3 2002/10/22 16:25:08 stephmo Exp $
+# $Id: configure,v 1.4 2002/10/23 06:04:31 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
@@ -100,30 +100,78 @@ then
   fi
 fi
 
-rm -f $VARS_FSPEC # delete it first to make sure we have no permissions problems
-
-echo "TOOLPREFIX=\"$TOOLPREFIX\"" >$VARS_FSPEC
 
 #
 #  look for .exe in the compiler name. This indicates Windows environment
 #   which means that CYGWIN or DJGPP toolset is being used
 #
 case "$HMSFULL" in
-*.exe) echo " - Found Cygwin/DJGPP system" ;
-       echo "SED_SFLAG=1" >> $VARS_FSPEC ;
-       echo "EXT=.exe" >> $VARS_FSPEC ;
-       echo "CC=gcc" >> $VARS_FSPEC ;
-       echo "CFLAGS+=-D_WIN32" >> $VARS_FSPEC ;;
+*.exe) 
+       SED_SFLAG=1
+       EXT=.exe
+       CC=gcc
+       CFLAGS=-D_WIN32
+	   CFLG_PE='+'
+	   ;;
 
-*)     echo " - Found Linux system" ;
-       echo "SED_SFLAG=" >> $VARS_FSPEC ;
-       echo "EXT=" >> $VARS_FSPEC ;
-       echo "CC=cc" >> $VARS_FSPEC ;
-       echo "CFLAGS=-O2 -Wall" >> $VARS_FSPEC ;;
+*)     
+       SED_SFLAG=""
+       EXT=""
+       CC=cc
+       CFLAGS="-O2 -Wall"
+	   CFLG_PE=""
+	   ;;
 esac
 
-echo "MAKEDEPEND=\$(CC) -M" >> $VARS_FSPEC;
+MAKEDEPEND="\$(CC) -M" 
 BRICKOS_ROOT=`pwd`
-echo "BRICKOS_ROOT=\"${BRICKOS_ROOT}\"" >> $VARS_FSPEC;
+
+cat Makefile.common | awk -v sedFlag=$SED_FLAG \
+                          -v ext=$EXT \
+						  -v cc=$CC \
+						  -v cflags="$CFLAGS" \
+						  -v toolPrefix="$TOOLPREFIX" \
+						  -v mkdep="$MAKEDEPEND" \
+						  -v brickosRoot=$BRICKOS_ROOT \
+						  -v cflgPleq=$CFLG_PE \
+						  '
+						  BEGIN {
+						    inInsert=0
+							sep="# -------------------------------------------------------"
+						  }
+						  ($2 == "END-configuration") {
+						    inInsert=0
+							print sep
+							print "TOOLPREFIX=" toolPrefix
+							print "SED_SFLAG=" sedFlag
+							print "EXT=" ext
+							print "CC=" cc
+							print "CFLAGS" cflgPleq "=" cflags
+							print "MAKEDEPEND=" mkdep
+							print "BRICKOS_ROOT=" brickosRoot
+							print sep
+						  }
+						  (inInsert) {
+						  	next
+						  }
+						  ($2 == "BEGIN-configuration") {
+						    inInsert=1
+						  }
+						  {
+						  	print $0
+						  }
+						  END {
+						  }' >Makefile.common.new
+
+cmp -s Makefile.common Makefile.common.new
+RET_CODE=$?
+if test $RET_CODE == 1
+then
+	rm -f Makefile.common.bak
+	mv Makefile.common Makefile.common.bak
+	mv Makefile.common.new Makefile.common
+fi
+
+touch .configured.flg
 
 exit 0

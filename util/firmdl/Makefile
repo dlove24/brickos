@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
+###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: util/firmdl/Makefile - make firmware download utility
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -15,7 +15,7 @@ MAN1 = firmdl3.1
 ALL_TARGETS = ../$(FIRMDL3) $(MKIMG) 
 
 
-all: fastdl.h $(ALL_TARGETS)
+all:: fastdl.h $(ALL_TARGETS)
 	@# nothing to do here but do it silently
 
 $(MKIMG): mkimg.o srec.o

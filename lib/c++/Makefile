@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.5 2002/10/17 04:30:45 stephmo Exp $
+###  $Id: Makefile,v 1.6 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: lib/c++/Makefile - make the c++ library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -20,7 +20,7 @@ LIBRARY   = lib$(LIBTARGET).a
 OBJECTS = $(SOURCES:.c=.o)
 
 
-all: promote-stamp
+all:: promote-stamp
 	@# nothing to do here but do it silently
 
 promote-stamp: $(LIBRARY)

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.15 2002/10/17 04:23:36 stephmo Exp $
+###  $Id: Makefile,v 1.16 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -31,7 +31,7 @@ depend tag clean realclean uninstall::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
 
 realclean:: clean
-	rm -f tags TAGS
+	rm -f tags TAGS *.bak
 
 doc docs-install::
 	$(MAKE) $(MFLAGS) -C doc $@
@@ -252,6 +252,8 @@ distdir: $(DISTFILES)
 	@find $(DISTDIR) -type d -depth -name 'CVS' -exec rm -rf {} \; 
 	@find $(DISTDIR) -type f -name '.cvs*' -exec rm -f {} \; 
 	@find $(DISTDIR) -type f -name '.dep*' -exec rm -f {} \; 
+
+include Makefile.common		# for the ocnfiguration check
 
 ### --------------------------------------------------------------------------
 ###                      End of top-level brickOS Makefile

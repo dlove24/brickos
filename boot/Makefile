@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.11 2002/10/17 05:06:45 stephmo Exp $
+###  $Id: Makefile,v 1.12 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -21,12 +21,12 @@ KERNEL_TARGETS = $(KERNEL).srec \
 # This will not work on Windows unless you have perl installed.
 #
 #all: $(KERNEL).srec $(KERNEL).dis2 $(KERNEL).lds
-all: $(KERNEL_TARGETS)
+all:: $(KERNEL_TARGETS)
 
 include ../Makefile.common
 
-.depend: $(BRICKOS_ROOT)kernel/*.c
-	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
+.depend: $(BRICKOS_ROOT)/kernel/*.c
+	$(MAKEDEPEND) $(BRICKOS_ROOT)/kernel/*.c > .depend
 
 depend: .depend
 
@@ -43,9 +43,9 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 	                       sed -e 's/\.\.\/include/$$\(INCDIR\)/g' | \
 	                       sed -e 's:KERNEL\=\.\..boot.brickOS:KERNEL = $$\(LIBDIR\)/brickOS:' | \
 	                       sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
-						   sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../demo/Makefile.dist
-	@cat ../demo/c++/Makefile | sed -e 's/..ROOTDIR.Makefile/$$\(LIBDIR\)\/Makefile/g' | \
-	                            sed -e 's/..ROOTDIR.include/$$\(INCDIR\)/g' | \
+						   sed -e 's/.BRICKOS_ROOT..util/(LIBDIR)/g' >../demo/Makefile.dist
+	@cat ../demo/c++/Makefile | sed -e 's/\.\..\.\..Makefile/$$\(LIBDIR\)\/Makefile/g' | \
+	                            sed -e 's/..BRICKOS_ROOT..include/$$\(INCDIR\)/g' | \
 	                            sed -e 's:KERNEL \= .*:KERNEL = $$\(LIBDIR\)/brickOS:' | \
 	                            sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
 						        sed -e 's/..ROOTDIR.util/(LIBDIR)/g' >../demo/c++/Makefile.dist
@@ -61,13 +61,14 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 	@echo "/* WARNING: INSTALLED config.h: do not change this file without re-building brickOS kernel! */" >config.h.dist
 	@cat config.h >>config.h.dist
 	cp -f config.h.dist ${pkgincludedir}/config.h
-	@cat ../Makefile.common | sed -e 's/.BRICKOS_ROOT.lib/(LIBDIR)/g' | \
-	                         sed -e 's/.BRICKOS_ROOT.include/(INCDIR)/g' | \
-							 sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../Makefile.common.dist
-	@cat ../Makefile.user | sed -e 's/.BRICKOS_ROOT.lib/(LIBDIR)/g' | \
-                             sed -e 's/.BRICKOS_ROOT.include/(INCDIR)/g' | \
-                             sed -e 's/.BRICKOS_ROOT.boot/(INCDIR)/g' | \
-							 sed -e 's/.BRICKOS_ROOT.util/(LIBDIR)/g' >../Makefile.user.dist
+	@cat ../Makefile.common | sed -e 's/.BRICKOS_ROOT..lib/(LIBDIR)/g' | \
+	                         sed -e 's/^all:.*//' | \
+	                         sed -e 's/.BRICKOS_ROOT..include/(INCDIR)/g' | \
+							 sed -e 's/.BRICKOS_ROOT..util/(LIBDIR)/g' >../Makefile.common.dist
+	@cat ../Makefile.user | sed -e 's/.BRICKOS_ROOT..lib/(LIBDIR)/g' | \
+                             sed -e 's/.BRICKOS_ROOT..include/(INCDIR)/g' | \
+                             sed -e 's/.BRICKOS_ROOT..boot/(INCDIR)/g' | \
+							 sed -e 's/.BRICKOS_ROOT..util/(LIBDIR)/g' >../Makefile.user.dist
 	cp -f ../Makefile.user.dist ${pkglibdir}/Makefile.user
 	@echo "" >>../Makefile.common.dist
 	@echo "INCDIR = ${pkgincludedir}" >>../Makefile.common.dist
@@ -119,7 +120,7 @@ LIBS=-lc -lmint
 #LIBS=--whole-archive -lc -lmint -lfloat
 
 # linker command files for kernel
-LDFLAGS=-T $(BRICKOS_ROOT)h8300.rcx -relax -L$(BRICKOS_ROOT)lib
+LDFLAGS=-T $(BRICKOS_ROOT)/h8300.rcx -relax -L$(BRICKOS_ROOT)/lib
 
 #
 # 2002.05.12 - Ted Hess <thess@users.sourceforge.net>

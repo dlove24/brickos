@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/15 22:03:45 stephmo Exp $
+###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: util/dll-src/Makefile - make program download & link support utilities
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -12,7 +12,7 @@ INSTALL_DIR = ..
 EXE1 = dll$(EXT)
 MAN1 = dll.1
 TARGET1 = $(INSTALL_DIR)/$(EXE1)
-SRCS1 = loader.c rcxtty.c keepalive.c ../../kernel/lnp.c lx.c
+SRCS1 = loader.c rcxtty.c keepalive.c $(BRICKOS_ROOT)/kernel/lnp.c lx.c
 OBJS1 = $(notdir $(SRCS1:.c=.o))
 
 EXE2 = makelx$(EXT)
@@ -32,9 +32,9 @@ LIBS=
 #
 # Martin Cornelius solution to include problems (avoid -I/usr/include)
 #
-CFLAGS+=-I. -I../../include/lnp
+CFLAGS+=-I. -I$(BRICKOS_ROOT)/include/lnp
 
-all:  $(ALL_TARGETS)
+all::  $(ALL_TARGETS)
 	@# nothing to do here but do it silently
 
 clean:
@@ -79,7 +79,7 @@ $(TARGET2):  $(OBJS2)
 %.o: %.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
-%.o: ../../kernel/%.c
+%.o: $(BRICKOS_ROOT)/kernel/%.c
 	$(CC) -o $@ -c $< $(CFLAGS)
 
 ../%$(EXT): %.c

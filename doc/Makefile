@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/16 14:47:18 stephmo Exp $
+###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: doc/Makefile - build HTML documentation from SGML source
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -23,7 +23,7 @@ include ../Makefile.common
 doc: $(DOCBASE).html $(DOCBASE2).html
 
 # nothing to do for these (documents not built when running top-level build)
-all install uninstall depend tag:
+all install uninstall depend tag::
 	@# nothing to do here, but do this nothing silently
 
 docs-install: ${pkghtmldir} chkbuild

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.6 2002/10/17 05:03:16 stephmo Exp $
+###  $Id: Makefile,v 1.7 2002/10/23 06:04:31 stephmo Exp $
 ###  FILE: lib/float/Makefile - make the floating point math library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -21,7 +21,7 @@ LIBRARY   = lib$(LIBTARGET).a
 OBJECTS = $(SOURCES:.s=.o)
 
 
-all: promote-stamp
+all:: promote-stamp
 	@# nothing to do here but do it silently
 
 promote-stamp: $(LIBRARY)
