@@ -44,24 +44,43 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-/// \struct note_t
-/// a note structure
+/// the note structure describing a single note.
 /// \note a song to play is made up of an array of these structures
-/// which is then handed to dsound_play() [in C] or Sound::play() [in C++]
+/// which is then handed to dsound_play() [in C] or Sound::play() [in C++].
+///
+/// The last entry in the list should have the {pitch} value set to \ref PITCH_END
+///
+/// Rests should be specified by placing \ref PITCH_PAUSE in the {pitch} value.
+/// The duration of the rest is placed in {length}.
 typedef struct {
   unsigned char pitch; 	    //!< note pitch, 0 ^= A_0 (~55 Hz)
   unsigned char length;     //!< note length in 1/16ths
 } note_t;
 
 
-//! note lengths
+/// \defgroup noteDurations standard note/rest durations
+///@{
+
+/// Whole note in terms of sixteenths
 #define WHOLE            16
+
+/// Half note in terms of sixteenths
 #define HALF             8
+
+/// Quater note in terms of sixteenths
 #define QUARTER          4
+
+/// Eighth note in terms of sixteenths
 #define EIGHTH           2
 
-//! note pitches
-// PITCH_H is European equivalent to American B note.
+///@}
+
+//  PITCH_H is European equivalent to American B note.
+
+/// \defgoup notePitches standard note pitch values
+///@{
+
+/// Note Pitch Values
 
 #define PITCH_A0 	 0
 #define PITCH_Am0 	 1
@@ -161,14 +180,22 @@ typedef struct {
 #define PITCH_Gm8 	 95
 #define PITCH_A8 	 96
 
+///@}
+
+//! specify a pause (rest)
 #define PITCH_PAUSE   	 97
+
+//! maximum pitch value
 #define PITCH_MAX     	 98
+
+//! mark the end of a list of note_t entries
 #define PITCH_END     	 255
 
 
 //! system sounds
 #define DSOUND_BEEP   	 0
 
+//! max system sound
 #define DSOUND_SYS_MAX   1
 
 

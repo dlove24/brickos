@@ -27,21 +27,20 @@
 
 #if defined(CONF_DSENSOR)
 /**
- * \class LightSensor c++/LightSensor.H
- * The LightSensor Class - using a %LightSensor in active mode
+ * Light-sensor interface (active/passive mode).
+ * The LightSensor Class - using a %LightSensor in active or passive mode
  *
  * At construction time you specify the RCX connector pad to which 
  * the %LightSensor is attached.
  *
- * It provides two methods to read the value of the 
+ * This class provides two methods to read the value of the 
  * sensor [\ref #get, \ref #sample]
  *
  * \note access methods from the base class \ref Sensor 
  * if you desire access to the raw sensor values or to the power control 
  * methods.
  *
- * \short Light-sensor interface (active mode)
- * \see Sensor, RotationSensor, TouchSensor
+ * \see The other sensor classes: Sensor, RotationSensor, and TouchSensor
  */
 class LightSensor : public Sensor {
 public:

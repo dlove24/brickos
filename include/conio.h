@@ -64,6 +64,8 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
+#ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
+
 //! Table: list of native patterns, one for each HEX character
 /*! \index HEX char value (0-9, a-f)
 */
@@ -77,6 +79,8 @@ extern const char hex_display_codes[];
 extern const char ascii_display_codes[];
 
 #endif // CONF_ASCII
+
+#endif // DOXYGEN_SHOULD_SKIP_INTERNALS
 
 ///////////////////////////////////////////////////////////////////////
 //

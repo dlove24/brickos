@@ -21,29 +21,15 @@
 #ifndef _Sensor_H_
 #define _Sensor_H_
 
-// This is the base class for all sensors
-// The methods include:
-// Sensor(sensor address)
-// unsigned int get() returns the current sensor reading
-// void mode(bool active) if active is true, then the sensor is made active, 
-//                        else it is passive
-// void passive() makes sensor passive
-// void active() makes sensor active
-// void off() makes sensor passive
-// void on() makes sensor active
-// void strobe() turn sensor on then off
-// void strobe(const int delay) turn sensor on, wait delay(ms), then turn off
-// unsigned int sample(unsigned int size, int wait), samples the sensor size
-//                     times, with wait ms delays between samples
-
 #include <config.h>
-#include <dsensor.h>
-#include <conio.h>
 
 #if defined(CONF_DSENSOR)
 
+#include <dsensor.h>
+#include <conio.h>
+
 /**
- * \class Sensor c++/Sensor.H 
+ * Basic sensor interface.
  * This is the base class for all sensors.
  *
  * At construction time you specify the RCX connector pad [\ref #Port] to 
@@ -52,17 +38,17 @@
  *
  * It provides methods to:
  * \li read the value of the sensor [\ref #get, \ref #sample]
- * \li to power the sensor as needed [\ref #on, \ref #off, \ref #active, 
+ *
+ * \li power the sensor as needed [\ref #on, \ref #off, \ref #active, 
  *  \ref #passive, \ref #mode]
  *
- * NOTE: Generally touch sensors [identical to Sensor but may be spelled
+ * \note Generally touch sensors [identical to Sensor but may be spelled
  * TouchSensor] are not powered. 
  * Light sensors [\ref LightSensor] may be powered or not (the values are 
  * smaller when they are powered and the sensor is more tolerant of ambient 
  * light) and Rotation sensors  [\ref RotationSensor] must be powered when 
  * sensing rotation.
- * \short Basic sensor interface
- * \author Pat Welch (legOS@mousebrains.com) 
+ * \todo how does TemperatureSensor figure in here...?
  */
 class Sensor {
 public:

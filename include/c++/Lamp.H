@@ -1,7 +1,7 @@
 /*! \file   c++/Lamp.H
-    \brief  C++ Lamp Class Interface
+    \brief C++ Lamp Class Interface
     \author Stephen M Moraco (stephmo@users.sourceforge.net)
-		 
+
     Defines interface to Lamp control via the output ports of the RCX
 */
 
@@ -29,11 +29,11 @@
 #include <dmotor.h>
 
 /**
- * \class Lamp c++/Lamp.H
- * define a lamp connection to the RCX so we can turn the lamp on or off
+ * Lamp control interface.
+ * Define a lamp connection to the RCX so we can turn the lamp on(), off()
+ * or set its brightness().
  * \note Lamps are controlled via motor ports so this is based on the Motor.H code
- * \short Lamp control interface
- * \see Motor, MotorPair, Sound
+ * \see The other control classes: Motor, MotorPair, Sound
  */
 class Lamp {
 public:
@@ -41,9 +41,9 @@ public:
    *  The RCX pad to which the Lamp is connected
    */
   enum Port { 
-         A, //!< RCX pad A
-         B, //!< RCX pad B
-		 C  //!< RCX pad C
+         A, //!< RCX output pad A
+         B, //!< RCX output pad B
+		 C  //!< RCX output pad C
 	   }; 
 
   /**
@@ -73,6 +73,13 @@ public:
    * \return Nothing
    */
   const void off() const { direction(std::off) };
+  /**
+   * Set the power to the lamp
+   * \param level the desired power setting specifying the intensity of the light. 
+     [must be between min (0) and max (255)]
+   * \return Nothing
+   */
+  const void brightness(const unsigned char level) const { speed(level); };
 private:
   const void speed(const unsigned char speed) const { (*ms)(speed); }
   const void direction(const MotorDirection dir) const { (*md)(dir); }

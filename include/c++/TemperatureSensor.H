@@ -28,7 +28,7 @@
 #if defined(CONF_DSENSOR)
 
 /**
- * \class TemperatureSensor c++/TemperatureSensor.H
+ * Temperature-sensor interface.
  * This is class deals with temperature sensors
  *
  * The methods include:
@@ -47,8 +47,6 @@
  * these numbers!  So if you have a well calibrated temperature monitor, and
  * you can check my conversions, please let me know the results, and I can
  * clean up the regression parameters.
- * \short Temperature-sensor interface
- * \author Pat Welch (legOS@mousebrains.com)
  */
 
 class TemperatureSensor : public Sensor {

@@ -14,44 +14,19 @@
 // the License for the specific language governing rights and
 // limitations under the License.
 
-
-// This class is designed to manipulate the motors on a MindStorm brick.  
-//
-// The class is Motor.  To use a motor on port A, one would do
-//  Motor m(Motor::A);
-//
-// The methods include:
-// void speed(const unsigned char s) which sets the motor speed to s
-// void direction(const MotorDirection d) which sets the motor direction to d
-//                                        d may be fwd, rev, off, or brake
-//
-// void forward() which sets the direction to fwd
-// void reverse() which sets the direction to rev
-// void brake() which sets the direction to brake
-// void off() which sets the direction to off
-//
-// forward(const unsigned char s) which sets the direction to fwd, and
-//                                sets the speed to s
-// reverse(const unsigned char s) which sets the direction to rev, and
-//                                sets the speed to s
-// void brake(const int ms) which sets the direction to brake, and
-//                                delays returning ms milliseconds
-//
-
 #ifndef _Motor_H_
 #define _Motor_H_
 
 #include <config.h>
-#include <conio.h>
-#include <dmotor.h>
- 
+
 #if defined(CONF_DMOTOR)
 
+#include <dmotor.h>
+
 /**
- * \class Motor c++/Motor.H
- * This class is designed to manipulate the motors on a MindStorm brick
- * \short Motor control interface
- * \see MotorPair, Sound
+ * Motor control interface.
+ * This class is designed to manipulate motors attached to an RCX
+ * \see The other control classes: MotorPair, Sound, Lamp
  * \par Design Note
  *   I avoided using derived classes since they were typically
  *   three times larger.  Also, if one is using Motor(Motor::A), all the decision
@@ -103,7 +78,7 @@ public:
   const void speed(const unsigned char speed) const { (*ms)(speed); }
   /**
   *  set the motor direction
-  *  \param dir one of forward, reverse, off or brake
+  *  \param dir must be one of the MotorDirection values
   *  \return Nothing
   */
   const void direction(const MotorDirection dir) const { (*md)(dir); }
@@ -114,7 +89,7 @@ public:
   const void forward() const { direction(fwd); }
   /**
   *  set motor direction to forward at speed {s}
-  *  \param s  the desired setting. Must be between
+  *  \param s  the desired speed. Must be between
   *   min (0) and max (255)
   *  \return Nothing
   */
@@ -126,7 +101,7 @@ public:
   const void reverse() const { direction(rev); }
   /**
   *  set the motor direction to reverse at speed {s}
-  *  \param s  the desired setting. Must be between
+  *  \param s  the desired speed. Must be between
   *   min (0) and max (255)
   *  \return Nothing
   */

@@ -29,8 +29,8 @@
 #if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
 
 /**
- * \class RotationSensor c++/RotationSensor.H
- * RotationSensor Class - Interface to rotation sensor hardware
+ * Rotation-sensor interface (active mode).
+ * Provide an interface to rotation sensor hardware attached to the RCX
  *
  * At construction time you specify the RCX connector pad to
  * which the rotation sensor is attached and its initial position 
@@ -40,7 +40,6 @@
  * \li enable and disable rotation sensing [\ref #on, \ref #off]
  * \li set or read the current position
  *
- * \short Rotation-sensor interface (active mode)
  * \see Sensor, LightSensor, TouchSensor
  */
 class RotationSensor : public Sensor {

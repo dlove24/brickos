@@ -27,12 +27,12 @@
 
 #if defined(CONF_DSENSOR)
 /**
- * \class Battery c++/Battery.H
- * This class deals with the battery sensor.  
+ * Battery-sensor interface (RCX Internal).
+ * This class deals with the battery sensor. 
+ *
  *  It provides only the single get() method.
  *
- * \short Battery-sensor interface (RCX Internal)
- * \see Sensor, LightSensor, RotationSensor, TouchSensor
+ * \see The other sensor classes: Sensor, LightSensor, RotationSensor, TouchSensor
  */
 class Battery {
 public:

@@ -1,5 +1,5 @@
 /*! \file   include/remote.h
-    \brief  Interface: LEGO Infrared Remote Control function and constants
+    \brief  Interface: LEGO Infrared Remote Control 
     \author Ross Crawford <rcrawford@csi.com>
  */
  

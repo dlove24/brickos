@@ -28,16 +28,15 @@
 #if defined(CONF_DSOUND)
 
 /**
- * \class Sound c++/Sound.H
+ * Sound generation interface.
  * Sound Generation Class interface
  *
- * \short Sound generation interface
- * \see Motor, MotorPair, Lamp
+ * \see The other control classes: Motor, MotorPair, Lamp
  */
 class Sound {
 public:
   /**
-   * Play a list of notes (song)
+   * Play a list of notes (song).
    * \li to poll for playing complete try Sound::playing()
    * \li to wait for playing complete try dsound_finished()
    * \param notes pointer to an array of note_t elements

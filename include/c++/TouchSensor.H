@@ -27,7 +27,7 @@
 #if defined(CONF_DSENSOR)
 
 /**
- * \class TouchSensor c++/TouchSensor.H
+ * Touch-sensor interface (passive mode).
  * The Touch %Sensor Class - using a touch sensor in passive mode 
  *
  * At construction time you specify the RCX connector pad to which the 
@@ -37,8 +37,7 @@
  * class (saved ~48 bytes per instance).  See "list of all members", above, or
  * refer to the Sensor class for all methods
  *
- * \short Touch-sensor interface (passive mode)
- * \see Sensor, LightSensor, RotationSensor
+ * \see The other sensor classes: Sensor, LightSensor, RotationSensor
  */
 
 class TouchSensor : public Sensor {
