@@ -1,8 +1,8 @@
 /*! \file tm.c
-    \brief  Task management
+    \brief  Implementation: Task management
     \author Markus L. Noga <markus@noga.de>
     
-    Contains the multitasking switcher and scheduler as
+    The implementation of the multitasking switcher and scheduler as
     well as library functions relating to task management.
 */
     
@@ -71,9 +71,6 @@ sem_t task_sem;                                 //!< task data structure protect
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-extern unsigned char tm_timeslice;
-extern int get_battery_mv();
-
 #if 0
 void integrity_check(void) {
   pchain_t *prio=priority_head;
@@ -103,10 +100,11 @@ void integrity_check(void) {
     
 
 //! the task switcher
-/*! saves active context and passes sp to scheduler
+/*! the task switcher saves active context and passes sp to scheduler
     then restores new context from returned sp
 */
 void tm_switcher(void);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -139,6 +137,7 @@ _tm_switcher_return:
 
       rts                                       ; return to new task
 ");
+#endif	// DOXYGEN_SHOULD_SKIP_THIS
 
 
 //! the task scheduler
@@ -272,9 +271,10 @@ size_t *tm_scheduler(size_t *old_sp) {
 }
 
 //! yield the rest of the current timeslice
-/*! doesn't speed up the system clock.
+/*! (does not speed up the system clock)
 */
 extern void yield(void);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .globl _yield
@@ -296,12 +296,14 @@ _yield:
 
       jmp @_tm_switcher                         ; call task switcher
 ");
+#endif	// DOXYGEN_SHOULD_SKIP_THIS
   
 
-//! the idle task
-/*! infinite sleep instruction to conserve power.
+//! the idle system task
+/*! infinite sleep instruction to conserve power
 */
 extern int tm_idle_task(int argc,char **argv) __attribute__ ((noreturn));
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -309,9 +311,10 @@ _tm_idle_task:
       sleep
       bra _tm_idle_task
 ");
+#endif	// DOXYGEN_SHOULD_SKIP_THIS
 
 #ifdef CONF_VIS
-//! the man task
+//! the man system task
 /*! infinite loop; when program running, update the man (stand/run)
 */
 int tm_man_task(int argc, char **argv)
@@ -329,7 +332,7 @@ int tm_man_task(int argc, char **argv)
 }
 
 #ifdef CONF_BATTERY_INDICATOR
-//! the battery task
+//! the battery system task
 /*! updates the battery low indicator when necessary
 */
 int tm_battery_task(int argc, char **argv) {
@@ -349,8 +352,9 @@ int tm_battery_task(int argc, char **argv) {
 #endif // CONF_BATTERY_INDICATOR
 #endif // CONF_VIS
 
-//! init task management
-/*! called in single tasking mode before task setup.
+//! initialize task management
+/*! initialize tasking variables and start the system tasks
+!*! (called in single tasking mode before task setup.)
 */
 void tm_init(void) {
   tdata_t* td_idle;
@@ -385,7 +389,7 @@ void tm_init(void) {
 
 
 //! start task management 
-/*! called in single tasking mode after task setup
+/*! (called in single tasking mode after task setup)
 */
 void tm_start(void) {
   disable_irqs();                               // no interruptions, please
@@ -397,7 +401,7 @@ void tm_start(void) {
                                                 // disallow interrupts
 }
 
-//! execute a memory image.
+//! schedule execution of a new task
 /*! \param code_start start address of code to execute
     \param argc first argument passed, normally number of strings in argv
     \param argv second argument passed, normally pointer to argument pointers.
@@ -600,7 +604,7 @@ unsigned int sleep(unsigned int sec)
 }
 
 
-//! kill a task
+//! kill specified task
 /*! \param tid must be valid process ID, or undefined behaviour will result!
 */
 void kill(tid_t tid) {
@@ -618,6 +622,9 @@ void kill(tid_t tid) {
   }
 }
 
+//! kill all tasks of prio or lower
+/*! \param prio 
+*/
 void killall(priority_t prio) {
   pchain_t *pchain;
   tdata_t *td;
