@@ -20,9 +20,9 @@ CC = cc
 CFLAGS=-O2 -Wall
 
 #
-# WindowsNT/Cygnwin, test against several values:
+# Windows/Cygnwin, test against several values:
 #
-ifneq (,$(findstring $(OSTYPE),cygwin32 cygwin CYGWIN_NT-4.0 CYGWIN_NT-5.0 CYGWIN_NT-5.1 WindowsNT Windows_NT))
+ifneq (,$(findstring $(OSTYPE),cygwin32 cygwin WindowsNT Windows_NT)||$(findstring CYGWIN,$(OSTYPE)))
 	EXT=.exe
 	CC =gcc
 	CFLAGS+=-D_WIN32
