@@ -1,0 +1,9 @@
+*.map
+*.srec
+*tags
+.directory
+*.ds1
+*.ds2
+*.coff
+*.lds
+*.lx

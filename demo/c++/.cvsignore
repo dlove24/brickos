@@ -1,0 +1,9 @@
+*.map
+*.srec
+*.dis*
+*.ds1
+*.ds2
+*.coff
+*.lds
+*.lx
+.depend
