@@ -87,11 +87,11 @@ const unsigned char min_length[]={
 
 static program_t programs[PROG_MAX];      //!< the programs
 
-static unsigned char buffer[256];   //!< packet receive buffer
+static unsigned char* buffer_ptr;         //!< packet receive buffer
 volatile unsigned char packet_len;        //!< packet length
 volatile unsigned char packet_src;        //!< packet sender
 
-static sem_t packet_sem;                //!< synchronization semaphore
+static sem_t packet_sem;                  //!< synchronization semaphore
 
 #if 0
 #define debugs(a) { cputs(a); msleep(500); }
@@ -137,7 +137,7 @@ static void program_run(unsigned nr) {
 }
 
 //! packet handler, called from interrupt
-/*! makes copy and wakes parser task.
+/*! allocates buffer, copies data and wakes parser task.
 */
 static void packet_producer(const unsigned char *data,
                                 unsigned char length,
@@ -147,7 +147,11 @@ static void packet_producer(const unsigned char *data,
   if(packet_len>0 || length==0)
     return;
 
-  memcpy(buffer,data,length);
+  if (buffer_ptr != 0)
+    return;
+
+  buffer_ptr = malloc(length);
+  memcpy(buffer_ptr,data,length);
   packet_len=length;
   packet_src=src;
   sem_post(&packet_sem);
@@ -165,18 +169,23 @@ static int packet_consumer(int argc, char *argv[]) {
     // wait for new packet
     //
     packet_len=0;
+    free(buffer_ptr);
+    buffer_ptr = 0;
     if (sem_wait(&packet_sem) != -1) {
-      debugw(*(size_t*)buffer);
+      if (buffer_ptr == 0)
+        continue;
+
+      debugw(*(size_t*)buffer_ptr);
 
       // handle trivial errors
       //
-      cmd=buffer[0];
+      cmd=buffer_ptr[0];
       if (cmd>=CMDlast || packet_len<min_length[cmd])
         continue;
 
       // handle IR CMDs
       if (cmd==CMDirmode) {
-        if (buffer[1]==0) {
+        if (buffer_ptr[1]==0) {
           debugs("nearmodeIR");
           lnp_logical_range(0);
           debugs("OK");
@@ -194,13 +203,13 @@ static int packet_consumer(int argc, char *argv[]) {
       if (cmd == CMDsethost) {
         // ACK before we change our address
         lnp_addressing_write(&acknowledge,1,packet_src,0);
-        lnp_set_hostaddr(buffer[1]);
+        lnp_set_hostaddr(buffer_ptr[1]);
         continue;
       }
   
       // Get program number, validate value
       if((cmd > CMDacknowledge) && (cmd <= CMDrun)) {
-        nr = buffer[1];
+        nr = buffer_ptr[1];
         if(nr > PROG_MAX)
           continue;
 #ifndef CONF_VIS
@@ -233,7 +242,7 @@ static int packet_consumer(int argc, char *argv[]) {
       case CMDcreate:
         debugs("crea");
         if(!prog->text) {
-          memcpy(&(prog->text_size),buffer+2,11);
+          memcpy(&(prog->text_size),buffer_ptr+2,11);
 
           if((prog->text=malloc(prog->text_size+
                 2*prog->data_size+
@@ -260,10 +269,10 @@ static int packet_consumer(int argc, char *argv[]) {
       case CMDdata:
         debugs("data");
         if(prog->text && !program_valid(nr)) {
-          size_t offset=*(size_t*)(buffer+2);
+          size_t offset=*(size_t*)(buffer_ptr+2);
           if(offset<=prog->downloaded) {
             if(offset==prog->downloaded) {
-              memcpy(prog->text+offset,buffer+4,packet_len-4);
+              memcpy(prog->text+offset,buffer_ptr+4,packet_len-4);
               prog->downloaded+=packet_len-4;
 
               if(program_valid(nr)) {
@@ -299,6 +308,7 @@ static int packet_consumer(int argc, char *argv[]) {
       }
     }
   }
+  free(buffer_ptr);
   return 0;
 }
 
@@ -638,6 +648,7 @@ void program_init() {
 #endif
 
   lnp_addressing_set_handler(0,&packet_producer);
+  buffer_ptr = 0;
 }
 
 //! shutdown program support
