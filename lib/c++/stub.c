@@ -37,10 +37,10 @@
  *                  Lars Berntzon <lasse@cecilia-data.se>
  */
 
-typedef unsigned size_t;
+#include <stdlib.h>	// for malloc(), free(), size_t def'ns
+
+// NOTE: use explicit def'n versus <unistd.h> due to it's use of config.h (not avail. here)
 extern void exit(int) __attribute__ ((noreturn));
-extern void* malloc(size_t);
-extern void free(void*);
 
 //! Abort execution
 /*! Functional version, calls exit(1)
@@ -71,6 +71,8 @@ int __rtti_user() {
   return 0;
 }
 
+// if we are using 2.95 compiler then define old style new/delete
+#if __GNUC__ < 3
 //! builtin delete function
 /*! frees the memory block
     \param ptr the block to free
@@ -86,10 +88,11 @@ void __builtin_delete(void* ptr) {
 void *__builtin_new(unsigned int size) {
   return malloc(size);
 }    
+#endif
 
 void
-__pure_virtual ()
+__pure_virtual()
 {
-  __terminate ();
+  __terminate();
 }
 

@@ -18,11 +18,10 @@
  *  Contributor(s): Henner Zeller <H.Zeller@acm.org>
  */
 
-typedef unsigned size_t;
-extern "C" {
-  extern void* malloc(size_t);
-  extern void free(void*);
-}
+#include <stdlib.h>	// for malloc(), free(), size_t def'ns
+
+// if we are using 3.x compiler then define new style new/delete
+#if __GNUC__ >= 3
 
 void* operator new(size_t size) {
   return malloc(size);
@@ -42,3 +41,6 @@ void operator delete (void *p) {
 void operator delete[] (void *p) {
   free(p);
 }
+
+#endif
+
