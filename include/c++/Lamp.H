@@ -62,24 +62,24 @@ public:
    *  destroy our lamp instance
    *  \note the lamp is turned off when the instance is destroyed
    */
-  ~Lamp() { off() };
+  ~Lamp() { off(); }
   /**
    * Turn the Lamp on
    * \return Nothing
    */
-  const void on() const { direction(fwd); };
+  const void on() const { direction(fwd); }
   /**
    * Turn the Lamp off
    * \return Nothing
    */
-  const void off() const { direction(std::off) };
+  const void off() const { direction(std::off); }
   /**
    * Set the power to the lamp
    * \param level the desired power setting specifying the intensity of the light. 
      [must be between min (0) and max (255)]
    * \return Nothing
    */
-  const void brightness(const unsigned char level) const { speed(level); };
+  const void brightness(const unsigned char level) const { speed(level); }
 private:
   const void speed(const unsigned char speed) const { (*ms)(speed); }
   const void direction(const MotorDirection dir) const { (*md)(dir); }

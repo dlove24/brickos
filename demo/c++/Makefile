@@ -16,7 +16,7 @@ PROGRAMS = \
 	touchSensor.lx \
 	touch.pressed.Sensor.lx \
 	motor.lx sound.lx activeSensor.lx temperatureSensor.lx \
-	raceTrack.lx
+	raceTrack.lx lampTest.lx
 
 # extra dynamic sources
 DOBJECTS= 
