@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.19 2004/01/25 04:56:16 stephmo Exp $
+###  $Id: Makefile.common,v 1.20 2004/01/25 21:33:58 hzeller Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -90,7 +90,7 @@ CWARN =-Wall
 CINC  =-I$(BRICKOS_ROOT)/include -I$(BRICKOS_ROOT)/include/lnp -I.
 
 CFLAGS=$(COPT) $(CWARN) $(CINC) $(CDEFINES)
-CXXFLAGS=-DCXX $(CFLAGS)
+CXXFLAGS=-DCXX -fno-exceptions $(CFLAGS)
 
 ##
 ## older options
