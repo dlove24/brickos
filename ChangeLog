@@ -1,3 +1,9 @@
+2002-09-22  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * NEW add LEGO Lamp support for C++
+  * NEW added demo/c++/lampTest.C as example
+  * 2nd wave of API documentation updates
+
 2002-09-04  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * First wave of internal comment updates for Doxygen
@@ -192,4 +198,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.6 2002/09/04 07:06:23 stephmo Exp $
+$Id: ChangeLog,v 1.7 2002/09/23 03:47:09 stephmo Exp $
