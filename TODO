@@ -1,3 +1,5 @@
+NOTE: this list is old and will be reworked in an upcoming release
+
 - improve sensor detection.response times (see: priority patch, dat4 project)
 - add assignment of HOSTID for LNP at download time (firmdl3)
 - timeout handling needs improvement. if the RCX transmits data, the IR
@@ -7,12 +9,10 @@
   compliant) for easier porting.
 
 Many, many ideas from the mailing list, mainly from Eddie & Paolo:
-- Redo the tool chain. Eddie has volunteered.
 - Redo sensor handling code. Eddie and Paolo will take care of this.
 - Implement event queues?
 - Implement a timer function?
-- Just rewrite battery task as a real task (systimer is oversized)
-- Debug functions via LNP. Paolo already have a prototype.
+- Debug functions via LNP. Paolo already has a prototype.
 
 Wishlist:
 - Standardize all platforms on gcc 2.95 for compatibility.

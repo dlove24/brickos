@@ -1,15 +1,14 @@
-Our Next Release (work pending):
+Our Next Releases (work pending):
 --------------------------------
-* we are updating our HOWTO
-* we are moving source to gcc-3.2 compatibility
-* adding (optional, compile-in) support for 3rd party sensors
+* we are moving source to gcc-3.4 compatibility
 * working on remaining reported issues
+* we are updating our HOWTO
 
-News for upcoming brickos-1.0.0: 
---------------------------------------------------
-* install/uninstall targets added to Makefiles
-* many patches filed to date, now applied
-* USB tower on Linux works
+News for brickos-0.9.0:
+-------------------------
+* USB tower on Linux works (See README.usb)
+* Install/uninstall targets added to Makefiles
+* Many patches filed to date, now applied
 * API doc generation now in Makefiles
 * LNP Parser for RCX firmware protocol op-codes based on work fm Zhengrong Zang
 * dll: NEW -dn or --delete=n option deletes a program from memory
@@ -17,6 +16,7 @@ News for upcoming brickos-1.0.0:
 * New added full support for LEGO Remote Control 
 * Reawakened the RCX to RCX simple messaging
 * Applied all known LNP patches (improving LNP communication)
+* Added (optional, compile-in and Macro) support for 3rd party sensors
 
 
 News for legOS-0.2.6:

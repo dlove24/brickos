@@ -1,0 +1,59 @@
+USB support on Linux for brickOS-0.9.0
+--------------------------------------
+
+USB support for IR Towers is now working for Linux and 
+Windows (using the Cygwin tool suite.)
+
+This file describes the Linux environment setup
+
+Recognition of the LEGO USB Infrared Tower is now built into the
+2.6.x Linux Kernels.
+
+When you plug the USB IR Tower into a USB port the device will
+automatically be connected.
+
+I have usbutils installed which provides 'lsusb'. In my case
+lsusb shows the following when I have the IR Tower connected:
+
+   $ lsusb
+   Bus 004 Device 001: ID 0000:0000
+   Bus 003 Device 001: ID 0000:0000
+   Bus 002 Device 001: ID 0000:0000
+   Bus 001 Device 002: ID 0694:0001 Lego Group Mindstorms Tower
+   Bus 001 Device 001: ID 0000:0000
+
+I had to create my device file with something like:
+
+	sudo mknod /dev/usb/legotower0 c 180 160
+    sudo chmod 666 /dev/usb/legotower0
+
+To use the Tower then, I set RCXTTY to point to it:
+
+	export RCXTTY=/dev/usb/legotower0
+
+And then I use firmdl3 and dll just as before.
+
+- to load brickos
+	- reset RCX removing prior brickOS firmware
+	  (press and hold [Prgm] and simultaneously press [On-Off] to
+	   turn the power off and then press [On-Off] to turn the
+	   power back on. You should hear the two startup beeps 
+	   indicating that you are now running original firmware, not
+	   brickOS.)
+	- run the OS downloader
+		$ firmdl3 /usr/local/lib/brickos/brickOS.srec
+
+- to load a program into slot 2
+	- assuming you build the demos in the current directory, run
+        $ dll -p2 sound.lx
+	  you should see the standing-man and 2 indicating that the
+	  download was successful.
+
+	  Now press [Run] to play the song...
+
+I hope this works for you. Please report issues with the USB support
+per the instructions found at http://brickos.sourceforge.net/rptrvwbugs.htm
+
+
+------------------------------------------------------------------------
+Stephen M Moraco (stephen@debian.org) - Mon, 17 Jan 2005 20:18:52 -0700

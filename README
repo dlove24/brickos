@@ -1,4 +1,4 @@
-Hello, this is brickOS-0.2.6.10 plus patches
+Hello, this is brickOS-0.9.0
 
 This software will run on Linux and Windows (using the Cygwin tool suite.)
 
@@ -8,7 +8,7 @@ To start with brickOS:
 - Type make. Utilities, libraries, a default kernel and some demos will
   be made.
 - Pre-packaged binaries have been discontinued.
-- Be sure to add brickOS-0.2.6/util to your PATH. Set RCXTTY if you use a non-
+- Be sure to add brickOS-0.9.0/util to your PATH. Set RCXTTY if you use a non-
   standard port for the IR tower. Use firmdl3 to download boot/brickOS.srec
   to your RCX.
 - Type "dll demo/helloworld.lx". If all is well, it should be automatically
@@ -36,4 +36,4 @@ For more documentation, see in docs on the web at
 http://brickOS.sourceforge.net/HOWTO/
 
 ------------------------------------------------------------------------
-legOS/brickOS Copyright (C) 1998-2004 by Markus L. Noga <markus@noga.de>
+legOS/brickOS Copyright (C) 1998-2005 by Markus L. Noga <markus@noga.de>
