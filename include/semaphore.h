@@ -40,7 +40,7 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef unsigned char sem_t;                    //!< the semaphore data-type
+typedef volatile unsigned char sem_t;           //!< the semaphore data-type
 
 #define EAGAIN  0xffff                          //!< the error code
 
