@@ -24,6 +24,7 @@
  *  Contributor(s): Kekoa Proudfoot <kekoa@graphics.stanford.edu>
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
