@@ -9,6 +9,7 @@
   * Applied Patch: #766164 - cast away asm 'const' for gcc-3.x
   * Fixed Bug #612161 - adjusted tid_t to signed return value
   * Adjusted configure to work with new Debian Tool-chain
+  * Removed ^M's from demo sources, corrected warning messages
   * Removed multi-line use in #error in boot/config.h
 
 2004-01-02  Henner Zeller <hzeller@users.sourceforge.net>
@@ -365,4 +366,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.35 2004/01/26 03:11:07 stephmo Exp $
+$Id: ChangeLog,v 1.36 2004/01/26 03:54:26 stephmo Exp $

@@ -1,6 +1,7 @@
 Our Next Release (work pending):
 --------------------------------
 * we are updating our HOWTO
+* we are moving source to gcc-3.2 compatibility
 * adding (optional, compile-in) support for 3rd party sensors
 
 
