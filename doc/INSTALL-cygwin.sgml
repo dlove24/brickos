@@ -3,14 +3,14 @@
 
 <article id="top">
    <articleinfo>
-    <title>LegOS 0.2.6 -
+    <title>brickOS 0.2.6.08 -
     Instructions for installing on Win9x/NT/2000/XP</title>
     <author>
 		<firstname>Paolo</firstname>
 		<surname>Masetti</surname>
     </author>
       <releaseinfo>
-    Version 1.1, 19 Apr 2002
+    Version 1.2, 19 September, 2002
       </releaseinfo>
 
       <copyright>
@@ -18,6 +18,12 @@
       </copyright>
 
       <revhistory>
+          <revision>
+              <revnumber>1.2</revnumber>
+              <date>19 Sep 2002</date>
+              <authorinitials>smm</authorinitials>
+              <revremark>Update for brickOS 0.2.7.08, formerly legOS</revremark>
+          </revision>
           <revision>
               <revnumber>1.1</revnumber>
               <date>19 Apr 2002</date>
@@ -36,7 +42,7 @@
 
 	   <!--ackno><hrm...  didn't work-->
 	     <para>
-    		 This document was originally an adaptation from the original version written by
+    		 This document is an adaptation of the original version written by
     		 <ulink url="mailto:peter.vanderbeken@pandora.be">
     		   <citetitle>Peter Van der Beken</citetitle>
     		 </ulink>.
@@ -44,8 +50,7 @@
     		 <ulink url="mailto:luge@users.sourceforge.net">
     		   <citetitle>Luis Villa</citetitle>
     		 </ulink>
-    		 for his HOW-TO for Linux and his
-    		 effort in documenting legOS.
+    		 for his HOW-TO for Linux and his effort in documenting brickOS.
 	     </para>
 	   <!--/ackno><-->
 
@@ -59,8 +64,8 @@
 	   <!--warning><hrm... image url in HTML output is wrong!-->
 	   <caution>
 	     <para>
-    		 These instruction works for me (I'm using NT Win2k Pro SP1). I can't be sure
-    		 they'll do for you but I'm quite sure. They should get legOS working on your own
+    		 These instruction work for me (I'm using NT Win2k Pro SP1). I can't be sure
+    		 they'll do for you but I'm quite sure. They should get brickOS working on your own
     		 PC, but they should be used at your own risk as with any other program
     		 installation, you may crash your computer, lose files, and generally make a mess
     		 of things. So, neither he nor I am responsible for what happens. :-)
@@ -69,7 +74,7 @@
 	   <!--/warning><-->
 
 	     <para>
-    		 These instruction give you a fully functional legOS 0.2.6 (probably a newer
+    		 These instructions give you a fully functional brickOS 0.2.6.08 (probably a newer
     		 version too). You will be able to recompile the entire kernel image, the tools
     		 (dll, firmdl3 & so on). You will have to download a lot of MB. If you do not
     		 like that, please use
@@ -126,7 +131,7 @@
 		   <listitem>
 	         <para>
 			 Install in the directory that you prefer. Do not worry about it, this version
-			   of cygwin will mount directories as *nix later. I have done these choices:
+			   of cygwin will mount directories as *nix later. I use these choices:
 		 <mediaobject>
 		   <imageobject>
 		     <imagedata fileref="images/Cygwin2.jpg">
@@ -145,7 +150,7 @@
 	         <para>
 			 Last setup I've tried let you choose which modules you need to download and
 			   setup. Here is a minimal list (but probably some modules could be removed too)
-			     that was tested to work:
+			     that was tested and works:
 				<programlisting>
 ash
 autoconf
@@ -264,14 +269,14 @@ $ ./buildgcc.sh
 	  </sect2>
 
 	  <sect2>
-		<title>3. Install the legOS files</title>
+		<title>3. Install the brickOS files</title>
 		 <itemizedlist>
 
 		   <listitem>
 	         <para>
-		       Get legos-0.2.6.tar.gz from the "Latest File Releases" section of our project web:
-			   <ulink url="http://sourceforge.net/projects/legos">
-			   <citetitle>http://sourceforge.net/projects/legos</citetitle>
+		       Get legos-0.2.6.08.tar.gz from the "Latest Test Releases" section of our project web:
+			   <ulink url="http://sourceforge.net/projects/brickos">
+			   <citetitle>http://sourceforge.net/projects/brickos</citetitle>
 			   </ulink>. Drag a copy to <filename>C:\cygwin</filename>.
 	         </para>
 		   </listitem>
@@ -281,7 +286,7 @@ $ ./buildgcc.sh
 		       Type:
 			 <programlisting>
 $ cd /
-$ tar xvfz legos-0.2.6.tar.gz
+$ tar xvfz legos-0.2.6.08.tar.gz
 			 </programlisting>
 	         </para>
 		   </listitem>
@@ -289,7 +294,7 @@ $ tar xvfz legos-0.2.6.tar.gz
 		   <listitem>
 	         <para>
 		       Lots of files will stream by as they install into their 
-			   directories. This will create a legos-0.2.6 directory.
+			   directories. This will create a legos-0.2.6.08 directory.
 	         </para>
 		   </listitem>
 
@@ -306,7 +311,7 @@ $ tar xvfz legos-0.2.6.tar.gz
 	         <para>
 		       Type:
 			 <programlisting>
-$ cd /legos-0.2.6
+$ cd /legos-0.2.6.08
 $ make realclean
 $ make depend
 $ make
@@ -365,7 +370,13 @@ $ ./dll ../demo/helloworld.lx
 	<sect2>
 	  <title></title>
 	  <para>
-    	  Last update:
+    	  Latest update:
+    	  <ulink url="mailto:stephen@debian.org">
+    	  <citetitle>Stephen Moraco</citetitle>
+    	  </ulink> 19/09/2002.
+	  </para>
+	  <para>
+    	  Update/generate/post as web content
     	  <ulink url="mailto:stephen@debian.org">
     	  <citetitle>Stephen Moraco</citetitle>
     	  </ulink> 01/05/2002.
