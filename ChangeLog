@@ -1,3 +1,7 @@
+2002-10-16  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * move Makefile.kernel into boot/Makefile (was only consumer)
+
 2002-10-15  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * 2nd pass at cleaning up Makefiles
@@ -285,4 +289,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.14 2002/10/15 14:51:58 stephmo Exp $
+$Id: ChangeLog,v 1.15 2002/10/15 21:09:29 stephmo Exp $
