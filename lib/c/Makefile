@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.7 2002/10/23 17:42:44 stephmo Exp $
+###  $Id: Makefile,v 1.8 2003/01/11 12:30:08 emanlove Exp $
 ###  FILE: lib/c/Makefile - make the c suport library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -40,7 +40,7 @@ $(LIBRARY): $(OBJECTS)
 	$(AR) -sq $@ $(OBJECTS)
 
 .depend: $(SOURCES)
-	makedepend -f - $(SOURCES) >.depend
+	$(MAKEDEPEND) $(SOURCES) > .depend
 
 depend:: .depend
 	@# nothing to do here but do it silently

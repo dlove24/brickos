@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/23 17:42:45 stephmo Exp $
+###  $Id: Makefile,v 1.9 2003/01/11 12:30:53 emanlove Exp $
 ###  FILE: lib/float/Makefile - make the floating point math library
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -35,7 +35,7 @@ $(LIBRARY): $(OBJECTS)
 	$(AR) -sq $@ $(OBJECTS)
 
 .depend: $(SOURCES)
-	makedepend -f - $(SOURCES) >.depend
+	$(MAKEDEPEND) $(SOURCES) > .depend
 
 depend:: .depend
 	@# nothing to do here but do it silently
