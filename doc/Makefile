@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.8 2002/10/24 03:18:16 stephmo Exp $
+###  $Id: Makefile,v 1.9 2004/02/17 02:27:13 stephmo Exp $
 ###  FILE: doc/Makefile - build HTML documentation from SGML source
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -31,9 +31,12 @@ docs-install: ${pkghtmldir} chkbuild
 	cp -f ${TEXT_DOCS} ${pkgdocdir} 
 	cp -r images ${pkghtmldir}
 	cp -f *.html ${pkghtmldir}
-	cp HOWTO/*.html ${pkghtmldir}
-	@# oops copied extra file, remove it
-	@rm -f $(pkghtmldir)/t1.html
+	mkdir -p ${pkghtmldir}/HOWTO
+	cp HOWTO/*.html ${pkghtmldir}/HOWTO
+	cp HOWTO.html ${pkghtmldir}/HOWTO
+	@# oops copied extra files, remove them
+	@rm -f $(pkghtmldir)/HOWTO/t1.html
+	@rm -f $(pkghtmldir)/HOWTO.html
 
 chkbuild:
 	@if [ ! -f $(DOCBASE).html -o ! -f $(DOCBASE2).html ] ;then \
