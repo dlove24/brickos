@@ -44,14 +44,15 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
-//! a note
+/// \struct note_t
+/// a note structure
+/// \note a song to play is made up of an array of these structures
+/// which is then handed to dsound_play() [in C] or Sound::play() [in C++]
 typedef struct {
   unsigned char pitch; 	    //!< note pitch, 0 ^= A_0 (~55 Hz)
   unsigned char length;     //!< note length in 1/16ths
 } note_t;
 
-#endif /* DOXYGEN_SHOULD_SKIP_INTERNALS */
 
 //! note lengths
 #define WHOLE            16
