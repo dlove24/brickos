@@ -39,7 +39,7 @@ extern "C" {
 // g++ warns about __asm__ const. we define the problem away.
 // the CXX symbol is predefined in the Makefile
 //
-#ifdef CXX
+#if defined(CXX) || __GNUC__ >= 3
 # define ASMCONST
 #else
 # define ASMCONST const
