@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.16 2002/10/23 06:04:31 stephmo Exp $
+###  $Id: Makefile,v 1.17 2002/10/23 06:42:49 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -23,6 +23,12 @@ export BRICKOS_ROOT=$(shell cd . && pwd)/
 #  makefile to build the brickOS operating system and demo files
 # 
 SUBDIRS=util lib boot demo doc
+
+#  if new configuration tool installed force it to be used once
+all::
+	@if [ configure -nt .configured.flg ]; then \
+		rm -f .configured.flg; \
+	fi
 
 all install::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) -C $$i $@ || exit 2 ; done

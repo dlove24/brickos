@@ -1,5 +1,5 @@
 #!/bin/bash -p
-# $Id: configure,v 1.5 2002/10/23 06:22:42 stephmo Exp $
+# $Id: configure,v 1.6 2002/10/23 06:42:49 stephmo Exp $
 #
 # Generator for brickOS host-OS-dependend Makefile variables
 #
@@ -159,11 +159,11 @@ cmp -s $CURR_MAKEFILE $NEW_MAKEFILE
 RET_CODE=$?
 if test $RET_CODE == 1
 then
-	rm -f $NEW_MAKEFILE
-	mv $CURR_MAKEFILE $NEW_MAKEFILE
+	rm -f $PRIOR_MAKEFILE
+	mv $CURR_MAKEFILE $PRIOR_MAKEFILE
 	mv $NEW_MAKEFILE $CURR_MAKEFILE
 else
-	rm -f $NEW_MAKEFILE
+	#rm -f $NEW_MAKEFILE
 	echo "configure: no configuration changes needed, nothing done."
 	echo ""
 fi
