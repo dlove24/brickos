@@ -12,7 +12,7 @@
     starting with 0 for the digit to the right of the running man. 
 	
 	\par
-    LCD Postions:  5 4 3 2 1 <man> 0
+    LCD Postions:  5 4 3 2 1 {man} 0
 
 	\par
     NOTE: Position 5 is only partially present on the LCD display.

@@ -40,7 +40,7 @@ public:
   /**
    * get the current battery strength value
    * \return int current battery reading in milliVolts (mV)
-   * \note this is the c++ implementation of \ref get_battery_mv()
+   * \note this is the c++ implementation of get_battery_mv()
    */
   static int get() {return get_battery_mv();}
 };
