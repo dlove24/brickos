@@ -1,5 +1,5 @@
 /*! \file   include/lnp/lnp-logical.h
-    \brief  legOS networking protocol logical layer
+    \brief  link networking protocol logical layer
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -76,11 +76,11 @@ extern int lnp_logical_write(const void *buf,size_t len);
 //
 extern void lnp_logical_fflush(void);
 
-#endif	// CONF_LNP
+#endif  // CONF_LNP
 
 #ifdef  __cplusplus
 }
 #endif
 
-#endif	// __lnp_logical_h__
+#endif  // __lnp_logical_h__
 

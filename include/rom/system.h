@@ -42,10 +42,10 @@ extern "C" {
 extern inline void power_off(void)
 {
   __asm__ __volatile__("
-	push r6
-	bset #7,@0xc4:8	 ; software standby mode
-	jsr @ power_off  ; ROM call
-      	pop r6
+  push r6
+  bset #7,@0xc4:8  ; software standby mode
+  jsr @ power_off  ; ROM call
+        pop r6
 ");
 }
 
@@ -53,14 +53,14 @@ extern inline void power_off(void)
 //  instruction.
 extern inline void power_init(void) {
   __asm__ __volatile__("
-	push r6
-	jsr @ power_init ; ROM call
-	bclr #7,@0xc4:8  ; disable software standby
-	pop r6
+  push r6
+  jsr @ power_init ; ROM call
+  bclr #7,@0xc4:8  ; disable software standby
+  pop r6
 ");
 }
 
-//! erases legOS, returning control to ROM.
+//! erases BrickOS, returning control to ROM.
 extern void reset(void) __attribute__((noreturn));
 
 extern inline void rom_reset(void) __attribute__((noreturn));

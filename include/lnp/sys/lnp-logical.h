@@ -1,5 +1,5 @@
 /*! \file   include/lnp/sys/lnp-logical.h
-    \brief  legOS networking protocol logical layer interna
+    \brief  link networking protocol logical layer interna
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -47,25 +47,25 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////
 
 #ifdef  CONF_LNP_FAST
-#define LNP_LOGICAL_BAUD_RATE 	B4800         	  //!< baud rate
-#define LNP_LOGICAL_PARITY 	SMR_P_NONE     	  //!< parity
-#define LNP_BYTE_TIME  	      	MSECS_TO_TICKS(3) //!< time to transmit a byte
+#define LNP_LOGICAL_BAUD_RATE   B4800             //!< baud rate
+#define LNP_LOGICAL_PARITY  SMR_P_NONE        //!< parity
+#define LNP_BYTE_TIME           MSECS_TO_TICKS(3) //!< time to transmit a byte
 #else
-#define LNP_LOGICAL_BAUD_RATE 	B2400         	  //!< baud rate
-#define LNP_LOGICAL_PARITY 	SMR_P_ODD     	  //!< parity
-#define LNP_BYTE_TIME  	      	MSECS_TO_TICKS(5) //!< time to transmit a byte
+#define LNP_LOGICAL_BAUD_RATE   B2400             //!< baud rate
+#define LNP_LOGICAL_PARITY  SMR_P_ODD         //!< parity
+#define LNP_BYTE_TIME           MSECS_TO_TICKS(5) //!< time to transmit a byte
 #endif
 
-#define LNP_BYTE_TIMEOUT      	(3*LNP_BYTE_TIME) //!< timeout waiting for a byte
-#define LNP_BYTE_SAFE      	(4*LNP_BYTE_TIME) //!< delay before transmitting a byte
+#define LNP_BYTE_TIMEOUT        (3*LNP_BYTE_TIME) //!< timeout waiting for a byte
+#define LNP_BYTE_SAFE       (4*LNP_BYTE_TIME) //!< delay before transmitting a byte
 
-#define LNP_WAIT_TXOK      	(2*LNP_BYTE_TIMEOUT) //!< delay after good transmit
-#define LNP_WAIT_COLL 	      	(4*LNP_BYTE_TIMEOUT) //!< delay after collision
+#define LNP_WAIT_TXOK       (2*LNP_BYTE_TIMEOUT) //!< delay after good transmit
+#define LNP_WAIT_COLL           (4*LNP_BYTE_TIMEOUT) //!< delay after collision
 
 
-#define TX_COLL   (-1)		//!< not transmitting, last xmit was collision
-#define TX_IDLE   ( 0)		//!< not transmitting, last xmit OK
-#define TX_ACTIVE ( 1)		//!< currently transmitting
+#define TX_COLL   (-1)    //!< not transmitting, last xmit was collision
+#define TX_IDLE   ( 0)    //!< not transmitting, last xmit OK
+#define TX_ACTIVE ( 1)    //!< currently transmitting
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-extern volatile signed char tx_state;		//!< transmit status
+extern volatile signed char tx_state;   //!< transmit status
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -98,11 +98,11 @@ void txend_handler(void)
 #endif
 ;
 
-#endif	// CONF_LNP
+#endif  // CONF_LNP
 
 #ifdef  __cplusplus
 }
 #endif
 
-#endif	// __sys_lnp_logical_h__
+#endif  // __sys_lnp_logical_h__
 

@@ -1,5 +1,5 @@
 /*! \file   sys/lnp.h
-    \brief  legOS networking protocol internas
+    \brief  link networking protocol internas
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -40,10 +40,10 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-#define LNP_HOSTMASK 	CONF_LNP_HOSTMASK   //!< the LNP host mask (config.h)
+#define LNP_HOSTMASK  CONF_LNP_HOSTMASK   //!< the LNP host mask (config.h)
 
 //! LNP port mask is derived from host mask
-#define LNP_PORTMASK 	(0x00ff & ~CONF_LNP_HOSTMASK)
+#define LNP_PORTMASK  (0x00ff & ~CONF_LNP_HOSTMASK)
 
 #if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
 //! length of header from remote/rcx, -1 because first byte is used to id sequence
@@ -65,30 +65,30 @@ typedef enum {
 
 #if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
 //! states when waiting for rcx protocol message
-  LNPwaitRMH1,	// note that first byte is consumed by LNPwaitHeader
-  LNPwaitRMH2,	// inverted header
-  LNPwaitRMH3,	// actually, RCX opcode dispatch
-  LNPwaitRMH4,	// remote opcode inverted
+  LNPwaitRMH1,  // note that first byte is consumed by LNPwaitHeader
+  LNPwaitRMH2,  // inverted header
+  LNPwaitRMH3,  // actually, RCX opcode dispatch
+  LNPwaitRMH4,  // remote opcode inverted
 #endif
 
 
 #ifdef CONF_RCX_PROTOCOL
 //! states when waiting for remote buttons args
-  LNPwaitRB0,	// high-byte
+  LNPwaitRB0, // high-byte
   LNPwaitRB0I,
-  LNPwaitRB1,	// low-byte
+  LNPwaitRB1, // low-byte
   LNPwaitRB1I,
-  LNPwaitRC,	// RCX checksum
+  LNPwaitRC,  // RCX checksum
   LNPwaitRCI,
 #endif
 
 #ifdef CONF_RCX_MESSAGE
 //! states when waiting for rcx message opcode
-  LNPwaitMH3,	// RCX message OP
+  LNPwaitMH3, // RCX message OP
   LNPwaitMH4,
-  LNPwaitMN,	// message number
+  LNPwaitMN,  // message number
   LNPwaitMNC,
-  LNPwaitMC,	// RCX checksum
+  LNPwaitMC,  // RCX checksum
   LNPwaitMCC,
 #endif
 } lnp_integrity_state_t;
@@ -118,8 +118,8 @@ extern lnp_integrity_state_t lnp_integrity_state;
 
 //! the LNP `copy and compute checksum' function.
 extern unsigned char lnp_checksum_copy( unsigned char *dest,
-					const unsigned char *data,
-					unsigned length );
+          const unsigned char *data,
+          unsigned length );
 
 //! receive a byte from the physical layer, decoding integrity layer
 //! packets.
@@ -157,15 +157,16 @@ extern inline void lnp_timeout_set(unsigned short timeout) {
 }
 
 //! Initialise protocol handlers
-/*! Adressing port 0 is reserved for the legOS program handler.
+/*! Adressing port 0 is reserved for the program handler.
+ *  DLL transfers programs to this port.
 */
 extern void lnp_init(void);
 
-#endif	// CONF_LNP
+#endif  // CONF_LNP
 
 #ifdef  __cplusplus
 }
 #endif
 
-#endif	// __sys_lnp_h__
+#endif  // __sys_lnp_h__
 

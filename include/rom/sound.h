@@ -3,7 +3,7 @@
     \author Markus L. Noga <markus@noga.de>
 
     \warning These functions will only work if ROM is allowed to handle
-    the OCIA interrupt. legOS system time, motor control and
+    the OCIA interrupt. system time, motor control and
     task management depend upon handling it themselves.
  */
 
@@ -48,13 +48,13 @@ extern "C" {
 extern inline void sound_system(unsigned nr)
 {
   __asm__ __volatile__(
-			"push %0\n"
-			"mov.w #0x4003,r6\n"
-			"jsr @sound_system\n"
-			"adds #0x2,sp\n"
-			:	// output
-			:"r"(nr)	// input
-			:"r6", "cc", "memory"	// clobbered
+      "push %0\n"
+      "mov.w #0x4003,r6\n"
+      "jsr @sound_system\n"
+      "adds #0x2,sp\n"
+      : // output
+      :"r"(nr)  // input
+      :"r6", "cc", "memory" // clobbered
   );
 }
 
@@ -65,15 +65,15 @@ extern inline int sound_playing()
 {
   unsigned rc;
   __asm__ __volatile__(
-			"mov.w r7,r6\n"
-			"push r6\n"
-			"mov.w #0x700c,r6\n"
-			"jsr @sound_playing\n"
-			"adds #0x2,sp\n"
-			"mov.w @r7,%0\n"
-			:"=r"(rc)	// output
-			:	// input
-			:"r6", "cc", "memory"	// clobbered
+      "mov.w r7,r6\n"
+      "push r6\n"
+      "mov.w #0x700c,r6\n"
+      "jsr @sound_playing\n"
+      "adds #0x2,sp\n"
+      "mov.w @r7,%0\n"
+      :"=r"(rc) // output
+      : // input
+      :"r6", "cc", "memory" // clobbered
   );
 
   return rc;

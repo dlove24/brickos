@@ -42,10 +42,10 @@ extern "C" {
 //
 // execute an image
 // args: start address of code to execute
-//       stack size for new process.
-// retval: -1: fail, else pid
+//       stack size for new task.
+// retval: -1: fail, else tid
 //
-extern pid_t execi(int (*code_start) (int, char **), int argc, char **argv,
+extern tid_t execi(int (*code_start) (int, char **), int argc, char **argv,
 		   priority_t priority, size_t stack_size);
 
 //
@@ -59,26 +59,28 @@ extern void exit(int code) __attribute__((noreturn));
 extern void yield(void);
 
 //
-// suspend process until wakeup function is non-null
+// suspend task until wakeup function is non-null
 // wakeup function is called in task scheduler context
 // retval: wakeup() return value
 //
 #ifdef CONF_TM
 extern wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data);
 
-//! delay execution allowing other tasks to run.
-/*! \param sec sleep duration in seconds
-   \return number of seconds left if interrupted, else 0.
-   \bug interruptions not implemented.
+
+//! delay execution allowing other tasks to run
+/*! \param sec sleep duration in second
+   \return number of seconds left if interrupted, else 0
+   \bug interruptions not implemented
  */
 extern unsigned int sleep(unsigned int sec);
 
-//! delay execution allowing other tasks to run.
-/*! \param msec sleep duration in milliseconds
-   \return number of milliseconds left if interrupted, else 0.
-   \bug interruptions not implemented.
+//! delay execution allowing other tasks to run
+/*! \param msec sleep duration in millisecond
+   \return number of milliseconds left if interrupted, else 0
+   \bug interruptions not implemented
  */
 extern unsigned int msleep(unsigned int msec);
+
 #else
 extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
 {
@@ -89,17 +91,18 @@ extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
   return res;
 }
 
-// Replacement for sleep/msleep if no TM
+
+// Replacement for sleep/msleep if no TM 
 #define	sleep(s)	delay(1000*(s))
 #define msleep(s)	delay(s)
 #endif
 
-//! kill a process
+//! kill a task
 // FIXME: this belongs in a different header
 //
-extern void kill(pid_t pid);
+extern void kill(tid_t tid);
 
-//! kill all processes with priority lower or equal than p, excluding self.
+//! kill all tasks with priority lower or equal than p, excluding self.
 extern void killall(priority_t p);
 
 #ifdef  __cplusplus

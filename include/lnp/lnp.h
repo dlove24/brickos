@@ -1,5 +1,5 @@
 /*! \file   include/lnp/lnp.h
-    \brief  legOS networking protocol
+    \brief  link networking protocol
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -106,7 +106,7 @@ extern inline void lnp_integrity_set_handler(lnp_integrity_handler_t handler)
 //! set an addressing layer packet handler for a port.
 extern inline void lnp_addressing_set_handler(unsigned char port, lnp_addressing_handler_t handler)
 {
-  if (!(port & CONF_LNP_HOSTMASK))	// sanity check.
+  if (!(port & CONF_LNP_HOSTMASK))  // sanity check.
 
     lnp_addressing_handler[port] = handler;
 }

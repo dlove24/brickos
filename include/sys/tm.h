@@ -47,31 +47,21 @@ extern "C" {
 
 #define IDLE_STACK_SIZE		128	//!< should suffice for IRQ service
 
-#ifdef CONF_PROGRAM
-
-#ifdef CONF_LR_HANDLER
-#define NUM_SYSTEM_TASKS	4	//! idle, packet_consumer, key_handler, lr_handler
-#else
-#define NUM_SYSTEM_TASKS	3	//! idle, packet_consumer, key_handler
-#endif
-
-#else // CONF_PROGRAM
-
-#define NUM_SYSTEM_TASKS	1	//! idle
-
-#endif
-
 ///////////////////////////////////////////////////////////////////////
 //
 // Variables
 //
 ///////////////////////////////////////////////////////////////////////
 
-extern pdata_t pd_single;		//!< single process process data
+extern tdata_t td_single;		//!< single process process data
 
-extern pdata_t *cpid;			//!< ptr to current process data
+extern tdata_t *ctid;			//!< ptr to current process data
 
-extern unsigned nb_tasks;		//!< number of tasks
+extern volatile unsigned int nb_tasks;		//!< number of tasks
+
+  // nb_system_tasks is maintained  in execi and kill/killall
+  // T_KERNEL tasks are counted as they are started
+extern volatile unsigned int nb_system_tasks;
 
 
 ///////////////////////////////////////////////////////////////////////

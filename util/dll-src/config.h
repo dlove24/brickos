@@ -28,34 +28,34 @@
 
 // compilation environment
 //
-//#define CONF_RCX_COMPILER	//!< a special RCX compiler is used.
+//#define CONF_RCX_COMPILER //!< a special RCX compiler is used.
 #define CONF_HOST
 
 // core system services
 //
-#define CONF_TIME		//!< system time
-#define CONF_MM			//!< memory management
-#define CONF_TM			//!< task management
-#define CONF_TM_VIS		//!< display task statuus
-#define CONF_TM_DEBUG 	      	//!< view key shows current instruction pointer
-#define CONF_SEMAPHORES	      	//!< POSIX semaphores
-#define CONF_PROGRAM 	      	//!< dynamic program loading support
+#define CONF_TIME   //!< system time
+#define CONF_MM     //!< memory management
+#define CONF_TM     //!< task management
+#define CONF_TM_VIS   //!< display task statuus
+#define CONF_TM_DEBUG           //!< view key shows current instruction pointer
+#define CONF_SEMAPHORES         //!< POSIX semaphores
+#define CONF_PROGRAM          //!< dynamic program loading support
 
 // networking services
 //
-#define CONF_LNP		//!< legOS networking protocol
-//#define CONF_LNP_VIS		//!< display LNP activity
+#define CONF_LNP    //!< link networking protocol
+//#define CONF_LNP_VIS    //!< display LNP activity
 //#define CONF_LNP_FAST        //!< enable 4800 bps LNP
-#define CONF_LNP_HOSTADDR 0x8	//!< LNP host address
-#define CONF_LNP_HOSTMASK 0xf0	//!< LNP host mask
+#define CONF_LNP_HOSTADDR 0x8 //!< LNP host address
+#define CONF_LNP_HOSTMASK 0xf0  //!< LNP host mask
 
 // drivers
 //
-//#define CONF_DKEY		//!< debounced key driver
-//#define CONF_LCD_REFRESH	//!< automatic display updates
-//#define CONF_CONIO		//!< console
-//#define CONF_ASCII		//!< ascii console
-//#define CONF_DSOUND		//!< direct sound
+//#define CONF_DKEY   //!< debounced key driver
+//#define CONF_LCD_REFRESH  //!< automatic display updates
+//#define CONF_CONIO    //!< console
+//#define CONF_ASCII    //!< ascii console
+//#define CONF_DSOUND   //!< direct sound
 //#define CONF_DMOTOR             //!< direct motor 
 //#define CONF_DSENSOR            //!< direct sensor
 //#define CONF_DSENSOR_ROTATION //!< rotation sensor

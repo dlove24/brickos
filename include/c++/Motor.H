@@ -86,8 +86,8 @@ public:
   const void off() const { direction(std::off); }
 
 private:
-  const void (*ms)(unsigned char speed);
-  const void (*md)(const MotorDirection dir);
+  void (*ms)(unsigned char speed);
+  void (*md)(const MotorDirection dir);
 };
 
 #endif // _Motor_H_

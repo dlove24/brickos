@@ -1,5 +1,5 @@
 /*! \file   covert.c
-    \brief  convert two suitable dsrec files into a legOS executable
+    \brief  convert two suitable dsrec files into a BrickOS executable
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -38,10 +38,10 @@
 
 
 #define DEFAULT_STACK_SIZE    1024    //!< default program stack size
-#define RELOC_MAX    	      16384   //!< maximum number of relocations
+#define RELOC_MAX           16384   //!< maximum number of relocations
 
 
-#if defined(__sun__) && defined(__svr4__)	// Solaris
+#if defined(__sun__) && defined(__svr4__) // Solaris
 #undef HAVE_GETOPT_LONG
 #else
 #define HAVE_GETOPT_LONG 1
@@ -64,10 +64,10 @@ static const struct option long_options[]={
 
 #endif // HAVE_GETOPT_LONG
 
-int verbose_flag=0;   	      	      //!< display some diagnostics if non-zero
+int verbose_flag=0;                   //!< display some diagnostics if non-zero
 
 
-//! build legOS executable from images
+//! build BrickOS executable from images
 /*! the segment sizes and start offset need to be set already.
 */
 void lx_from_images(lx_t *lx,image_t *img,unsigned short stack_size) {
@@ -98,7 +98,7 @@ void lx_from_images(lx_t *lx,image_t *img,unsigned short stack_size) {
     exit(-1);
   }
 
-  // create legOS executable header
+  // create BrickOS executable header
   //
   lx->version   =0;
   lx->base      =img[0].base;
@@ -111,9 +111,9 @@ void lx_from_images(lx_t *lx,image_t *img,unsigned short stack_size) {
 
   if(verbose_flag)
     printf("base     =0x%04x offset   =0x%04x\n"
-	   "text_size=0x%04x data_size=0x%04x bss_size=0x%04x stack_size=0x%04x\n",
-	   lx->base,lx->offset,lx->text_size,lx->data_size,lx->bss_size,lx->stack_size);
-	
+     "text_size=0x%04x data_size=0x%04x bss_size=0x%04x stack_size=0x%04x\n",
+     lx->base,lx->offset,lx->text_size,lx->data_size,lx->bss_size,lx->stack_size);
+  
   if((lx->reloc=malloc(RELOC_MAX*sizeof(unsigned short)))==NULL) {
     fprintf(stderr,"out of memory\n");
     exit(-1);
@@ -138,21 +138,21 @@ void lx_from_images(lx_t *lx,image_t *img,unsigned short stack_size) {
       unsigned char l1=img[1].text[i+1];
 
       if(l0 == l1) {
-	fprintf(stderr,"single byte difference at +0x%04x\n",i);
-      	exit(-1);
+  fprintf(stderr,"single byte difference at +0x%04x\n",i);
+        exit(-1);
       } else {
-	unsigned short addr0=((c0<<8) | l0) - img[0].base;
-	unsigned short addr1=((c1<<8) | l1) - img[1].base;
+  unsigned short addr0=((c0<<8) | l0) - img[0].base;
+  unsigned short addr1=((c1<<8) | l1) - img[1].base;
 
-	if(addr0!=addr1) {
-	  fprintf(stderr,"relocation offset mismatch at +0x%04x\n",i);
-	  exit(-1);
-	}
+  if(addr0!=addr1) {
+    fprintf(stderr,"relocation offset mismatch at +0x%04x\n",i);
+    exit(-1);
+  }
 
-	if(verbose_flag)
-  	  printf("reloc[%d]=0x%04x\n",lx->num_relocs,i);
-	
-	lx->reloc[lx->num_relocs++]=(unsigned short)i++;
+  if(verbose_flag)
+      printf("reloc[%d]=0x%04x\n",lx->num_relocs,i);
+  
+  lx->reloc[lx->num_relocs++]=(unsigned short)i++;
       }
     }
   }
@@ -177,23 +177,23 @@ int main(int argc, char **argv) {
     
     switch(opt) {
       case 's':
-	sscanf(optarg,"%x",&tmp);
-	stack_size=(unsigned short)tmp;
+  sscanf(optarg,"%x",&tmp);
+  stack_size=(unsigned short)tmp;
         break;
       case 'v':
-	verbose_flag=1;
-	break;
+  verbose_flag=1;
+  break;
       case 'd':
-	display_flag=1;
-	break;
+  display_flag=1;
+  break;
     }
   }           
   
   if(argc-optind<3) {
     fprintf(stderr,"usage: %s file.ds1 file.ds2 file.lx\n"
-	           "       [-s<stacksize>] [-v] [-d]\n"
-	           "       size in hex, please.\n",
-	           argv[0]);
+             "       [-s<stacksize>] [-v] [-d]\n"
+             "       size in hex, please.\n",
+             argv[0]);
     exit(1);
   }
   
@@ -216,7 +216,7 @@ int main(int argc, char **argv) {
     printf("start_offset=%d\n", lx.offset);
     printf("num_relocs=%d\n", lx.num_relocs);
     printf("contiguous free memory required to download=%d\n", 
-	   lx.text_size + lx.data_size*2 + lx.bss_size);
+     lx.text_size + lx.data_size*2 + lx.bss_size);
   }
   
   return 0;

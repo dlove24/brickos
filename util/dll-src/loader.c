@@ -1,5 +1,5 @@
 /*! \file   loader.c
-    \brief  legOS task downloading
+    \brief  BrickOS task downloading
     \author Markus L. Noga <markus@noga.de>
 */
 

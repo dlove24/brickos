@@ -1,5 +1,5 @@
-/*! \file   include/semaphore.h
-    \brief  POSIX 1003.1b semaphores for process synchronization.
+/*! \file include/semaphore.h
+    \brief  POSIX 1003.1b semaphores for task synchronization.
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -40,9 +40,9 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef unsigned char sem_t;	//!< the semaphore type
+typedef unsigned char sem_t;                    //!< the semaphore type
 
-#define EAGAIN	0xffff		//!< an error code
+#define EAGAIN  0xffff                          //!< an error code
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -64,7 +64,7 @@ extern inline int sem_init(sem_t * sem, int pshared, unsigned int value)
 }
 
 //
-//  sem_wait  suspends  the calling thread until the semaphore
+//  sem_wait  suspends  the calling task until the semaphore
 //  pointed to by sem has non-zero count. It  then  atomically
 //  decreases the semaphore count.
 //
@@ -73,7 +73,7 @@ extern int sem_wait(sem_t * sem);
 //
 //  sem_trywait is a non-blocking variant of sem_wait.  If the
 //  semaphore pointed to by sem has non-zero count, the  count
-//  is   atomically   decreased  and  sem_trywait  immediately
+//  is   atomically decreased  and  sem_trywait  immediately
 //  returns 0.  If the semaphore count  is  zero,  sem_trywait
 //  immediately returns with error EAGAIN.
 //
@@ -99,7 +99,7 @@ extern inline int sem_getvalue(sem_t * sem, int *sval)
 
 //
 //  sem_destroy  destroys  a  semaphore  object,  freeing  the
-//  resources  it  might hold. No threads should be waiting on
+//  resources  it  might hold. No tasks should be waiting on
 //  the semaphore at the time sem_destroy is  called.
 //
 extern inline int sem_destroy(sem_t * sem)

@@ -1,5 +1,5 @@
 /*! \file   lx.h
-    \brief  legOS executable file support
+    \brief  BrickOS executable file support
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -40,17 +40,17 @@ typedef struct {
   
   unsigned char  *text;       //!< program text (not stored on disk)
   unsigned short *reloc;      //!< relocations (not stored on disk)
-} lx_t;       	      	      //!< the legOS executable type
+} lx_t;       	      	      //!< the BrickOS executable type
 
 
 
-//! write a legOS exectutable to a file
+//! write a BrickOS exectutable to a file
 int lx_write(const lx_t *lx,const unsigned char *filename);
 
-//! read a legOS executable from a file
+//! read a BrickOS executable from a file
 int lx_read(lx_t *lx,const unsigned char *filename);
 
-//! relocate a legOS executable to a new base address (may be called repeatedly).
+//! relocate a BrickOS executable to a new base address (may be called repeatedly).
 void lx_relocate(lx_t *lx,unsigned short base);
 
 #endif // __lx_h__

@@ -1,5 +1,5 @@
 /*! \file   genlds.c
-    \brief  legOS linker script generation
+    \brief  BrickOS linker script generation
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -100,8 +100,9 @@ static void print_header(FILE *f,
  *  kernel   : %s
  *  app start: 0x%04x
  * 
- *  legOS - the independent LEGO Mindstorms OS
- *  (c) 1999 by Markus L. Noga <markus@noga.de>    
+ *  BrickOS for LEGO(R) Mindstorms(TM)
+ *  Originally: legOS - the independent LEGO Mindstorms OS
+ *              (c) 1999 by Markus L. Noga <markus@noga.de>    
  * 
  */
 

@@ -1,5 +1,5 @@
 /*! \file   lx.c
-    \brief  legOS executable file support
+    \brief  BrickOS executable file support
     \author Markus L. Noga <markus@noga.de>
 */
 

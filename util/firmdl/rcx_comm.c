@@ -510,7 +510,7 @@ int rcx_recv (FILEDESCR fd, void *buf, int maxlen, int timeout, int use_comp)
 	if (msg[pos] == (sum & 0xff))
 	    return len;
 
-	/* Failed.  Possibly a 0xff byte queued message? (legos unlock firmware) */
+	/* Failed.  Possibly a 0xff byte queued message? (unlock firmware) */
 	for (sum = 0, len = 0, pos = 3; pos < msglen - 2; pos++) {
 	  sum += msg[pos];
 	  if (len < maxlen)

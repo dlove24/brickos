@@ -1,4 +1,4 @@
-/*! \file   include/tm.h
+/*! \file include/tm.h
     \brief  Header file for task management.
     \author Markus L. Noga <markus@noga.de>
 
@@ -41,35 +41,37 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef unsigned char pstate_t;	      	//!< process state type
-typedef unsigned char pflags_t;	      	//!< process flags type
+typedef unsigned char tstate_t;                 //!< task state type
+typedef unsigned char tflags_t;                 //!< task flags type
 
-typedef unsigned char priority_t;	//!< process priority type
+typedef unsigned char priority_t;               //!< task priority type
 
-#define PRIO_LOWEST      	1
-#define PRIO_NORMAL     	10
-#define PRIO_HIGHEST     	20
+#define PRIO_LOWEST        1
+#define PRIO_NORMAL       10
+#define PRIO_HIGHEST      20
 
-typedef unsigned long wakeup_t;	//!< wakeup data area type
-
-//
-// process states
-//
-
-#define P_DEAD		0	//!< dead and gone, stack freed
-#define	P_ZOMBIE	1	//!< terminated, cleanup pending
-#define P_WAITING	2	//!< waiting for an event
-#define P_SLEEPING	3	//!< sleeping. wants to run.
-#define P_RUNNING	4	//!< running
+typedef unsigned long wakeup_t;                 //!< wakeup data area type
 
 //
-// process flags
+// task states
 //
 
-#define T_KERNEL	(1 << 0)	//!< kernel thread
+#define T_DEAD      0                           //!< dead and gone, stack freed
+#define T_ZOMBIE    1                           //!< terminated, cleanup pending
+#define T_WAITING   2                           //!< waiting for an event
+#define T_SLEEPING  3                           //!< sleeping. wants to run.
+#define T_RUNNING   4                           //!< running
+
+//
+// task flags
+//
+
+#define T_KERNEL  (1 << 0)                      //!< kernel task
+#define T_USER    (1 << 1)                      //!< user task
+#define T_IDLE    (1 << 2)                      //!< idle task
 
 
-#define DEFAULT_STACK_SIZE	512	//!< that's enough.
+#define DEFAULT_STACK_SIZE  512                 //!< that's enough.
 
 #ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
 /**
@@ -77,12 +79,12 @@ typedef unsigned long wakeup_t;	//!< wakeup data area type
  * @internal
  */
 struct _pchain_t {
-  priority_t priority;		//!< numeric priority level
+  priority_t priority;                          //!< numeric priority level
 
-  struct _pchain_t *next;	//!< lower priority chain
-  struct _pchain_t *prev;	//!< higher priority chain
+  struct _pchain_t *next;                       //!< lower priority chain
+  struct _pchain_t *prev;                       //!< higher priority chain
 
-  struct _pdata_t  *cpid;	//!< current process in chain
+  struct _tdata_t *ctid;                        //!< current task in chain
 };
 
 /** priority chain data type
@@ -90,37 +92,37 @@ struct _pchain_t {
  */
 typedef struct _pchain_t pchain_t;
 
-/** process data structure
+/** task data structure
  * @internal
  */
-struct _pdata_t {
-  size_t *sp_save;		//!< saved stack pointer
+struct _tdata_t {
+  size_t *sp_save;                              //!< saved stack pointer
 
-  pstate_t pstate;		//!< process state
-  pflags_t pflags;		//!< process flags
-  pchain_t *priority;	      	//!< priority chain
+  tstate_t tstate;                              //!< task state
+  tflags_t tflags;                              //!< task flags
+  pchain_t *priority;                           //!< priority chain
 
-  struct _pdata_t *next;	//!< next process in queue
-  struct _pdata_t *prev;	//!< previous process in queue
-  struct _pdata_t *parent;	//!< parent process
+  struct _tdata_t *next;                        //!< next task in queue
+  struct _tdata_t *prev;                        //!< previous task in queue
+  struct _tdata_t *parent;                      //!< parent task
 
-  size_t *stack_base;		//!< lower stack boundary
+  size_t *stack_base;                           //!< lower stack boundary
 
-  wakeup_t(*wakeup) (wakeup_t);	//!< event wakeup function
-  wakeup_t wakeup_data;		//!< user data for wakeup fn
+  wakeup_t(*wakeup) (wakeup_t);                 //!< event wakeup function
+  wakeup_t wakeup_data;                         //!< user data for wakeup fn
 };
 
-//! process data type
+//! task data type
 /*! a shorthand
  */
-typedef struct _pdata_t pdata_t;
+typedef struct _tdata_t tdata_t;
 
 #endif // DOXYGEN_SHOULD_SKIP_INTERNALS 
 
-//! process id type
-/*! In effect, the kernel simply typecasts *pdata_t to pid_t.
+//! task id type
+/*! In effect, the kernel simply typecasts *tdata_t to tid_t.
  */
-typedef size_t pid_t;
+typedef size_t tid_t;
 
 #ifdef  __cplusplus
 }

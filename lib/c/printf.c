@@ -74,7 +74,7 @@ static int itoa(unsigned int value, char *dst, int pos, int len,
 int vsnprintf(char *dst, int len, const char *fmt, va_list arg)
 {
 	int		pos;
-	char		cc;
+	int		cc;
 	const char	*temp;
 	unsigned int	scratch;
 
@@ -115,7 +115,7 @@ int vsnprintf(char *dst, int len, const char *fmt, va_list arg)
 				break;
 			case 'c':
 				/* character */
-				dst[pos] = va_arg(arg, char);
+				dst[pos] = va_arg(arg, int);
 				break;
 			case '\0':
 			case '%':
