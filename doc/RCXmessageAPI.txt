@@ -1,0 +1,19 @@
+RCX Message API
+===============
+
+unsigned char get_msg();    // wait for any message
+
+void clear_msg();           // set message buffer to 0 (invalid message)
+
+int send_msg(unsigned char msg);    // send single byte msg, return 0 on success
+
+wait_event(msg_received, msg);      // msg=0, wait for any message,
+                                    // msg=1-255, wait for specific msg
+
+extern unsigned char lnp_rcx_message;   // contains last message received or 0 if none
+
+======================================================================================
+Notes from Ted Hess patch Readme.txt - 
+(Here for now.  Will be moved to better doc shortly)
+-Stephen 
+

@@ -52,7 +52,7 @@ void autoshutoff_check(void) {
 HANDLER_WRAPPER("autoshutoff_check","autoshutoff_check_core");
 void autoshutoff_check_core(void) {
 #endif
-	if (nb_tasks <= NUM_SYSTEM_THREADS) {
+	if (nb_tasks <= NUM_SYSTEM_TASKS) {
 		auto_shutoff_elapsed++;
 		if (auto_shutoff_elapsed > auto_shutoff_secs)
 			idle_powerdown = 1;

@@ -172,9 +172,11 @@ void kmain(void)
 #endif
 
     cls();
+#ifndef CONF_PROGRAM
     lcd_show(man_run);
 #ifndef CONF_LCD_REFRESH
     lcd_refresh();
+#endif
 #endif
 
     // run app

@@ -6,7 +6,7 @@
 
 # kernel sources & objects
 KSOURCES=kmain.c mm.c systime.c tm.c semaphore.c conio.c lcd.c \
-	 lnp-logical.c lnp.c program.c vis.c battery.c\
+	 lnp-logical.c lnp.c remote.c program.c vis.c battery.c\
          timeout.c dkey.c dmotor.c dsensor.c dsound.c
 KOBJECTS=$(KSOURCES:.c=.o)
 

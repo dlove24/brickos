@@ -157,19 +157,20 @@ size_t *tm_scheduler(size_t *old_sp) {
     lcd_refresh();
   }
 #endif
-  if(cpid!=pd_idle) {
+  // Animate user tasks only?
+  if(nb_tasks > NUM_SYSTEM_TASKS) {
     sequence++;
     if(sequence==10) {
-      lcd_show(man_stand);
+      lcd_show(man_run);
 #ifndef CONF_LCD_REFRESH
       lcd_refresh();
 #endif
     } else if(sequence==20) {
-      lcd_show(man_run);
+      lcd_show(man_stand);
+      sequence=0;
 #ifndef CONF_LCD_REFRESH
       lcd_refresh();
-#endif		  
-      sequence=0;
+#endif
     }
   }
 #endif	// CONF_VIS
@@ -488,6 +489,14 @@ void exit(int code) {
   if (!(cpid->pflags & T_KERNEL))
     mm_reaper();
   cpid->pstate=P_ZOMBIE;
+  // Last man standing
+#ifdef CONF_VIS
+  lcd_show(man_stand);
+#ifndef CONF_LCD_REFRESH
+  lcd_refresh();
+#endif
+#endif
+  // Yield till dead
   while(1)
     yield();
 }

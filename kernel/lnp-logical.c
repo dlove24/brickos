@@ -66,7 +66,7 @@ volatile signed char tx_state;		//!< flag: transmission state
 static time_t allow_tx;       	      	//!< time to allow new transmission
 
 #ifdef CONF_TM
-sem_t tx_sem;       	      	//!< transmitter access semaphore
+static sem_t tx_sem;       	      	//!< transmitter access semaphore
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -261,9 +261,9 @@ static wakeup_t write_complete(wakeup_t data) {
 int lnp_logical_write(const void* buf,size_t len) {
   unsigned char tmp;
 
-//#ifdef CONF_TM
-//  sem_wait(&tx_sem);
-//#endif
+#ifdef CONF_TM
+  sem_wait(&tx_sem);
+#endif
 
 #ifdef CONF_AUTOSHUTOFF
   shutoff_restart();

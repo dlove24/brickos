@@ -48,18 +48,18 @@ extern "C" {
 
 #ifdef  CONF_LNP_FAST
 #define LNP_LOGICAL_BAUD_RATE 	B4800         	  //!< baud rate
-#define LNP_LOGICAL_PARITY	 	SMR_P_NONE       	  //!< parity
+#define LNP_LOGICAL_PARITY 	SMR_P_NONE     	  //!< parity
 #define LNP_BYTE_TIME  	      	MSECS_TO_TICKS(3) //!< time to transmit a byte
 #else
 #define LNP_LOGICAL_BAUD_RATE 	B2400         	  //!< baud rate
-#define LNP_LOGICAL_PARITY	 	SMR_P_ODD        	  //!< parity
+#define LNP_LOGICAL_PARITY 	SMR_P_ODD     	  //!< parity
 #define LNP_BYTE_TIME  	      	MSECS_TO_TICKS(5) //!< time to transmit a byte
 #endif
 
 #define LNP_BYTE_TIMEOUT      	(3*LNP_BYTE_TIME) //!< timeout waiting for a byte
-#define LNP_BYTE_SAFE      		(4*LNP_BYTE_TIME) //!< delay before transmitting a byte
+#define LNP_BYTE_SAFE      	(4*LNP_BYTE_TIME) //!< delay before transmitting a byte
 
-#define LNP_WAIT_TXOK      		(2*LNP_BYTE_TIMEOUT) //!< delay after good transmit
+#define LNP_WAIT_TXOK      	(2*LNP_BYTE_TIMEOUT) //!< delay after good transmit
 #define LNP_WAIT_COLL 	      	(4*LNP_BYTE_TIMEOUT) //!< delay after collision
 
 

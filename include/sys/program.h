@@ -90,12 +90,14 @@ typedef enum {
 
 extern volatile unsigned cprog;   //!< the current program
 
-
 ///////////////////////////////////////////////////////////////////////
 //
 // Functions
 //
 ///////////////////////////////////////////////////////////////////////
+
+//! stop program
+extern void program_stop(int flag);
 
 //! check if a given program is valid.
 /*! \return 0 if invalid */

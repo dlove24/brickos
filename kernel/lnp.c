@@ -28,6 +28,16 @@
  *
  *	- IR lcd now reflect IR mode (near/far)
  *
+ *  2001.09.10 - Zhengrong Zang <mikezang@iname.com>
+ *
+ *	- Remote control buttons
+ *	- Standard firmware async message
+ *
+ *  2002.04.23 - Ted Hess <thess@kitschensync.net>
+ *
+ *	- Integrate Ross Crawford/Zhengrong Zang remote control message parser
+ *	  and RCX op-code dispatcher
+ *
  */
 
 #include <sys/lnp.h>
@@ -59,8 +69,8 @@
 
 #include <semaphore.h>
 
-//!< transmitter access semaphore
-extern sem_t tx_sem;
+//!< transmit buffer use semaphore
+static sem_t buf_sem;
 
 #endif
 #endif
@@ -88,6 +98,34 @@ volatile lnp_addressing_handler_t lnp_addressing_handler[LNP_PORTMASK+1];
 //! the LNP transmit buffer
 static unsigned char lnp_buffer[256+3];
 
+#if defined(CONF_RCX_PROTOCOL)
+//! remote handler
+lnp_remote_handler_t lnp_remote_handler;
+
+//! RCX protocol header bytes excluding first byte
+const unsigned char lnp_rcx_header[LNP_RCX_HEADER_LENGTH] = {0xff,0x00};
+
+//! remote header bytes excluding first 3 bytes
+const unsigned char lnp_rcx_remote_op[LNP_RCX_REMOTE_OP_LENGTH] = {0xd2,0x2d};
+
+
+//! temp cells for RCX firmware protocol assembly
+unsigned char lnp_rcx_temp0;
+unsigned char lnp_rcx_temp1;
+
+//! checksum from RCX protocol
+unsigned char lnp_rcx_checksum;
+
+#endif
+
+#if defined(CONF_RCX_MESSAGE)
+//! message header bytes excluding first 3 bytes
+const unsigned char lnp_rcx_msg_op[LNP_RCX_MSG_OP_LENGTH] = {0xf7,0x08};
+
+//! message from standard firmware
+unsigned char lnp_rcx_message;
+
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -95,43 +133,45 @@ static unsigned char lnp_buffer[256+3];
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#define lnp_checksum_init(sum)  (unsigned char)((sum) = 0xff)
+#define lnp_checksum_step(sum,d)  (unsigned char)((sum) += (d))
+
 #ifdef CONF_HOST
-unsigned short lnp_checksum(
-			 const unsigned char *data,
-			 unsigned length
-)
+unsigned char lnp_checksum_copy( unsigned char *dest,
+                                 const unsigned char *data, 
+                                 unsigned length )
 {
   unsigned char a = 0xff;
-  unsigned char b = 0xff;
+  unsigned char t;
 
-  while (length > 0) {
-    a = a + *data;
-    b = b + a;
-    data++;
+  do {
+    t = *data++;
+    a += t;
+    *dest++ = t;
     length--;
-  }
+  } while (length > 0);
 
-  return a + (b << 8);
+  return a;
 }
 #else
 __asm__("
 .text
-_lnp_checksum:
-    ; r0 data, r1 length;
+_lnp_checksum_copy:
+    ; r0: dest, r1: data, r2: length;
 
-    add.w r0,r1     ; r1 end
+    add.w r0,r2		; r2: end
+    mov.b #0xff,r3l	; r3l: a
 
-    mov.b #0xff,r2l ; r2l a
-    mov.b #0xff,r2h ; r2h b
+0:
+    mov.b @r1+,r3h	; r3h = *data++
+    add.b r3h,r3l	; a += r3h
+    mov.b r3h,@r0	; *dest++ = r3h
+    adds  #1,r0
+    cmp.w r0,r2
+    bne   0b
 
-  lnp_keepsumming:
-    mov.b @r0+,r3l  ; r3l = *(data++)
-    add.b r3l,r2l
-    add.b r2l,r2h
-    cmp.w r0,r1
-    bne lnp_keepsumming
-
-    mov.w r2,r0
+    sub.w r0,r0
+    mov.b r3l,r0l
     rts
   ");
 #endif
@@ -141,18 +181,28 @@ _lnp_checksum:
 */
 int lnp_integrity_write(const unsigned char *data,unsigned char length) {
 
+  unsigned char c;
+  int r;
+
 #ifndef CONF_HOST
 #ifdef CONF_TM
-  sem_wait(&tx_sem);
+  sem_wait(&buf_sem);
 #endif
 #endif
 
-  lnp_buffer[0]=0xf0;
-  lnp_buffer[1]=length;
-  memcpy(lnp_buffer+2,data,length);
-  lnp_buffer[length+2]=(unsigned char) lnp_checksum(lnp_buffer,length+2);
 
-  return lnp_logical_write(lnp_buffer,length+3);
+  c = lnp_checksum_copy( lnp_buffer+2, data, length);
+  lnp_checksum_step( c, lnp_buffer[0]=0xf0 );
+  lnp_checksum_step( c, lnp_buffer[1]=length );
+  lnp_buffer[length+2] = c;
+
+  r = lnp_logical_write(lnp_buffer,length+3);
+#ifndef CONF_HOST
+#ifdef CONF_TM
+  sem_post(&buf_sem);
+#endif
+#endif
+  return r;
 }
 
 //! send a LNP addressing layer packet of given length
@@ -161,54 +211,67 @@ int lnp_integrity_write(const unsigned char *data,unsigned char length) {
 int lnp_addressing_write(const unsigned char *data,unsigned char length,
                          unsigned char dest,unsigned char srcport) {
 
+  unsigned char c;
+  int r;
+
 #ifndef CONF_HOST
 #ifdef CONF_TM
-  sem_wait(&tx_sem);
+  sem_wait(&buf_sem);
 #endif
 #endif
 
-  lnp_buffer[0]=0xf1;
-  lnp_buffer[1]=length+2;
-  lnp_buffer[2]=dest;
-  lnp_buffer[3]=LNP_HOSTADDR | (srcport & LNP_PORTMASK);
-  memcpy(lnp_buffer+4,data,length);
-  lnp_buffer[length+4]=(unsigned char) lnp_checksum(lnp_buffer,length+4);
+  c = lnp_checksum_copy( lnp_buffer+4, data, length );
+  lnp_checksum_step( c, lnp_buffer[0]=0xf1 );
+  lnp_checksum_step( c, lnp_buffer[1]=length+2 );
+  lnp_checksum_step( c, lnp_buffer[2]=dest );
+  lnp_checksum_step( c, lnp_buffer[3]=
+                   (LNP_HOSTADDR | (srcport & LNP_PORTMASK)) );
+  lnp_buffer[length+4] = c;
 
-  return lnp_logical_write(lnp_buffer,length+5);
+  r = lnp_logical_write(lnp_buffer,length+5);
+#ifndef CONF_HOST
+#ifdef CONF_TM
+  sem_post(&buf_sem);
+#endif
+#endif
+  return r;
 }
 
 //! handle LNP packet from the integrity layer
 void lnp_receive_packet(const unsigned char *data) {
   unsigned char header=*(data++);
   unsigned char length=*(data++);
+  lnp_integrity_handler_t intgh;
+  lnp_addressing_handler_t addrh;
 
   // only handle non-degenerate packets in boot protocol 0xf0
   //
   switch(header) {
     case 0xf0:	      // raw integrity layer packet, no addressing.
-      if(lnp_integrity_handler) {
+  	  intgh = lnp_integrity_handler;
+  	  if(intgh) {
 #ifdef CONF_AUTOSHUTOFF
-	shutoff_restart();
+    		shutoff_restart();
 #endif
-        lnp_integrity_handler(data,length);
+        intgh(data,length);
       }
       break;
 
     case 0xf1:	      // addressing layer.
       if(length>2) {
-	unsigned char dest=*(data++);
+    		unsigned char dest=*(data++);
 
-	if(LNP_HOSTADDR == (dest & LNP_HOSTMASK)) {
-	  unsigned char port=dest & LNP_PORTMASK;
-
-	  if(lnp_addressing_handler[port]) {
-   	    unsigned char src=*(data++);
+    		if(LNP_HOSTADDR == (dest & LNP_HOSTMASK)) {
+    		  unsigned char port=dest & LNP_PORTMASK;
+    		  addrh = lnp_addressing_handler[port];
+    		  if(addrh) {
+       			unsigned char src=*(data++);
 #ifdef CONF_AUTOSHUTOFF
-	    shutoff_restart();
+    		    shutoff_restart();
 #endif
-	    lnp_addressing_handler[port](data,length-2,src);
-	  }
-	}
+    		    addrh(data,length-2,src);
+    		  }
+    		}
       }
 
   } // switch(header)
@@ -218,6 +281,7 @@ void lnp_receive_packet(const unsigned char *data) {
 void lnp_integrity_byte(unsigned char b) {
   static unsigned char buffer[256+3];
   static int bytesRead,endOfData;
+  static unsigned char chk;
 
   if(lnp_integrity_state==LNPwaitHeader)
     bytesRead=0;
@@ -228,20 +292,33 @@ void lnp_integrity_byte(unsigned char b) {
     case LNPwaitHeader:
       // valid headers are 0xf0 .. 0xf7
       //
-      if((b & (unsigned char) 0xf8) == (unsigned char) 0xf0) {
+      if(((b & 0xf8) == 0xf0) || (b == 0x55)) {
 #ifdef CONF_VIS
-	if (lnp_logical_range_is_far()) {
-          dlcd_show(LCD_IR_UPPER);
-	  dlcd_show(LCD_IR_LOWER);
-	} else {
-	  dlcd_hide(LCD_IR_UPPER);
-	  dlcd_show(LCD_IR_LOWER);
-        }
+    		if (lnp_logical_range_is_far()) {
+    		  dlcd_show(LCD_IR_UPPER);
+    		  dlcd_show(LCD_IR_LOWER);
+    		} else {
+    		  dlcd_hide(LCD_IR_UPPER);
+    		  dlcd_show(LCD_IR_LOWER);
+    		}
 #ifndef CONF_LCD_REFRESH
-	lcd_refresh();
+    		lcd_refresh();
 #endif
 #endif
-        lnp_integrity_state++;
+    		// Init checksum
+    		lnp_checksum_init( chk );
+    
+    		// switch on protocol header
+    		if (b == 0x55) {
+#if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
+    			// 0x55 is header for standard firmware message
+	        lnp_integrity_state = LNPwaitRMH1;
+#else
+    			lnp_integrity_reset();
+#endif
+    		}	else {
+  			  lnp_integrity_state++;
+  	  	}
       }
       break;
 
@@ -256,10 +333,131 @@ void lnp_integrity_byte(unsigned char b) {
       break;
 
     case LNPwaitCRC:
-      if(b==(unsigned char) lnp_checksum(buffer,endOfData))
+      if(b==chk)
 	lnp_receive_packet(buffer);
       lnp_integrity_reset();
+	  break;
+
+#if defined(CONF_RCX_PROTOCOL) || defined (CONF_RCX_MESSAGE)
+	// state machine to handle remote
+    case LNPwaitRMH1:
+    case LNPwaitRMH2:
+      // waiting for header bytes
+      if ( b == lnp_rcx_header[ lnp_integrity_state-LNPwaitRMH1 ] )
+        lnp_integrity_state++;
+      else
+        lnp_integrity_reset();
+      break;
+
+    case LNPwaitRMH3:
+    case LNPwaitRMH4:
+      if ( b == lnp_rcx_remote_op[ lnp_integrity_state-LNPwaitRMH3 ] )
+        lnp_integrity_state++;
+#if defined(CONF_RCX_MESSAGE)
+      else if ( b == lnp_rcx_msg_op[ lnp_integrity_state-LNPwaitRMH3 ] )
+        lnp_integrity_state = LNPwaitMH4;
+#endif
+      else
+        lnp_integrity_reset();
+      break;
+
+    case LNPwaitRB0:
+      lnp_rcx_temp0 = b;
+      lnp_integrity_state++;
+      break;
+
+    case LNPwaitRB0I:
+      if ( (unsigned char)~b == lnp_rcx_temp0 )
+        lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitRB1:
+      lnp_rcx_temp1 = b;
+      lnp_integrity_state++;
+      break;
+
+    case LNPwaitRB1I:
+      if ( (unsigned char)~b == lnp_rcx_temp1 )
+        lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitRC:
+      lnp_rcx_checksum = 0xd2 + lnp_rcx_temp0 + lnp_rcx_temp1;
+      if ( b == lnp_rcx_checksum )
+        lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitRCI:
+      // if checksum valid and remote handler has been installed, call remote handler
+	  if ( b == (unsigned char)~lnp_rcx_checksum) {
+#if defined(CONF_RCX_MESSAGE)
+		 // if a message, set message number and exit
+     if (lnp_rcx_temp1 & 0x07)
+     {
+        lnp_rcx_message = (lnp_rcx_temp1 > 2) ? 3 : lnp_rcx_temp1;
+     } 
+		 else
+#endif
+		 {
+        // Invoke remote handler if any
+        lnp_remote_handler_t rmth = lnp_remote_handler;
+        if (rmth)
+          rmth( (lnp_rcx_temp0<<8)+lnp_rcx_temp1 );
+        }
+  	  }
+      // reset state machine when done
+      lnp_integrity_reset();
+      break;
+#endif
+
+#if defined(CONF_RCX_MESSAGE)
+    // state machine to handle RCX protocol messages
+    case LNPwaitMH3:
+    case LNPwaitMH4:
+      if ( b == lnp_rcx_msg_op[ lnp_integrity_state-LNPwaitMH3 ] )
+        lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitMN:
+      lnp_rcx_temp0 = b;
+      lnp_integrity_state++;
+      break;
+
+    case LNPwaitMNC:
+      if ( (unsigned char)~b == lnp_rcx_temp0 )
+        lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitMC:
+      lnp_rcx_temp1 = 0xf7 + lnp_rcx_temp0;
+
+      if (b == lnp_rcx_temp1)
+         lnp_integrity_state++;
+      else
+    		lnp_integrity_reset();
+      break;
+
+    case LNPwaitMCC:
+      // set message variable if it is valid message
+      if ( (unsigned char)~b == lnp_rcx_temp1 )
+    		lnp_rcx_message = lnp_rcx_temp0;
+  	  // reset state machine
+      lnp_integrity_reset();
+      break;
+#endif
   }
+  // Accumulate checksum
+  lnp_checksum_step( chk, b );
 }
 
 //! reset the integrity layer on error or timeout.
@@ -317,9 +515,61 @@ void lnp_timeout_set(unsigned short timeout) {
 */
 void lnp_init(void) {
   int k;
-  for(k=1;k<=LNP_PORTMASK;k++)
+  
+  for(k=1; k<=LNP_PORTMASK; k++)
     lnp_addressing_handler[k]=LNP_DUMMY_ADDRESSING;
   lnp_integrity_handler=LNP_DUMMY_INTEGRITY;
+
+#ifndef CONF_HOST
+#ifdef CONF_TM
+  sem_init(&buf_sem,0,1);
+#endif
+#endif
+#if defined(CONF_RCX_PROTOCOL)
+  lnp_remote_handler=LNP_DUMMY_REMOTE;
+#endif
+#if defined(CONF_RCX_MESSAGE)
+  clear_msg();
+#endif
 }
+
+#ifdef CONF_RCX_MESSAGE
+wakeup_t msg_received(wakeup_t m) {
+    return (m == 0 ? lnp_rcx_message != 0 : lnp_rcx_message == m);
+}
+
+//! send a standard firmware message
+/*! \return 0 on success.
+ */
+int send_msg(unsigned char msg)
+{
+	int	r;
+
+#ifndef CONF_HOST
+#ifdef CONF_TM
+  sem_wait(&buf_sem);
+#endif
+#endif
+
+  lnp_buffer[0]=0x55;
+  lnp_buffer[1]=0xff;
+  lnp_buffer[2]=0x00;
+  lnp_buffer[3]=0xf7;
+  lnp_buffer[4]=0x08;
+  lnp_buffer[5]=msg;
+  lnp_buffer[6]=(unsigned char) (0xff-msg);
+  lnp_buffer[7]=(unsigned char) (0xf7+msg);
+  lnp_buffer[8]=(unsigned char) (0x08-msg);
+
+  r = lnp_logical_write(lnp_buffer,9);
+#ifndef CONF_HOST
+#ifdef CONF_TM
+  sem_post(&buf_sem);
+#endif
+#endif
+
+  return r;
+}
+#endif
 
 #endif // CONF_LNP

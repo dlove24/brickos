@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
   sleep(1);
   cputs("world");
   sleep(1);
-  cls("     ");
+  cls();
   
   return 0;
 }

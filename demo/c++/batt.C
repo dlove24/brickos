@@ -27,8 +27,10 @@ main(int argc,
   Battery b;
 
   while (1) {
-    cputw(b.get());
-    delay(10);
+    cputs("batt");
+    sleep(1);
+    lcd_int(b.get());
+    sleep(1);
   }
   return 0;
 }

@@ -3,8 +3,6 @@
 - add assignment of HOSTID for LNP at download time (firmdl3)
 - timeout handling needs improvement. if the RCX transmits data, the IR
   tower will shutdown more quickly.
-- Add support for remote control. A patch is already available for
-  this- just need to test and document it.
 - Fix DJGPP support. Should mainly be a matter of compiling new tools.
 - maybe switch loader.c from getopt_long (GNU only) to getopt (POSIX
   compliant) for easier porting.

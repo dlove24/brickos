@@ -7,7 +7,7 @@
 # name for the legOS kernel
 KERNEL=../boot/legOS
 
-PROGRAMS=helloworld.lx rover.lx linetrack.lx robots.lx c++.lx
+PROGRAMS=helloworld.lx rover.lx linetrack.lx robots.lx c++.lx sound.lx trailerbot.lx
 # extra dynamic sources
 DOBJECTS=
 

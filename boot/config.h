@@ -49,6 +49,12 @@
 #define CONF_LNP_HOSTADDR 0x00	//!< LNP host address
 #define CONF_LNP_HOSTMASK 0xf0	//!< LNP host mask
 
+// remote control services
+//
+#define CONF_RCX_PROTOCOL	//!< RCX protocol handler
+#define CONF_LR_HANDLER		//!< remote control keys handler service
+#define CONF_RCX_MESSAGE	//!< standard firmware message service
+
 // drivers
 //
 #define CONF_DKEY		//!< debounced key driver
@@ -87,6 +93,18 @@
 
 #if defined(CONF_LNP) && defined(CONF_TM) && !defined(CONF_SEMAPHORES)
 #error "Tasksafe networking needs semaphores."
+#endif
+
+#if defined(CONF_RCX_PROTOCOL) && !defined(CONF_LNP)
+#error "RCX protocol needs networking."
+#endif
+
+#if defined(CONF_LR_HANDLER) && !defined(CONF_RCX_PROTOCOL)
+#error "Remote control handler needs remote control protocol."
+#endif
+
+#if defined(CONF_RCX_MESSAGE) && !defined(CONF_LNP)
+#error "Standard firmware message needs networking."
 #endif
 
 #if defined(CONF_PROGRAM) && (!defined(CONF_TM) || !defined(CONF_LNP) || !defined(CONF_DKEY) || !defined(CONF_ASCII))

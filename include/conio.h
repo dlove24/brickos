@@ -107,33 +107,33 @@ extern void cputc_native(char mask, int pos);
 
 extern inline void cputc_hex_0(unsigned nibble)
 {
-  cputc_native_0(hex_display_codes[nibble & 0x0f]);
+  cputc_native_0(hex_display_codes[(nibble) & 0x0f]);
 }
 extern inline void cputc_hex_1(unsigned nibble)
 {
-  cputc_native_1(hex_display_codes[nibble & 0x0f]);
+  cputc_native_1(hex_display_codes[(nibble) & 0x0f]);
 }
 extern inline void cputc_hex_2(unsigned nibble)
 {
-  cputc_native_2(hex_display_codes[nibble & 0x0f]);
+  cputc_native_2(hex_display_codes[(nibble) & 0x0f]);
 }
 extern inline void cputc_hex_3(unsigned nibble)
 {
-  cputc_native_3(hex_display_codes[nibble & 0x0f]);
+  cputc_native_3(hex_display_codes[(nibble) & 0x0f]);
 }
 extern inline void cputc_hex_4(unsigned nibble)
 {
-  cputc_native_4(hex_display_codes[nibble & 0x0f]);
+  cputc_native_4(hex_display_codes[(nibble) & 0x0f]);
 }
 extern inline void cputc_hex_5(unsigned nibble)
 {
-  cputc_native_5(hex_display_codes[nibble & 0x0f]);
+  cputc_native_5(hex_display_codes[(nibble) & 0x0f]);
 }
 
 //! a dispatcher for the fixed position versions
 extern inline void cputc_hex(char c, int pos)
 {
-  cputc_native(hex_display_codes[c & 0x7f], pos);
+  cputc_native(hex_display_codes[(c) & 0x7f], pos);
 }
 
 //! display a hexword
@@ -143,34 +143,34 @@ extern void cputw(unsigned word);
 #ifdef CONF_ASCII
 extern inline void cputc_0(unsigned c)
 {
-  cputc_native_0(ascii_display_codes[c & 0x7f]);
+  cputc_native_0(ascii_display_codes[(c) & 0x7f]);
 }
 extern inline void cputc_1(unsigned c)
 {
-  cputc_native_1(ascii_display_codes[c & 0x7f]);
+  cputc_native_1(ascii_display_codes[(c) & 0x7f]);
 }
 extern inline void cputc_2(unsigned c)
 {
-  cputc_native_2(ascii_display_codes[c & 0x7f]);
+  cputc_native_2(ascii_display_codes[(c) & 0x7f]);
 }
 extern inline void cputc_3(unsigned c)
 {
-  cputc_native_3(ascii_display_codes[c & 0x7f]);
+  cputc_native_3(ascii_display_codes[(c) & 0x7f]);
 }
 extern inline void cputc_4(unsigned c)
 {
-  cputc_native_4(ascii_display_codes[c & 0x7f]);
+  cputc_native_4(ascii_display_codes[(c) & 0x7f]);
 }
 extern inline void cputc_5(unsigned c)
 {
-  cputc_native_5(ascii_display_codes[c & 0x7f]);
+  cputc_native_5(ascii_display_codes[(c) & 0x7f]);
 }
 
 //! display ascii character c at display position pos
 //
 extern inline void cputc(char c, int pos)
 {
-  cputc_native(ascii_display_codes[c & 0x7f], pos);
+  cputc_native(ascii_display_codes[(c) & 0x7f], pos);
 }
 
 //

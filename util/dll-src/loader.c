@@ -1,4 +1,3 @@
-
 /*! \file   loader.c
     \brief  legOS task downloading
     \author Markus L. Noga <markus@noga.de>
@@ -84,8 +83,11 @@
 #define REPLY_TIMEOUT  750000 	  //!< timeout for reply
 #define BYTE_TIME      (1000*LNP_BYTE_TIME) //!< time to transmit a byte.
 
+#define PROG_MIN	1
+#define PROG_MAX	8
+
 #define DEFAULT_DEST  	0
-#define DEFAULT_PROGRAM	0
+#define DEFAULT_PROGRAM	PROG_MIN
 #define DEFAULT_SRCPORT 0
 #define DEFAULT_PRIORITY 10
 
@@ -112,6 +114,7 @@ typedef enum {
 static const struct option long_options[]={
   {"rcxaddr",required_argument,0,'r'},
   {"program",required_argument,0,'p'},
+  {"delete", required_argument,0,'d'},
   {"srcport",required_argument,0,'s'},
   {"tty",    required_argument,0,'t'},
   {"irmode", required_argument,0,'i'},
@@ -138,6 +141,7 @@ unsigned int  rcxaddr = DEFAULT_DEST,
 int run_flag=0;
 int verbose_flag=0;
 int tty_usb=0;
+int pdelete_flag=0;
 
 void io_handler(void);
 
@@ -197,7 +201,7 @@ int lnp_assured_write(const unsigned char *data, unsigned char length,
       tv.tv_usec = (total - elapsed) % 1000000;
       select(rcxFD() + 1, &fds, NULL, NULL, &tv);
       if (FD_ISSET(rcxFD(), &fds))
-		io_handler();
+	io_handler();
 #endif
  
       gettimeofday(&now,0);
@@ -330,7 +334,7 @@ void lnp_download(const lx_t *lx) {
     fputs("\ndata ",stderr);
 
   buffer[0]=CMDdata;
-  buffer[1]=prog;
+  buffer[1]=prog-1;
 
   for(i=0; i<totalSize; i+=chunkSize) {
     chunkSize=totalSize-i;
@@ -357,36 +361,45 @@ int main(int argc, char **argv) {
   unsigned char buffer[256+3]="";
   char *tty=NULL;
 
-  while((opt=getopt_long(argc, argv, "r:p:s:t:i:ev",
+  while((opt=getopt_long(argc, argv, "r:p:d:s:t:i:ev",
                         (struct option *)long_options, &option_index) )!=-1) {
     switch(opt) {
       case 'e':
-	  run_flag=1;
+        run_flag=1;
         break;
       case 'r':
-	  sscanf(optarg,"%x",&rcxaddr);
+        sscanf(optarg,"%x",&rcxaddr);
         break;
       case 'p':
-	  sscanf(optarg,"%x",&prog);
+        sscanf(optarg,"%d",&prog);
         break;
       case 's':
-	  sscanf(optarg,"%x",&srcport);
+        sscanf(optarg,"%x",&srcport);
         break;
       case 't':
-	  sscanf(optarg,"%s",buffer);
+        sscanf(optarg,"%s",buffer);
         break;
       case 'i':
-	  sscanf(optarg,"%x",&irmode);
+        sscanf(optarg,"%x",&irmode);
+        break;
+      case 'd':
+        sscanf(optarg,"%d",&prog);
+        pdelete_flag=1;
         break;
       case 'v':
-	  verbose_flag=1;
-	  break;
+        verbose_flag=1;
+        break;
     }
   }           
   
+  if (prog > PROG_MAX || prog < PROG_MIN) {
+    fprintf(stderr, "Program not in range 1..8\n");
+    return -1;
+  }
+
   // load executable
   //      
-  if(argc-optind<1) {
+  if(argc-optind<1 && !pdelete_flag) {
     char *usage_string =
 	"  -p<prognum>  , --program=<prognum>   set destination program to <prognum>\n"
 	"  -r<rcxadress>, --rcxaddr=<rcxadress> set RCX address to <rcxaddress>\n"
@@ -395,6 +408,7 @@ int main(int argc, char **argv) {
 #if defined(_WIN32)
 	"  -t<usb>      , --tty=<usb>           set IR Tower USB mode \n"
 #endif
+	"  -d<prognum>  , --delete=<prognum>    delete program <prognum> from memory\n"
 	"  -i<0/1>      , --irmode=<0/1>        set IR mode near(0)/far(1) on RCX\n"
 	"  -e           , --execute             execute program after download\n"
 	"  -v           , --verbose             verbose mode\n"
@@ -410,10 +424,14 @@ int main(int argc, char **argv) {
 
     return -1;
   }
-  filename=argv[optind++];
-  if(lx_read(&lx,filename)) {
-    fprintf(stderr,"unable to load legOS executable from %s.\n",filename);
-    return -1;
+
+  // Ignore filename if -dn given
+  if (!pdelete_flag) {
+    filename=argv[optind++];
+    if(lx_read(&lx,filename)) {
+      fprintf(stderr,"unable to load legOS executable from %s.\n",filename);
+      return -1;
+	}
   }
 
   // Moved tty device setting for a new option on command line
@@ -455,16 +473,22 @@ int main(int argc, char **argv) {
   if(verbose_flag)
     fputs("\ndelete",stderr);
   buffer[0]=CMDdelete;
-  buffer[1]=prog; //       prog 0
+  buffer[1]=prog-1; //       prog 0
   if(lnp_assured_write(buffer,2,rcxaddr,srcport)) {
     fputs("error deleting program\n",stderr);
     return -1;
   }
 
+  // All done if -dn given
+  if (pdelete_flag) {
+    fprintf(stderr, "P%d deleted\n", prog);
+	return 0;
+  }
+
   if(verbose_flag)
     fputs("\ncreate ",stderr);
   buffer[ 0]=CMDcreate;
-  buffer[ 1]=prog; //       prog 0
+  buffer[ 1]=prog-1; //       prog 0
   buffer[ 2]=lx.text_size>>8;
   buffer[ 3]=lx.text_size & 0xff;
   buffer[ 4]=lx.data_size>>8;
@@ -487,11 +511,13 @@ int main(int argc, char **argv) {
 
   lnp_download(&lx);
 
+  fprintf(stderr, "\n");
+
   if (run_flag) {
     if(verbose_flag)
       fputs("\nrun ",stderr);
     buffer[0]=CMDrun;
-    buffer[1]=prog; //       prog 0
+    buffer[1]=prog-1; //       prog 0
     if(lnp_assured_write(buffer,2,rcxaddr,srcport)) {
       fputs("error running program\n",stderr);
       return -1;

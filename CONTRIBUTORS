@@ -1,5 +1,27 @@
 legOS contributors
 ------------------
+V{next-release}
+_________
+
+Bernardo Dal Seno (dibbe@users.sourceforge.net)
+    Patch optimizing checksum calcs for LNP (Original work and final cleanup)
+    Patch fixing race conditions in LNP
+
+Ryan Cumming (bodnar42@users.sourceforge.net)
+    Rediff of LNP checksum patch against 0.2.5
+
+Zhengrong Zang (mikezang@users.sourceforge.net)
+	Remote Control & Standard Message Patch
+	Additional LNP Protocol Description
+
+Ross Crawford (roscohead@users.sourceforge.net)
+	Remote control patch 
+
+Ted Hess (thess@users.sourceforge.net)
+	Blended the best of each of the Remote Control and 
+	 LNP Messaging patches resulting in our current 
+	 implementation. Also, LCD status fixes
+
 
 V0.2.6
 _________

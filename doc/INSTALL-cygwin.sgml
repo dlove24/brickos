@@ -73,7 +73,7 @@
     		 version too). You will be able to recompile the entire kernel image, the tools
     		 (dll, firmdl3 & so on). You will have to download a lot of MB. If you do not
     		 like that, please use
-    		 <ulink url="http://legos.sourceforge.net/files/windows/djgpp/WinlegOS.exe">
+    		 <ulink url="http://legos.sourceforge.net/files/windows/djgpp/winlegos.exe">
     		 <citetitle>WinlegOS</citetitle>
     		 </ulink>
     		 that is a good porting of the minimal requirement
@@ -269,9 +269,9 @@ $ ./buildgcc.sh
 
 		   <listitem>
 	         <para>
-		       Get
-			   <ulink url="http://legos.sourceforge.net/files/common/legos-0.2.6.tar.gz">
-			   <citetitle>legos-0.2.6.tar.gz</citetitle>
+		       Get legos-0.2.6.tar.gz from the "Latest File Releases" section of our project web:
+			   <ulink url="http://sourceforge.net/projects/legos">
+			   <citetitle>http://sourceforge.net/projects/legos</citetitle>
 			   </ulink>. Drag a copy to <filename>C:\cygwin</filename>.
 	         </para>
 		   </listitem>
@@ -368,7 +368,7 @@ $ ./dll ../demo/helloworld.lx
     	  Last update:
     	  <ulink url="mailto:stephen@debian.org">
     	  <citetitle>Stephen Moraco</citetitle>
-    	  </ulink> 19/04/2002.
+    	  </ulink> 01/05/2002.
 	  </para>
 	  <para>
     	  Initial Release:

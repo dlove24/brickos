@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.1 2002/08/20 03:04:27 stephmo Exp $
+###  $Id: Makefile,v 1.2 2002/08/20 04:11:31 stephmo Exp $
 ###  FILE: doc/Makefile - doc (sgml -> html) rules
 ### --------------------------------------------------------------------------
 ###  Experimenal make rules for building HTML documentation from SGML source

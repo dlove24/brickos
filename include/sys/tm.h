@@ -42,11 +42,24 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
+
 #define SP_RETURN_OFFSET	10	//!< return address offset on stack in words.
 
 #define IDLE_STACK_SIZE		128	//!< should suffice for IRQ service
 
-#define NUM_SYSTEM_THREADS	3
+#ifdef CONF_PROGRAM
+
+#ifdef CONF_LR_HANDLER
+#define NUM_SYSTEM_TASKS	4	//! idle, packet_consumer, key_handler, lr_handler
+#else
+#define NUM_SYSTEM_TASKS	3	//! idle, packet_consumer, key_handler
+#endif
+
+#else // CONF_PROGRAM
+
+#define NUM_SYSTEM_TASKS	1	//! idle
+
+#endif
 
 ///////////////////////////////////////////////////////////////////////
 //

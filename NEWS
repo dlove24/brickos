@@ -1,12 +1,20 @@
-Our Next Release (already underway):
-------------------------------------
+Our Next Release (work pending):
+--------------------------------
 * we will change our name from legOS to ...
-* we are adding support for the Remote Control
-* we are reawakening the RCX to RCX simple messaging
 * we are releasing our first cut at automatic generation of API docs
    and updating our HOWTO
-* applying more LNP patches (improving LNP communication)
 * adding (optional, compile-in) support for 3rd party sensors
+
+
+News for upcoming legOS-0.2.7: (number may change)
+--------------------------------------------------
+* LNP Parser for RCX firmware protocol op-codes based on work from Zhengrong Zang
+* dll: NEW -dn or --delete=n option deletes a program from memory
+* dll: default program is 1. zero no longer exists from dll point of view
+* New added full support for LEGO Remote Control 
+* Reawakened the RCX to RCX simple messaging
+* Applyed all known LNP patches (improving LNP communication)
+
 
 News for legOS-0.2.6:
 -----------------------
@@ -37,7 +45,8 @@ News for legOS-0.2.5:
 * Complete C++ support. Check out c++ in the demo/ directory for an example.
   Be aware that this requires use of gcc 2.95 to build correctly.
 * Small floating point changes to make the library more IEEE compliant.
-* Very slight firmdl3 update; useful mainly only if you use firmdl for other projects.
+* Very slight firmdl3 update; useful mainly only if you use firmdl for other 
+  projects.
 
 News for legOS-0.2.4:
 ---------------------

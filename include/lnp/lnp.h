@@ -34,6 +34,10 @@ extern "C" {
 
 #ifdef CONF_LNP
 
+#ifdef CONF_RCX_MESSAGE
+#include <unistd.h>
+#endif
+
 ///////////////////////////////////////////////////////////////////////
 //
 // Definitions
@@ -56,6 +60,16 @@ typedef void (*lnp_addressing_handler_t) (const unsigned char *, unsigned char, 
 //! dummy addressing layer packet handler
 #define LNP_DUMMY_ADDRESSING ((lnp_addressing_handler_t)0)
 
+#ifdef CONF_RCX_PROTOCOL
+//! handler for remote
+/*! arguments are (buttonstate)
+*/
+typedef void (*lnp_remote_handler_t) (unsigned int);
+
+//! dummy remote packet handler
+#define LNP_DUMMY_REMOTE ((lnp_remote_handler_t)0)
+#endif
+
 ///////////////////////////////////////////////////////////////////////
 //
 // Variables
@@ -68,6 +82,11 @@ extern volatile lnp_integrity_handler_t lnp_integrity_handler;
 
 //! addressing layer packets may be directed to a variety of ports.
 extern volatile lnp_addressing_handler_t lnp_addressing_handler[];
+
+#ifdef CONF_RCX_PROTOCOL
+//! packets from remote have no ports
+extern lnp_remote_handler_t lnp_remote_handler;
+#endif
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -88,6 +107,40 @@ extern inline void lnp_addressing_set_handler(unsigned char port, lnp_addressing
 
     lnp_addressing_handler[port] = handler;
 }
+
+#ifdef CONF_RCX_PROTOCOL
+//! set the remote packet handler
+extern inline void lnp_remote_set_handler(lnp_remote_handler_t handler)
+{
+  lnp_remote_handler = handler;
+}
+#endif
+
+#ifdef CONF_RCX_MESSAGE
+//! message variable
+extern unsigned char lnp_rcx_message;
+
+//! send a standard firmware message
+extern int send_msg(unsigned char msg);
+
+//! clear last message from standard firmware
+extern inline void clear_msg(void)
+{
+   lnp_rcx_message = 0;
+}
+
+//! wait until receive a message
+wakeup_t msg_received(wakeup_t m);
+
+//! read received message from standard firmware
+extern inline unsigned char get_msg(void)
+{
+   clear_msg();
+   wait_event(msg_received, 0);
+   return lnp_rcx_message;
+}
+
+#endif
 
 //! send a LNP integrity layer packet of given length
 /*! \return 0 on success.

@@ -46,12 +46,52 @@ extern "C" {
 //! LNP port mask is derived from host mask
 #define LNP_PORTMASK 	(0x00ff & ~CONF_LNP_HOSTMASK)
 
+#if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
+//! length of header from remote/rcx, -1 because first byte is used to id sequence
+#define LNP_RCX_HEADER_LENGTH (3-1)
+
+//! length of remote button op, -3 because first 3 bytes is used to id sequence
+#define LNP_RCX_REMOTE_OP_LENGTH (5-3)
+
+//! length of rcx message op, -3 because first 3 bytes is used to id sequence
+#define LNP_RCX_MSG_OP_LENGTH (5-3)
+#endif
+
 //! states for the integrity layer state machine
 typedef enum {
   LNPwaitHeader,
   LNPwaitLength,
   LNPwaitData,
-  LNPwaitCRC
+  LNPwaitCRC,
+
+#if defined(CONF_RCX_PROTOCOL) || defined(CONF_RCX_MESSAGE)
+//! states when waiting for rcx protocol message
+  LNPwaitRMH1,	// note that first byte is consumed by LNPwaitHeader
+  LNPwaitRMH2,	// inverted header
+  LNPwaitRMH3,	// actually, RCX opcode dispatch
+  LNPwaitRMH4,	// remote opcode inverted
+#endif
+
+
+#ifdef CONF_RCX_PROTOCOL
+//! states when waiting for remote buttons args
+  LNPwaitRB0,	// high-byte
+  LNPwaitRB0I,
+  LNPwaitRB1,	// low-byte
+  LNPwaitRB1I,
+  LNPwaitRC,	// RCX checksum
+  LNPwaitRCI,
+#endif
+
+#ifdef CONF_RCX_MESSAGE
+//! states when waiting for rcx message opcode
+  LNPwaitMH3,	// RCX message OP
+  LNPwaitMH4,
+  LNPwaitMN,	// message number
+  LNPwaitMNC,
+  LNPwaitMC,	// RCX checksum
+  LNPwaitMCC,
+#endif
 } lnp_integrity_state_t;
 
 
@@ -77,9 +117,10 @@ extern lnp_integrity_state_t lnp_integrity_state;
 //
 ///////////////////////////////////////////////////////////////////////
 
-//! the LNP checksum algorithm.
-extern unsigned short lnp_checksum( const unsigned char *data,
-				    unsigned length);
+//! the LNP `copy and compute checksum' function.
+extern unsigned char lnp_checksum_copy( unsigned char *dest,
+					const unsigned char *data,
+					unsigned length );
 
 //! receive a byte from the physical layer, decoding integrity layer
 //! packets.

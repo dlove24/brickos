@@ -2,7 +2,7 @@
     \brief  visualization of legOS state
     \author Markus L. Noga <markus@noga.de>
 */
-    
+
 /*
  *  The contents of this file are subject to the Mozilla Public License
  *  Version 1.0 (the "License"); you may not use this file except in
@@ -55,21 +55,21 @@ void vis_handler(void) {
 HANDLER_WRAPPER("vis_handler","vis_core");
 void vis_core(void) {
 #endif
-#ifdef CONF_DSENSOR  
+#ifdef CONF_DSENSOR
   bit_iload(AD_C_H,0x7);
   dlcd_store(LCD_S1_ACTIVE);
 
   bit_iload(AD_B_H,0x7);
   dlcd_store(LCD_S2_ACTIVE);
-    
+
   bit_iload(AD_A_H,0x7);
   dlcd_store(LCD_S3_ACTIVE);
 #endif
-  
+
 #ifdef CONF_PROGRAM
-  if(nb_tasks<=NUM_SYSTEM_THREADS) {     // show only while program not running.
+  if(nb_tasks <= NUM_SYSTEM_TASKS) {    	      	  // show only while program not running.
     if(program_valid(cprog))
-      cputc_hex_0(cprog);
+      cputc_hex_0(cprog+1);
     else
       cputc_0('-');
   }

@@ -24,27 +24,27 @@ CINC +=-I$(dir $(KERNEL))
 # how to build executables dynamically linked to the kernel 
 # set DYNAMIC_TEXT, DOBJECTS, DYNAMIC_LDS appropriately.
 %.dcoff: %.o $(DOBJECTS) $(DYNAMIC_LDS)
-	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $*.dcoff -Ttext $(BASE1) --oformat coff-h8300
+	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $@ -Ttext $(BASE1) --oformat coff-h8300
 
 # how to make barebones dymanic executable map files
 %.dmap: %.dcoff
-	$(NM) $*.dcoff | sort > $*.dmap
+	$(NM) $< | sort > $@
 	
 # how to disassemble coff kernel
 %.dis: %.dcoff
-	$(OBJDUMP) $(ODFLAGS) $*.dcoff > $*.dis
+	$(OBJDUMP) $(ODFLAGS) $*.dcoff > $@
 	
 # how to merge map files with symbols
 %.dis2: %.dmap %.dis
-	$(MERGEMAP) $*.dmap $*.dis > $*.dis2
+	$(MERGEMAP) $*.dmap $*.dis > $@
         
 # how to make srec files of dynamic executables
 %.ds1: %.o $(DOBJECTS) $(DYNAMIC_LDS)
-	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $*.ds1 -Ttext $(BASE1)
+	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $@ -Ttext $(BASE1)
 
 # how to make srec files of dynamic executables
 %.ds2: %.o $(DOBJECTS) $(DYNAMIC_LDS)	
-	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $*.ds2 -Ttext $(BASE2)
+	$(LD) $(DLDFLAGS) $*.o $(DOBJECTS) $(LIBS) -o $@ -Ttext $(BASE2)
 
 %.lx: %.ds1 %.ds2
-	$(MAKELX) $*.ds1 $*.ds2 $*.lx
+	$(MAKELX) $*.ds1 $*.ds2 $@

@@ -1,3 +1,44 @@
+2002-05-05  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Applied Patch #552135: RCX Remote control support + misc
+	  fixes: animated figure (doesn't fidget anymore),
+	  dll Program numbers now consistent (1 - 8), LCD display
+	  of motor dir during braking now correct, cputc_native_xxx macros 
+	  now allow expression as arg, and dll now allows delete of program.
+	* small adjustments to two demos
+	* This effectively removes the prior IR Remote implementation as
+	  it is now a blend of the two patched approaches
+	* Added new config settings:
+	   CONF_RCX_PROTOCOL    // RCX protocol handler (lnp)
+	   CONF_LR_HANDLER      // Remote control button event dispatcher
+	   CONF_RCX_MESSAGE     // Standard firmare message functions
+	  Which replaced the following settings:
+	   CONF_REMOTE_CTRL      // remote control
+	   CONF_RKEY_HANDLER     // remote control keys handler
+	   CONF_RKEY_MOTOR       // remote control motor
+	   CONF_MESSAGE          // standard firmware message
+
+2002-04-28  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Added Motor control to complete implementation of
+	  Patch #475185: Remote Control & Standard Message Patch
+	* Cleaned up Makefile.user targets (much more to do)
+
+2002-04-26	Paolo Masetti <paolom@users.sourceforge.net>
+
+	* demo/c++:  Added .cvsignore file
+
+2002-04-23  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Apply Patch #475185: Remote Control & Standard Message Patch
+	* Move from NUM_SYSTEM_THREADS to NUM_SYSTEM_TASKS
+
+2002-04-22  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+	* Apply Patch #403527: LNP checksum optimizations
+	* Apply Patch #403728: LNP optimizations versus CVS
+	* Apply Patch #545860: race conditions fix in LNP
+
 2002-04-19  Stephen M Moraco <stephmo@users.sourceforge.net>
 
 	* Version number bump to 0.2.6 - Official Release
@@ -54,10 +95,10 @@
 	   it therefore does not reflect who did the work and when
 	   in the future we will -Stephen
 	* Fix BUG #228723: makelx out-of-bounds check bad on c++
-	* Fix BUG #226789: Remove -u use to fix build on BSD 
+	* Fix BUG #226789: Remove -u use to fix build on BSD
 	* Added Manpage source files dll.1 & firmdl3.1
 	* Add C++ TemperatureSensor Class
-	* Add 3 new C++ demos: 
+	* Add 3 new C++ demos:
 	   rotation.velocity.Sensor.C
 	   temperatureSensor.C
 	   touch.pressed.Sensor.C
@@ -92,4 +133,4 @@
 
 	* creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.1 2002/08/20 03:04:27 stephmo Exp $
+$Id: ChangeLog,v 1.2 2002/08/20 04:11:31 stephmo Exp $

@@ -30,10 +30,13 @@
  *	- Added "CMDirmode" for changing via LNP IR mode
  *
  *  2001.05.10 - Matt Ahrens <mahrens@acm.org>
- *  	
+ *
  *  	- Added free memory and batter life display
  *  	  Press "view" repeatedly while no programs are running to see
  *
+ *  2002.4.23 - Ted Hess <thess@kitschensync.net>
+ *
+ *	- Added Remote key handler
  */
 
 #include <sys/program.h>
@@ -53,6 +56,7 @@
 #include <sys/mm.h>
 #include <sys/battery.h>
 #include <dsound.h>
+#include <remote.h>
 
 #include <conio.h>
 
@@ -88,7 +92,6 @@ volatile unsigned char packet_src;    	  //!< packet sender
 
 static sem_t packet_sem;      	      	  //!< synchronization semaphore
 
-
 #if 0
 #define debugs(a) { cputs(a); msleep(500); }
 #define debugw(a) { cputw(a); msleep(500); }
@@ -96,6 +99,9 @@ static sem_t packet_sem;      	      	  //!< synchronization semaphore
 #define debugs(a)
 #define debugw(a)
 #endif
+
+// Forward ref
+int lrkey_handler(unsigned int etype, unsigned int key);
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -184,28 +190,35 @@ static int packet_consumer(int argc, char *argv[]) {
      continue;
    }
 
-   if(cmd>CMDacknowledge && cmd <= CMDrun)
-     if((nr=buffer[1])>=PROG_MAX)
+   // Get program number, validate value
+   if((cmd > CMDacknowledge) && (cmd <= CMDrun)) {
+     nr = buffer[1];
+     if(nr > PROG_MAX)
        continue;
-   prog=programs+nr;
+#ifndef CONF_VIS
+     cputc_hex_0(nr+1);
+#endif
+   }
+
+   debugw(nr);
+   prog = programs+nr;
 
    switch( cmd ) {
      case CMDdelete:
        debugs("dele");
 
-       if(nb_tasks<=NUM_SYSTEM_THREADS) {
-	 if(prog->text)
-	   free(prog->text);
-	 memset(prog,0,sizeof(program_t));
+       if(nb_tasks <= NUM_SYSTEM_TASKS) {
+      	 if(prog->text)
+      	   free(prog->text);
+      	 memset(prog,0,sizeof(program_t));
 
 #ifndef CONF_VIS
-      	 if(nr==cprog)
-	   cputc_0('-');
+      	 if(nr == cprog)
+      	   cputc_0('-');
 #endif
-
          debugs("OK");
-
-	 lnp_addressing_write(&acknowledge,1,packet_src,0);
+  
+      	 lnp_addressing_write(&acknowledge,1,packet_src,0);
        }
        break;
 
@@ -216,38 +229,35 @@ static int packet_consumer(int argc, char *argv[]) {
 	 memcpy(&(prog->text_size),buffer+2,11);
 
 	 if((prog->text=malloc(prog->text_size+
-	                       2*prog->data_size+
-	                       prog->bss_size  ))) {
-	   prog->data     =prog->text+prog->text_size;
-	   prog->bss      =prog->data+prog->data_size;
+			       2*prog->data_size+
+			       prog->bss_size  ))) {
+	   prog->data=prog->text+prog->text_size;
+	   prog->bss=prog->data+prog->data_size;
       	   prog->data_orig=prog->bss +prog->bss_size;
 	   prog->downloaded=0;
 
 	   debugs("OK");
 
 	   cputw(0);
-      	   cprog=nr;
-#ifndef CONF_VIS
-           cputc_hex_0(nr);
-#endif
+      	   cprog = nr;
 
 	   msg[0]=CMDacknowledge;
 	   msg[1]=nr;
 	   memcpy(msg+2,prog,6);
 	   lnp_addressing_write(msg,8,packet_src,0);
 	 } else
-           memset(prog+nr,0,sizeof(program_t));
+           memset(prog,0,sizeof(program_t));
        }
        break;
 
      case CMDdata:
        debugs("data");
        if(prog->text && !program_valid(nr)) {
-	 size_t offset=*(size_t*)(buffer+2);
+  	     size_t offset=*(size_t*)(buffer+2);
 
 	 if(offset<=prog->downloaded) {
 
-  	   if(offset==prog->downloaded) {
+	   if(offset==prog->downloaded) {
 	     memcpy(prog->text+offset,buffer+4,packet_len-4);
   	     prog->downloaded+=packet_len-4;
 
@@ -257,11 +267,10 @@ static int packet_consumer(int argc, char *argv[]) {
 	       memcpy(prog->data_orig,prog->data,prog->data_size);
 	       cls();
 	     } else
-    	       cputw(prog->downloaded);
-
-             debugs("OK");
+	       cputw(prog->downloaded);
+	     debugs("OK");
 	   } else
-  	     debugs("OLD");
+	     debugs("OLD");
 
      	   lnp_addressing_write(&acknowledge,1,packet_src,0);
 	 }
@@ -271,6 +280,7 @@ static int packet_consumer(int argc, char *argv[]) {
      case CMDrun:
        debugs("run");
        if(program_valid(nr)) {
+         cprog = nr;
          program_run(nr);
 
          debugs("OK");
@@ -282,6 +292,44 @@ static int packet_consumer(int argc, char *argv[]) {
        debugs("error");
    }
  }
+}
+
+//! stop program
+void program_stop(int flag) {
+  killall(PRIO_HIGHEST-1);
+
+  if (flag)
+     cputs("STOP");
+
+  // Reset motors, sensors, sound & LNP as
+  // programs may have motors running,
+  // sensors active or handlers set.
+  //
+  // Programs that exit on their own
+  // are assumed to take the necessary
+  // actions themselves.
+  //
+#ifdef CONF_DSOUND
+  dsound_stop();
+#endif
+#ifdef CONF_DMOTOR
+  dm_init();
+#endif
+#ifdef CONF_DSENSOR
+  ds_init();
+#endif
+  lnp_init();
+#ifdef CONF_LR_HANDLER
+  // Reset remote button handler
+  lr_init();
+  lr_set_handler(lrkey_handler);
+#endif
+#ifndef CONF_VIS
+  lcd_show(man_stand);
+#ifndef CONF_LCD_REFRESH
+  lcd_refresh();
+#endif
+#endif
 }
 
 //! handle key input (on/off, run, program)
@@ -308,30 +356,10 @@ gotkey:
 
       case KEY_RUN:
 	// toggle: start/stop program
-	if(nb_tasks>NUM_SYSTEM_THREADS) {
-	  killall(PRIO_HIGHEST-1);
-	  cputs("STOP");
+	if(nb_tasks > NUM_SYSTEM_TASKS) {
+	  // if program running, stop it
 	  clear=1;
-
-	  // Reset motors, sensors, sound & LNP as
-	  // programs may have motors running,
-	  // sensors active or handlers set.
-	  //
-	  // Programs that exit on their own
-	  // are assumed to take the necessary
-	  // actions themselves.
-	  //
-#ifdef CONF_DSOUND
-      	  dsound_stop();
-#endif
-#ifdef CONF_DMOTOR
-	  dm_init();
-#endif
-#ifdef CONF_DSENSOR
-	  ds_init();
-#endif
-	  lnp_init();
-	  lnp_logical_init();
+	  program_stop(1);
 	} else if(program_valid(cprog))
 	  program_run(cprog);
 	else {
@@ -342,7 +370,7 @@ gotkey:
 
       case KEY_PRGM:
 	// works only if no programs are running.
-	if(nb_tasks<=NUM_SYSTEM_THREADS) {
+	if(nb_tasks <= NUM_SYSTEM_TASKS) {
 	  int i;
 	  for(i=0; i<PROG_MAX; i++) {
 	    if( (++cprog)>=PROG_MAX)
@@ -354,10 +382,10 @@ gotkey:
 	    cputs("NONE");
 	    clear=1;
 #ifndef CONF_VIS
-  	    cputc_0('-');
+	    cputc_0('-');
 	  }
 	  else
-	    cputc_hex_0(cprog);
+	    cputc_hex_0(cprog+1);
 #else
 	  }
 #endif
@@ -365,29 +393,29 @@ gotkey:
 	}
 	break;
       case KEY_VIEW:
-	// works only if no programs are running.
-	if (nb_tasks > NUM_SYSTEM_THREADS)
-	  break;
-	/* 
-	 * pressing the "view" button cycles through a display of the
-	 * amount of the amount of free memory (in decimal and
-	 * hexadecimal) and battery power. If a button other than "view"
-	 * is pressed while cycling through, we handle that button
-	 * ("goto gotkey").
-	 */
-	cputs("free");
-	if ((c = getchar()) != KEY_VIEW) goto gotkey;
-	lcd_int(mm_free_mem());
-	if ((c = getchar()) != KEY_VIEW) goto gotkey;
-	cputw(mm_free_mem());
-	if ((c = getchar()) != KEY_VIEW) goto gotkey;
-
-	cputs("batt");
-	if ((c = getchar()) != KEY_VIEW) goto gotkey;
-	lcd_int(get_battery_mv());
-	if ((c = getchar()) != KEY_VIEW) goto gotkey;
-	clear=1;
-	break;
+      	// works only if no programs are running.
+      	if (nb_tasks > NUM_SYSTEM_TASKS)
+      	  break;
+      	/*
+      	 * pressing the "view" button cycles through a display of the
+      	 * amount of the amount of free memory (in decimal and
+      	 * hexadecimal) and battery power. If a button other than "view"
+      	 * is pressed while cycling through, we handle that button
+      	 * ("goto gotkey").
+      	 */
+      	cputs("free");
+      	if ((c = getchar()) != KEY_VIEW) goto gotkey;
+      	lcd_int(mm_free_mem());
+      	if ((c = getchar()) != KEY_VIEW) goto gotkey;
+      	cputw(mm_free_mem());
+      	if ((c = getchar()) != KEY_VIEW) goto gotkey;
+      
+      	cputs("batt");
+      	if ((c = getchar()) != KEY_VIEW) goto gotkey;
+      	lcd_int(get_battery_mv());
+      	if ((c = getchar()) != KEY_VIEW) goto gotkey;
+      	clear=1;
+      	break;
     }
 
     if(clear) {
@@ -397,6 +425,140 @@ gotkey:
   }
 }
 
+#if defined(CONF_LR_HANDLER)
+//! handle remote key input (P1-P5, A1-C1, A2-C2, stop, beep)
+int lrkey_handler(unsigned int etype, unsigned int key) {
+  unsigned char pnr = 0;
+
+	// If a program is running, stop it
+	//  NOTE: this LRKEY is allowed while a program is running!
+	if(key == LRKEY_STOP && etype == LREVT_KEYON && nb_tasks > NUM_SYSTEM_TASKS) {
+	  program_stop(1);
+	  return 1; // we consumed key
+  }
+	
+  // Only interested if no program is running
+  if(nb_tasks <= NUM_SYSTEM_TASKS) {
+    // Keydown events dispatched here
+    if (etype == LREVT_KEYON) {
+  		switch (key) {
+    		case LRKEY_BEEP:
+    			// Need high pitched beep-beep
+    			dsound_system(0);
+    			break;
+    		
+    		case LRKEY_P5:
+    			pnr++;
+    			// ... Fallthru
+    		case LRKEY_P4:
+    			pnr++;
+    			// ... Fallthru
+    		case LRKEY_P3:
+    			pnr++;
+    			// ... Fallthru
+    		case LRKEY_P2:
+    			pnr++;
+    			// ... Fallthru
+    		case LRKEY_P1:
+    			// Start something?
+    			if(program_valid(pnr)) 
+    			{
+    			  cprog = pnr;
+    			  // Reset things
+    			  program_stop(0);
+#ifdef CONF_VIS
+    			  cputc_hex_0(pnr+1);
+#ifndef CONF_LCD_REFRESH
+    			  lcd_refresh();
+#endif
+#endif
+    			  // launch Program(n)
+    			  program_run(pnr);
+    			} else {
+    			  //  no such program downloaded
+	          cputs("NONE");
+    		  }
+    			break;
+    		
+    		// Motor on commands
+    		case LRKEY_A1:
+    			// A Motor fwd
+    			motor_a_dir(fwd);
+    			break;
+    		case LRKEY_A2:
+    			// A Motor rev
+    			motor_a_dir(rev);
+    			break;
+    		case LRKEY_B1:
+    			// B Motor fwd
+    			motor_b_dir(fwd);
+    			break;
+    		case LRKEY_B2:
+    			// B Motor rev
+    			motor_b_dir(rev);
+    			break;
+    		case LRKEY_C1:
+    			// C Motor fwd
+    			motor_c_dir(fwd);
+    			break;
+    		case LRKEY_C2:
+    			// C Motor rev
+    			motor_c_dir(rev);
+    			break;
+    		default:
+    			// Not consumed
+    			return 0;
+  		}
+#ifndef CONF_LCD_REFRESH
+  		lcd_refresh();
+#endif
+  		// Key consumed
+  		return 1;
+  	}
+  
+    // Keyup events dispatched here
+    if (etype == LREVT_KEYOFF) {
+  		switch (key) {
+    		case LRKEY_A1:
+    		case LRKEY_A2:
+    		  // Shut off A motor
+    		  motor_a_dir(brake);
+    		  break;
+    		case LRKEY_B1:
+    		case LRKEY_B2:
+    		  // Shut off B motor
+    		  motor_b_dir(brake);
+    		  break;
+    		case LRKEY_C1:
+    		case LRKEY_C2:
+    		  // Shut off C motor
+    		  motor_c_dir(brake);
+    		  break;
+    		case LRKEY_P1:
+    		case LRKEY_P2:
+    		case LRKEY_P3:
+    		case LRKEY_P4:
+    		case LRKEY_P5:
+    		case LRKEY_STOP:
+          // remove the STOP (or NONE) message
+          cls();
+    			break;
+    		default:
+    			return 0;
+  		}
+  		// Used the key
+  		return 1;
+    }
+  }
+
+#ifndef CONF_LCD_REFRESH
+  lcd_refresh();
+#endif
+  // Didn't eat the key
+  return 0;
+}
+#endif
+
 //! initialize program support
 /*! run in single tasking mode
 */
@@ -405,7 +567,21 @@ void program_init() {
   sem_init(&packet_sem,0,0);
   execi(&packet_consumer,0,0,PRIO_HIGHEST,DEFAULT_STACK_SIZE);
   execi(&key_handler,0,0,PRIO_HIGHEST,DEFAULT_STACK_SIZE);
+
+#ifdef CONF_LR_HANDLER
+  // Setup kernel remote callback handler and dispatch thread
+  lr_startup();
+  lr_set_handler(lrkey_handler);
+#endif
+
   lnp_addressing_set_handler(0,&packet_producer);
+#ifdef CONF_VIS
+  lcd_show(man_stand);
+#ifndef CONF_LCD_REFRESH
+  lcd_refresh();
+#endif
+#endif	// CONF_VIS
+
 }
 
 //! shutdown program support
@@ -414,6 +590,10 @@ void program_init() {
 void program_shutdown() {
   lnp_addressing_set_handler(0,LNP_DUMMY_ADDRESSING);
   sem_destroy(&packet_sem);
+
+#ifdef CONF_LR_HANDLER
+  lr_shutdown();
+#endif
 }
 
 #endif // CONF_PROGRAM
