@@ -1,8 +1,10 @@
 2004-01-02  Henner Zeller <hzeller@users.sourceforge.net>
   * Fixed #835433, #766169, #766168 
   * add sem_timedwait() 
-  * the counter for locked_{inc|dec}rement is a new type: atomic_t
-  
+  * externalized atomic counting in atomic.[hc]; introduce new type atomic_t
+  * semaphores and critical sections make use of atomic_t
+  * do some cleanup in unistd.h: not all functions were available if !CONF_TM
+
 2003-03-02  Paolo Masetti <paolom@users.sourceforge.net>
 
   * Fixed util\makefile(s). Now "make strip" works.
@@ -348,4 +350,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.30 2004/01/03 17:34:21 hzeller Exp $
+$Id: ChangeLog,v 1.31 2004/01/03 23:11:29 hzeller Exp $

@@ -70,14 +70,13 @@ int sem_wait(sem_t * sem) {
 	return 0;
 }
 
-struct timeout_sem_data {
+typedef struct {
 	sem_t  *sem;
 	time_t abs_timeout;
-};
+} timeout_sem_data_t;
 
 static wakeup_t sem_event_timeout_wait(wakeup_t data) {
-	struct timeout_sem_data *tsem = 
-		(struct timeout_sem_data*) ((unsigned)data);
+	timeout_sem_data_t *tsem = (timeout_sem_data_t*) ((unsigned)data);
 	
 	// we're called by the scheduler, therefore in an IRQ handler,
 	// so no worrying about IRQs.
@@ -96,7 +95,7 @@ static wakeup_t sem_event_timeout_wait(wakeup_t data) {
 
 int sem_timedwait(sem_t *sem,
 		  const time_t abs_timeout) {
-	struct timeout_sem_data data;
+	timeout_sem_data_t data;
 	data.sem = sem;
 	data.abs_timeout = abs_timeout;
 	
@@ -108,7 +107,6 @@ int sem_timedwait(sem_t *sem,
 	}
 	return 0;
 }
-
 
 //! non-blocking check on a semaphore
 /*! \param sem a valid semaphore
@@ -127,46 +125,23 @@ __asm__("
 .text
 .align 1
 .globl _sem_trywait
-_sem_trywait:
+       _sem_trywait:
 	stc ccr,r1h				; save flags	
 	orc #0x80,ccr				; block all but NMI
 	mov.b @r0,r1l
 	beq sem_fail				; !=0 -> decrease, return 0
-	  dec r1l
-	  mov.b r1l,@r0
-	  sub.w r0,r0
-	  bra sem_ok
- sem_fail:mov #0xffff,r0	    		      	; else return 0xffff
- sem_ok:ldc r1h,ccr				; restore flags
-	rts
-	");
-#endif // DOXYGEN_SHOULD_SKIP_THIS
-	
-//! increase semaphore count
-/*! \param sem a valid semaphore
-
-    atomically  increases the count of the semaphore.
-    This function  never  blocks  and  can
-    safely be used in asynchronous signal handlers.
-*/
-int sem_post(sem_t * sem);
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-__asm__("
-.text
-.align 1
-.globl _sem_post
-_sem_post:
-	stc ccr,r1h				; save flags
-	orc #0x80,ccr				; disable all but NMI
-	mov.b @r0,r1l
-	inc r1l
+	dec r1l
 	mov.b r1l,@r0
-	ldc r1h,ccr				; restore flags
+	sub.w r0,r0                             ; return 0
+	bra sem_ok
 
-	sub r0,r0				; return 0
+ sem_fail:
+        mov #0xffff,r0	    		      	; else return 0xffff
+
+ sem_ok:
+        ldc r1h,ccr				; restore flags
 	rts
 	");
 #endif // DOXYGEN_SHOULD_SKIP_THIS
-	
 	
 #endif // CONF_SEMAPHORES

@@ -33,15 +33,13 @@ extern "C" {
 #endif // __cplusplus
 
 #include <config.h>
-#include "../critsec.h"
+#include <atomic.h>
 
 #if defined(CONF_TM)
 extern atomic_t kernel_critsec_count;
-extern int locked_increment(atomic_t* count);
-extern int locked_decrement(atomic_t* count);
 #define INITIALIZE_KERNEL_CRITICAL_SECTION() kernel_critsec_count=0
-#define ENTER_KERNEL_CRITICAL_SECTION() locked_increment(&kernel_critsec_count)
-#define LEAVE_KERNEL_CRITICAL_SECTION() locked_decrement(&kernel_critsec_count)
+#define ENTER_KERNEL_CRITICAL_SECTION() atomic_inc(&kernel_critsec_count)
+#define LEAVE_KERNEL_CRITICAL_SECTION() atomic_dec(&kernel_critsec_count)
 #define DESTROY_KERNEL_CRITICAL_SECTION()
 #else // CONF_TM
 #define INITIALIZE_KERNEL_CRITICAL_SECTION()

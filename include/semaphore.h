@@ -32,6 +32,7 @@ extern "C" {
 
 #include <config.h>
 #include <time.h> /* time_t */
+#include <atomic.h>
 
 #ifdef CONF_SEMAPHORES
 
@@ -41,7 +42,7 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////
 
-typedef volatile unsigned char sem_t;           //!< the semaphore data-type
+typedef atomic_t sem_t;                         //!< the semaphore data-type
 
 #define EAGAIN  0xffff                          //!< the error code
 
@@ -118,7 +119,11 @@ extern int sem_trywait(sem_t * sem);
  *  \param sem a pointer to the semaphore to be signaled
  *  \return (always returns 0)
 */
-extern int sem_post(sem_t * sem);
+extern inline int sem_post(sem_t * sem) 
+{ 
+	atomic_inc(sem);
+	return 0;
+}
 
 //
 //! Get the semaphore value

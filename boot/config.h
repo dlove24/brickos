@@ -38,6 +38,7 @@
 #define CONF_AUTOSHUTOFF                //!< power down after x min of inactivity
 //#define CONF_TM_DEBUG                   //!< view key shows current instruction pointer
 #define CONF_SETJMP			//!< non local goto
+#define CONF_ATOMIC                     //!< atomic counters
 #define CONF_SEMAPHORES                 //!< POSIX semaphores
 #define CONF_CRITICAL_SECTIONS          //!< Critical Section support
 #define CONF_PROGRAM                    //!< dynamic program loading support
@@ -96,12 +97,20 @@
 #error "Task management needs memory management."
 #endif
 
-#if defined(CONF_MM) && defined(CONF_TM) && !defined(CONF_SEMAPHORES)
-#error "Tasksafe memory management needs semaphores."
+#if defined(CONF_TM) && !defined(CONF_ATOMIC)
+#error "Task management needs atomic counters for kernel lock"
 #endif
 
 #if defined(CONF_LNP) && defined(CONF_TM) && !defined(CONF_SEMAPHORES)
 #error "Tasksafe networking needs semaphores."
+#endif
+
+#if defined(CONF_SEMAPHORES) && !defined(CONF_ATOMIC)
+#error "Semphores need atomic counters"
+#endif
+
+#if defined(CONF_CRITICAL_SECTIONS) && !defined(CONF_ATOMIC)
+#error "Critical sections need atomic counters"
 #endif
 
 #if defined(CONF_RCX_PROTOCOL) && !defined(CONF_LNP)

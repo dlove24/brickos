@@ -1,6 +1,7 @@
 
 #include "config.h"
 #include <sys/critsec.h>
+#include <critsec.h>
 #include <unistd.h>
 
 #if defined(CONF_TM)
@@ -14,56 +15,6 @@
     the task_switch_handler() in systime.c
  */
 atomic_t kernel_critsec_count;
-
-//! increment counter without interruption
-/*! locks interrupts except NMI, then 
-    increments the count and restores intrrupts.
-
-    primarily used to enter kernel critical section.
-
-    \param counter pointer to counter to be incremented
-    \return always 0 (currently)
-    \sa locked_decrement
- */
-int locked_increment(atomic_t* counter);
-__asm__("
-.text
-.globl _locked_increment
-       _locked_increment:
-         stc   ccr, r1h
-         orc   #0x80, ccr
-         mov.b @r0, r1l
-         inc   r1l
-         mov.b r1l, @r0
-         ldc   r1h, ccr
-         sub   r0, r0
-         rts
-");
-
-//! decrement counter without interruption
-/*! locks interrupts except NMI, decrements count
-    then restores interrupts.
-
-    used to leave both normal and kernel critical sections.
-
-    \param counter pointer to counter to be decremented
-    \return always 0 (currently)
-    \sa locked_increment
- */
-int locked_decrement(atomic_t* counter);
-__asm__("
-.text
-.globl _locked_decrement
-       _locked_decrement:
-         stc   ccr, r1h
-         orc   #0x80, ccr
-         mov.b @r0, r1l
-         dec   r1l
-         mov.b r1l, @r0
-         ldc   r1h, ccr
-         sub   r0, r0
-         rts
-");
 
 #if defined(CONF_CRITICAL_SECTIONS)
 //! check and increment counter, without interruptions

@@ -71,7 +71,6 @@ extern char __text_hi, __etext_hi;
 
 extern int main(int argc, char **argv);     //!< the user main()
 
-
 //! show ON string
 extern inline void show_on(void) {
   cls();
@@ -199,12 +198,12 @@ void kmain(void)
     // run app
     //
 #ifdef CONF_TM
-#ifndef CONF_PROGRAM
+#  ifndef CONF_PROGRAM
     execi(&main,0,0,PRIO_NORMAL,DEFAULT_STACK_SIZE);
-#endif
+#  endif
     tm_start();
 #else
-    main(0,0);
+    main(0, (void*)0);
 #endif
 
     show_off();

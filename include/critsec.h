@@ -36,12 +36,7 @@ extern "C" {
 
 #if defined(CONF_TM) && defined(CONF_CRITICAL_SECTIONS)
 #include <sys/tm.h>
-
-/**
- * The data type that allows for atomic count operations.
- * \sa locked_decrement
- */
-typedef volatile unsigned char atomic_t;
+#include <atomic.h>
 
 #ifndef DOXYGEN_SHOULD_SKIP_INTERNALS
 //! critical section data structure
@@ -59,14 +54,10 @@ struct critsec {
 //! critical section type definition
 typedef struct critsec critsec_t;
 
-//! decrement counter without interruption
-/*! locks interrupts except NMI, decrements count
-    then restores interrupts.
-    \param counter the counter resource to be decremented
-    \return always 0 (currently)
-    \sa locked_increment
+//! don't use locked_decrement anymore but atomic_dec()
+/*! @deprecated use atomic_dec() instead
  */
-extern int locked_decrement(atomic_t* counter);
+#define locked_decrement(counter) atomic_dec(counter)
 
 //! wakeup when critical section is available
 /*! wakeup function used to sleep a task until a critical
@@ -107,7 +98,7 @@ extern int enter_critical_section(critsec_t* cs);
     \sa enter_critical_section
     \sa destroy_critical_section
  */
-#define leave_critical_section(cs) locked_decrement(&(cs)->count)
+#define leave_critical_section(cs) atomic_dec(&(cs)->count)
 
 //! destroy critical section (does nothing)
 /*! currently there are no resources that are dynamically
