@@ -63,7 +63,7 @@ endif
 #
 # Cygwin 1.1
 #
-ifneq (,$(findstring $(OSTYPE),CYGWIN_NT-4.0 CYGWIN_NT-5.0 CYGWIN_NT-5.1))
+ifneq (,$(findstring CYGWIN,$(OSTYPE)))
 
 TOOLPREFIX=h8300-hitachi-hms-
 SED_SFLAG=i
