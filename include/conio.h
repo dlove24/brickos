@@ -49,7 +49,7 @@ extern "C" {
 
 #ifdef CONF_CONIO
 
-#include <rom/lcd.h>
+#include <sys/lcd.h>
 #include <dlcd.h>
 #include <dkey.h>
 

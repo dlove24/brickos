@@ -1,3 +1,16 @@
+2002-08-21  Ted Hess <thess@users.sourceforge.net>
+
+	* Allow setting LNP Host address at build or load-time
+	  - Specify LNP_HOSTADDR=n on make command-line (0 .. N)
+	  - Use dll option --node={hostaddress} or -n{hostaddress}
+	  Note: CONF_LNP_HOSTADDR in config.h is now a small integer instead of shifted mask
+	* fix LEGOS_ROOT macro to work in sub-directory (makefile)
+	* added $CDEFINES macro for compile-time defines (makefile)
+	* minor fixes for various config option combinations to build properly
+	* added CMDsethost to dll protocol to set host addrs
+	* use Win32 device name for USB tower on Win32
+	* updated man page for new dll options
+
 2002-05-05  Stephen M Moraco <stephmo@users.sourceforge.net>
 
 	* Applied Patch #552135: RCX Remote control support + misc
@@ -133,4 +146,4 @@
 
 	* creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.2 2002/08/20 04:11:31 stephmo Exp $
+$Id: ChangeLog,v 1.3 2002/08/22 03:49:00 stephmo Exp $

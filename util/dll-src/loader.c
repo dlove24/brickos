@@ -474,7 +474,7 @@ int main(int argc, char **argv) {
 	tty_usb = 1;
 	if(verbose_flag)
 		fputs("\n\n Hary Mahesan - LEGO USB IR Tower Mode\n\n",stderr);
-	tty="//./legotower1"; // Set the correct usb tower if you have more than one (unlikely).
+	tty="\\\\.\\legotower1"; // Set the correct usb tower if you have more than one (unlikely).
   }
 #endif
 
