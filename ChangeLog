@@ -1,3 +1,9 @@
+2004-01-25  Stephen M Moraco <stephmo@users.sourceforge.net>
+
+  * Applied Patches: #747434, #766164
+  * Adjusted configure to work with new Debian Tool-chain
+  * Removed multi-line use in #error in boot/config.h
+
 2004-01-02  Henner Zeller <hzeller@users.sourceforge.net>
 
   * Fixed Bugs #835433, #766169, #766168 
@@ -352,4 +358,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.32 2004/01/04 00:32:27 hzeller Exp $
+$Id: ChangeLog,v 1.33 2004/01/25 08:17:51 stephmo Exp $
