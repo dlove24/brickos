@@ -1,7 +1,4 @@
-#ifndef _TouchSensor_H_
-#define _TouchSensor_H_
-
-/*! \file   include/c++/TouchSensor.H
+/*! \file   c++/TouchSensor.H
     \brief  C++ TouchSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -21,29 +18,41 @@
 // This software was developed as part of the legOS project.
 //
 // Contributor: Pat Welch (legOS@mousebrains.com)
+#ifndef _TouchSensor_H_
+#define _TouchSensor_H_
 
+#include <config.h>
 #include <c++/Sensor.H>
 
 #if defined(CONF_DSENSOR)
 
 /**
- * @class TouchSensor TouchSensor.H <c++/TouchSensor.H>
- * The Touch Sensor Class - using a touch sensor in passive mode 
+ * \class TouchSensor c++/TouchSensor.H
+ * The Touch %Sensor Class - using a touch sensor in passive mode 
  *
  * At construction time you specify the RCX connector pad to which the 
  * touchSensor is attached. 
  *
- * @note TouchSensor is implemented as a simple redefine of the Sensor 
+ * \note TouchSensor is implemented as a simple redefine of the Sensor 
  * class (saved ~48 bytes per instance).  See "list of all members", above, or
  * refer to the Sensor class for all methods
  *
- * @short Touch Sensor interface (passive mode)
- * @see Sensor, LightSensor, RotationSensor
+ * \short Touch-sensor interface (passive mode)
+ * \see Sensor, LightSensor, RotationSensor
  */
 
 class TouchSensor : public Sensor {
 public:
+  /**
+   *  construct a TouchSensor connected to pad {port}
+   *  \param port and input port of the RCX
+   *  \return Nothing
+   */
   TouchSensor(const Sensor::Port port) : Sensor(port, false) {}
+  /**
+   *  determine if touch sensor is pressed
+   *  \return T/F where T means touch sensor was pressed
+   */
   bool pressed() const {return TOUCH(sensor);}
 };
 

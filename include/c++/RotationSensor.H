@@ -1,4 +1,4 @@
-/*! \file   include/c++/RotationSensor.H c++/RotationSensor.H
+/*! \file   c++/RotationSensor.H
     \brief  C++ RotationSensor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -22,14 +22,14 @@
 #ifndef _RotationSensor_H_
 #define _RotationSensor_H_
 
+#include <config.h>
 #include <c++/Sensor.H>
 #include <dsensor.h>
 
 #if defined(CONF_DSENSOR) && defined(CONF_DSENSOR_ROTATION)
 
 /**
- * @class RotationSensor RotationSensor.H <c++/RotationSensor.H>
- *
+ * \class RotationSensor c++/RotationSensor.H
  * RotationSensor Class - Interface to rotation sensor hardware
  *
  * At construction time you specify the RCX connector pad to
@@ -37,18 +37,18 @@
  * (default = 0).
  *
  * Additionally, RotationSensor provides methods to:
- * @li enable and disable rotation sensing [@ref #on, @ref #off]
- * @li set or read the current position
+ * \li enable and disable rotation sensing [\ref #on, \ref #off]
+ * \li set or read the current position
  *
- * @short Rotation Sensor interface (active mode)
- * @see Sensor, LightSensor, TouchSensor
+ * \short Rotation-sensor interface (active mode)
+ * \see Sensor, LightSensor, TouchSensor
  */
 class RotationSensor : public Sensor {
 public:
   /**
    * Create an instance of an active rotation sensor which is attached at {port}
-   * @param port the pad to which the rotation sensor is attached
-   * @param position initial starting position (default = 0)
+   * \param port the pad to which the rotation sensor is attached
+   * \param position initial starting position (default = 0)
    */
   RotationSensor(const Port port, int position = 0)
     : Sensor((Sensor::Port) port, true), 
@@ -62,45 +62,55 @@ public:
 	      VELOCITY_3)
 #endif // CONF_DSENSOR_VELOCITY
   {
-    on();          // Turn on tracking of the sensor
-    pos(position); // Set the current position
+    on();          //! Turn on tracking of the sensor
+    pos(position); //! Set the current position
   }
+  /**
+   * Destroy this instance
+   */
   ~RotationSensor()
   {
-    off(); // Turn off tracking of this sensor
+    off(); //! Turn off tracking of this sensor
   }
 
   /**
-   * turn on rotation tracking
+   *  turn on rotation tracking
    */
   void on() const {ds_rotation_on(&sensor);}
 
   /**
-   * turn off rotation tracking
+   *  turn off rotation tracking
    */
   void off() const {ds_rotation_off(&sensor);}
 
   /**
-   * set the current absolute postion
-   * @param position the absolute value to use (typically zero)
+   *  set the current absolute postion
+   * \param position the absolute value to use (typically zero)
    */
   void pos(int position) const {ds_rotation_set(&sensor, position);}
   
   /**
-   * get the current absolute postion
-   * @return int the current relative position 
+   *  get the current absolute postion
+   * \return int the current relative position 
    */
   int pos() const {return rsensor;}
 #ifdef CONF_DSENSOR_VELOCITY
+  /**
+   *  get the current rotational velocity
+   * \return int the current velocity
+   */
   int velocity() const {return rvelocity;}
 #endif // CONF_DSENSOR_VELOCITY
 
 private:
   /**
-   * the current sensor value
+   *  the raw sensor value
    */
   volatile int& rsensor;
 #ifdef CONF_DSENSOR_VELOCITY
+  /**
+   *  the raw velocity value
+   */
   volatile int& rvelocity;
 #endif // CONF_DSENSOR_VELOCITY
 };

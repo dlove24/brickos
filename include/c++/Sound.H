@@ -1,4 +1,4 @@
-/*! \file   include/c++/Sound.H
+/*! \file   c++/Sound.H
     \brief  C++ Sound Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -22,32 +22,57 @@
 #ifndef _Sound_H_
 #define _Sound_H_
 
-// Define an interface to sound, via dsound.h
-// Methods include:
-// int playing() see dsound_playing();
-// void beep() causes a beeb
-// void stop() stop playing
-// void duration(const unsigned int len) see dsound_set_duration
-// void internote(const unsigned int len) see dsound_set_internote
-
+#include <config.h>
 #include <dsound.h>
 
 #if defined(CONF_DSOUND)
 
 /**
- * @class Sound Sound.H <c++/Sound.H>
- *
+ * \class Sound c++/Sound.H
  * Sound Generation Class interface
  *
- * @short Sound Generation interface
- * @see Motor, MotorPair
+ * \short Sound generation interface
+ * \see Motor, MotorPair, Lamp
  */
 class Sound {
 public:
+  /**
+   * Play a list of notes (song)
+   * \li to poll for playing complete try Sound::playing()
+   * \li to wait for playing complete try dsound_finished()
+   * \param notes pointer to an array of note_t elements
+   * \return Nothing
+   */
+  static void play(const note_t *notes) {return dsound_play(notes);}
+  /**
+   * Determine if a sound is currently playing
+   * \return T/F where T means a sound is playing
+   * \see dsound_finished()
+   */
   static int playing() {return dsound_playing();}
+  /**
+   * Play the system_beep sound
+   * \return Nothing
+   */
   static void beep() {dsound_system(DSOUND_BEEP);}
+  /**
+   * Stop a currently playing sound
+   * \return Nothing
+   */
   static void stop() {dsound_stop();}
+  /**
+   * Set the default duration
+   * \param len the duration in mSec?
+   * \return Nothing
+   * \todo get the real scoop here, then provde better description
+   */
   static void duration(const unsigned int len) {dsound_set_duration(len);}
+  /**
+   * Set the amount of time between notes
+   * \param len the duration in mSec?
+   * \return Nothing
+   * \todo get the real scoop here, then provde better description
+   */
   static void internote(const unsigned int len) {dsound_set_internote(len);}
 };
 

@@ -1,4 +1,4 @@
-/*! \file   include/c++/Motor.H
+/*! \file   c++/Motor.H
     \brief  C++ Motor Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -13,12 +13,8 @@
 // basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 // the License for the specific language governing rights and
 // limitations under the License.
-//
-// This software was developed as part of the legOS project.
-//
-// Contributor: Pat Welch (legOS@mousebrains.com)
-//
-//
+
+
 // This class is designed to manipulate the motors on a MindStorm brick.  
 //
 // The class is Motor.  To use a motor on port A, one would do
@@ -38,37 +34,53 @@
 //                                sets the speed to s
 // reverse(const unsigned char s) which sets the direction to rev, and
 //                                sets the speed to s
-// void Brake(const int ms) which sets the direction to brake, and
+// void brake(const int ms) which sets the direction to brake, and
 //                                delays returning ms milliseconds
-//
-// When the class is destroyed, the motor is turned off.
-//
-// On a design note, I avoided using derived classes since they were typically
-// three times larger.  Also, if one using Motor(Motor::A), all the decision
-// logic is optimized away in the compiler, so no extra space is used for that.
 //
 
 #ifndef _Motor_H_
 #define _Motor_H_
 
+#include <config.h>
 #include <conio.h>
 #include <dmotor.h>
  
 #if defined(CONF_DMOTOR)
 
-
 /**
- * @class Motor Motor.H <c++/Motor.H>
+ * \class Motor c++/Motor.H
  * This class is designed to manipulate the motors on a MindStorm brick
- * @short Motor Control interface
- * @see MotorPair, Sound
+ * \short Motor control interface
+ * \see MotorPair, Sound
+ * \par Design Note
+ *   I avoided using derived classes since they were typically
+ *   three times larger.  Also, if one is using Motor(Motor::A), all the decision
+ *   logic is optimized away in the compiler, so no extra space is used for that.
  */
 
 class Motor {
 public:
-  enum Port { A, B, C }; 
-  enum Limits { min = 0, max = 255 };
+  /**
+  * valid port designators
+  */
+  enum Port {
+         A,  //!< RCX output pad A
+		 B,  //!< RCX output pad B
+		 C   //!< RCX output pad C
+	   }; 
 
+  /**
+  *  motor speed range
+  */
+  enum Limits { 
+           min = 0, 	//!< Minimum velocity (0)
+		   max = 255	//!< Maximum velocity (255)
+	   };
+
+  /**
+  *  construct a motor connected to {port}
+  *  \param port designator of pad to which this motor is connected
+  */
   Motor(const Port port) 
     : ms(port == A ? motor_a_speed : 
 	 (port == B) ? motor_b_speed :
@@ -77,20 +89,71 @@ public:
 	    (port == B) ? motor_b_dir :
 	    motor_c_dir)
   { }
+  /**
+  *  destroy our motor instance
+  * \sideeffect When the class is destroyed, the motor is turned off.
+  */
   ~Motor() {off();}
+  /**
+  *  set the motor speed
+  *  \param speed the desired setting. Must be between
+  *   min (0) and max (255)
+  *  \return Nothing
+  */
   const void speed(const unsigned char speed) const { (*ms)(speed); }
+  /**
+  *  set the motor direction
+  *  \param dir one of forward, reverse, off or brake
+  *  \return Nothing
+  */
   const void direction(const MotorDirection dir) const { (*md)(dir); }
+  /**
+  *  set motor direction to forward
+  *  \return Nothing
+  */
   const void forward() const { direction(fwd); }
+  /**
+  *  set motor direction to forward at speed {s}
+  *  \param s  the desired setting. Must be between
+  *   min (0) and max (255)
+  *  \return Nothing
+  */
   const void forward(const unsigned char s) const { forward(); speed(s); }
+  /**
+  *  set the motor direction to reverse
+  *  \return Nothing
+  */
   const void reverse() const { direction(rev); }
+  /**
+  *  set the motor direction to reverse at speed {s}
+  *  \param s  the desired setting. Must be between
+  *   min (0) and max (255)
+  *  \return Nothing
+  */
   const void reverse(const unsigned char s) const { reverse(); speed(s); }
+  /**
+  *  set the motor to brake
+  *  \return nothing
+  *  \todo describe what brake means
+  */
   const void brake() const { direction(std::brake); }
+  /**
+  *  set the motor to brake and delay return
+  *  \param duration time in mSec to delay before returning
+  *  \return nothing
+  *  \todo describe what brake means
+  */
   const void brake(int duration) const { brake(); delay(duration); }
+  /**
+  *  turn the motor off
+  *  this disables power and the motor coasts to a stop
+  *  \return nothing
+  */
   const void off() const { direction(std::off); }
 
 private:
-  void (*ms)(unsigned char speed);
-  void (*md)(const MotorDirection dir);
+  void (*ms)(unsigned char speed);		//!< current velocity setting for this motor instance
+  void (*md)(const MotorDirection dir);	//!< current direction setting for this motor instance
 };
 
 #else // CONF_DMOTOR

@@ -1,4 +1,4 @@
-/*! \file   include/c++/MotorPair.H "c++/MotorPair.H"
+/*! \file   c++/MotorPair.H
     \brief  C++ MotorPair Class Interface
     \author Pat Welch (legOS@mousebrains.com)  
 		 
@@ -22,6 +22,7 @@
 #ifndef _MotorPair_H_
 #define _MotorPair_H_
 
+#include <config.h>
 #include <c++/Motor.H>
 
 #if defined(CONF_DMOTOR)
@@ -51,9 +52,9 @@
 //
 
 /**
- * @class MotorPair MotorPair.H <c++/MotorPair.H>
- * @short Pair-of-motors Control interface
- * @see Motor, Sound
+ * \class MotorPair c++/MotorPair.H
+ * \short Pair-of-motors control interface
+ * \see Motor, Sound, Lamp
  */
  
 class MotorPair {
