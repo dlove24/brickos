@@ -23,9 +23,11 @@ html:
 .depend:
 	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
 		
-depend:	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
+depend:
+	$(MAKEDEPEND) $(BRICKOS_ROOT)kernel/*.c > .depend
 	
-tag:	ctags --format=1 *.c include/*.h include/*/*.h *.c
+tag:
+	ctags --format=1 *.c include/*.h include/*/*.h *.c
 
 clean:
 	rm -f *.srec *.o *.lds *.dis *.coff *.map *.dis2
