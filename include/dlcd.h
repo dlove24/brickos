@@ -1,5 +1,5 @@
 /*! \file   include/dlcd.h
-    \brief  control the LCD display directly
+    \brief  Interface: direct control of LCD display
     \author Markus L. Noga <markus@noga.de>
 
     \warning If CONF_LCD_REFRESH is set in config.h, the kernel will

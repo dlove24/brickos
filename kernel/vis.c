@@ -1,5 +1,5 @@
 /*! \file   vis.c
-    \brief  visualization of BrickOS state
+    \brief  Implementation: visualization of BrickOS state
     \author Markus L. Noga <markus@noga.de>
 */
 

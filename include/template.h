@@ -1,5 +1,6 @@
 /*! \file   include/template.h
-    \brief
+    \brief  EMPTY FILE. Copy to use.
+	Use this to start a new interface by copying to new name then editing
     \author Markus L. Noga <markus@noga.de>
  */
 

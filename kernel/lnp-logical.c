@@ -1,5 +1,5 @@
 /*! \file   lnp-logical.c
-    \brief  link networking protocol logical layer
+    \brief  Implementation: link networking protocol logical layer
     \author Markus L. Noga <markus@noga.de>
 */
 

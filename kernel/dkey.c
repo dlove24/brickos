@@ -1,5 +1,5 @@
 /*! \file   dkey.c
-    \brief  debounced key driver
+    \brief  Implementation: debounced key driver
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -55,7 +55,7 @@ char dkey_timer __attribute__ ((unused)); //! debouncing timer
 // Functions
 //
 ///////////////////////////////////////////////////////////////////////////////
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -98,6 +98,7 @@ dkey_check:
 dkey_same:
    rts
 ");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 //! wakeup if any of the given keys is pressed.
 //
@@ -117,6 +118,8 @@ wakeup_t dkey_released(wakeup_t data) {
   return ! (dkey & (unsigned char)data);
 }
 
+//! get and return a single key press, after waiting for it to arrive
+//
 int getchar(void) {
   wait_event(dkey_released,KEY_ANY);
 #ifdef CONF_AUTOSHUTOFF

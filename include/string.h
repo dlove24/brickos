@@ -1,5 +1,5 @@
 /*! \file   include/string.h
-    \brief  string functions
+    \brief  Interface: string functions
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -64,7 +64,6 @@ extern char *strcpy(char *dest, const char *src);
 
 //! Determine string length
 /*! \param  s string
-    \param  s2 second string
     \return string length
  */
 extern int strlen(const char *s);

@@ -1,5 +1,5 @@
 /*! \file   include/mem.h
-    \brief  memory functions
+    \brief  Interface: memory data types
     \author Markus L. Noga <markus@noga.de>
  */
 

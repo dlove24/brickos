@@ -1,5 +1,5 @@
 /*! \file   include/time.h
-    \brief  Time-related types
+    \brief  Interface: Time-related data and types
     \author Markus L. Noga <markus@noga.de>
 
     \bug    time_t is a 32 bit value which will overflow after

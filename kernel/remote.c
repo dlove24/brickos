@@ -1,5 +1,5 @@
 /*! \file   remote.c
-    \brief  LEGO Infrared Remote Control functions and data structures
+    \brief  Implementation: LEGO Infrared Remote Control and data structures
     \author Ross Crawford <rcrawford@csi.com>
 */
 

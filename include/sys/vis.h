@@ -1,5 +1,5 @@
 /*! \file   include/sys/vis.h
-    \brief  visualization of BrickOS state
+    \brief  Internal Interface: visualization of BrickOS state
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/dbutton.h
-    \brief  query raw button states
+    \brief  Interface: query raw button states
     \author Markus L. Noga <markus@noga.de>
 
     \warning this is raw, unprocessed input. buttons will bounce.

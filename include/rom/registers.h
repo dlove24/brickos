@@ -1,5 +1,5 @@
 /*! \file   include/rom/registers.h
-    \brief  registers cached by ROM functions
+    \brief  ROM Interface: RCX registers cached by ROM functions
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/sys/program.h
-    \brief  program data structures and functions
+    \brief  Internal Interface: program data structures and functions
     \author Markus L. Noga <markus@noga.de>
  */
 

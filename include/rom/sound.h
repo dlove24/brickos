@@ -1,5 +1,5 @@
 /*! \file   include/rom/sound.h
-    \brief  ROM sound functions
+    \brief  ROM Interface: RCX sound functions
     \author Markus L. Noga <markus@noga.de>
 
     \warning These functions will only work if ROM is allowed to handle

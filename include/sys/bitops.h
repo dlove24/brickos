@@ -1,5 +1,5 @@
 /*! \file   include/sys/bitops.h
-    \brief  H8/300 bit operations
+    \brief  Internal Interface: H8/300 bit operations
     \author Markus L. Noga <markus@noga.de>
 */
 

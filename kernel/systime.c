@@ -1,5 +1,5 @@
 /*! \file systime.c
-    \brief  system time services
+    \brief  Implementation: system time services
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -86,7 +86,7 @@ void* tm_switcher_vector;                       //!< pointer to task switcher
     task switcher and motor driver calls are initiated here.
 */
 extern void systime_handler(void);
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -225,6 +225,7 @@ _systime_handler:
                 rts
         "
 );
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 
 //! initialize system timer

@@ -1,5 +1,5 @@
 /*! \file   semaphore.c
-    \brief  POSIX 1003.1b semaphores for process synchronization.
+    \brief  Implementation: POSIX 1003.1b semaphores for process synchronization.
     \author Markus L. Noga <markus@noga.de>
 */
     
@@ -81,6 +81,7 @@ int sem_wait(sem_t * sem) {
     this is IRQ handler safe.
 */
 int sem_trywait(sem_t * sem);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -98,6 +99,7 @@ _sem_trywait:
  sem_ok:ldc r1h,ccr				; restore flags
 	rts
 	");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 	
 //! increase semaphore count
 /*! \param sem a valid semaphore
@@ -107,6 +109,7 @@ _sem_trywait:
     safely be used in asynchronous signal handlers.
 */
 int sem_post(sem_t * sem);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -122,6 +125,7 @@ _sem_post:
 	sub r0,r0				; return 0
 	rts
 	");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 	
 	
 #endif // CONF_SEMAPHORES

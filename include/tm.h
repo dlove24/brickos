@@ -1,5 +1,5 @@
 /*! \file include/tm.h
-    \brief  Header file for task management.
+    \brief  Interface: task management
     \author Markus L. Noga <markus@noga.de>
 
     Defines types and flags used in task management.

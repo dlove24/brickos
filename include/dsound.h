@@ -1,5 +1,5 @@
 /*! \file   include/dsound.h
-    \brief  direct sound access
+    \brief  Interface: direct control of sound
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/sys/h8.h
-    \brief  H8/3297 processor registers
+    \brief  Internal Interface: H8/3297 processor registers
     \author Markus L. Noga <markus@noga.de>
 */
 

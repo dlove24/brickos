@@ -1,5 +1,5 @@
 /*! \file   include/lnp/sys/lnp-logical.h
-    \brief  link networking protocol logical layer interna
+    \brief  Internal LNP Interface: link networking protocol logical layer
     \author Markus L. Noga <markus@noga.de>
 */
 

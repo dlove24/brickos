@@ -1,5 +1,5 @@
 /*! \file   include/stdlib.h
-    \brief  reduced standard C library
+    \brief  Interface: reduced standard C library
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/sys/mm.h
-    \brief  memory management interna
+    \brief  Internal Interface: memory management
     \author Markus L. Noga <markus@noga.de>
 */
 

@@ -38,6 +38,11 @@ realclean:
 	rm -f doc/html/*.html doc/html/*.gif doc/html/*.css doc/html/*.js doc/html/*.dot
 	rm -rf doc/html-c++ doc/html-c doc/rtf-c doc/rtf-c++ doc/rtf
 
+upgrade-doxygen:
+	doxygen -u Doxyfile-c
+	doxygen -u Doxyfile-c++
+	doxygen -u Doxyfile
+
 # doc/html-c subdirectory
 html-c:
 	doxygen Doxyfile-c

@@ -1,5 +1,5 @@
 /*! \file   battery.c
-    \brief  battery functions and low battery LCD indicator handling
+    \brief  Inplementation: battery functions and low battery LCD indicator handling
     \author Paolo Masetti <paolo.masetti@itlug.org>
 */
 

@@ -1,5 +1,5 @@
 /*! \file   dmotor.c
-    \brief  direct motor access
+    \brief  Implementation: direct motor control
     \author Markus L. Noga <markus@noga.de>
 */
     
@@ -67,7 +67,7 @@ MotorState dm_a,                  //!< motor A state
 /*! called by system timer in the 16bit timer OCIA irq
 */
 extern void dm_handler(void);
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -121,6 +121,7 @@ _dm_handler:
 		
 		rts		
 	");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 	
 		
 //! initialize motors

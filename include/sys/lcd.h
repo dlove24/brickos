@@ -1,5 +1,5 @@
 /*! \file   include/sys/lcd.h
-    \brief  LCD internals
+    \brief  Internal Interface: LCD control and constants
     \author Eddie C. Dost <ecd@skynet.be>
 */
 

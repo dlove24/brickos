@@ -1,5 +1,5 @@
 /*! \file   lcd.c
-    \brief  wrapper for ROM LCD number display functions
+    \brief  Implementation: wrapper for ROM LCD number display functions
     \author Markus L. Noga <markus@noga.de>
 */
     
@@ -83,6 +83,7 @@ static unsigned char lcd_shadow[LCD_DATA_OFFSET + LCD_DATA_SIZE];
     \param c a comma style
 */
 void lcd_number(int i,lcd_number_style n,lcd_comma_style c  );
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -104,6 +105,7 @@ _lcd_number:
         rts
         
        ");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 //! set/clear single bit convenience macros.
 #define set(b)  __asm__ __volatile__("bset %0,@0xbb:8" : : "i"(b));

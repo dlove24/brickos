@@ -1,5 +1,5 @@
-/*! \file   include/timeout.h
-    \brief
+/*! \file   include/sys/timeout.h
+    \brief  Internal Interface: Powerdown Timer Routines
     \author Rossz Vamos-Wentworth <rossw@jps.net>
  */
 

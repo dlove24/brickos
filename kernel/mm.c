@@ -1,5 +1,5 @@
 /*! \file   mm.c
-    \brief  dynamic memory management
+    \brief  Implementation: dynamic memory management
     \author Markus L. Noga <markus@noga.de>
 */
     

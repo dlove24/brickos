@@ -1,5 +1,6 @@
 /*! \file   template.c
-    \brief  
+    \brief  EMPTY FILE. Copy to use. Use this to start a new implementation by 
+	copying to new name then editing
     \author Markus L. Noga <markus@noga.de>
 */
     

@@ -1,5 +1,5 @@
 /*! \file   include/persistent.h
-    \brief  definitions for persistent data
+    \brief  Interface: Definitions for persistent data
     \author Eddie C. Dost <ecd@skynet.be>
  */
 

@@ -1,5 +1,5 @@
 /*! \file kmain.c
-    \brief  Main kernel loop
+    \brief  Implementaion: Main kernel loop
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -52,13 +52,13 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//! firmware recognition string.
+//! firmware recognition string
 /*! the ROM checks for this string when validating new firmware
  */
 unsigned char *firmware_string = "Do you byte, when I knock?";
 
-//! the uninitialized data segment.
-extern char __bss, __bss_end;
+extern char __bss;		//! the start of the uninitialized data segment
+extern char __bss_end;	//! the end of the uninitialized data segment
 
 ///////////////////////////////////////////////////////////////////////////////
 //

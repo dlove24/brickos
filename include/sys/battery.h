@@ -1,5 +1,5 @@
 /*! \file   include/sys/battery.h
-    \brief  battery handling
+    \brief  Internal Interface: battery handling
     \author Paolo Masetti <paolo.masetti@itlug.org>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/sys/dmotor.h
-    \brief  direct motor access interna
+    \brief  Internal Interface: direct motor control
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -41,7 +41,7 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////
 
 // the RCX-specific motor driver I/O address
-extern unsigned char motor_controller;
+extern unsigned char motor_controller;	//!< RCX Motor Controller port
 
 
 ///////////////////////////////////////////////////////////////////////

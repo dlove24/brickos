@@ -1,5 +1,5 @@
 /*! \file   sys/lnp.h
-    \brief  link networking protocol internas
+    \brief  Internal LNP Interface: link networking protocol
     \author Markus L. Noga <markus@noga.de>
 */
 

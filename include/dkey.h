@@ -1,5 +1,5 @@
 /*! \file   include/dkey.h
-    \brief  debounced key driver
+    \brief  Interface: debounced key driver
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/lnp/lnp-logical.h
-    \brief  link networking protocol logical layer
+    \brief  LNP Interface: link networking protocol logical layer
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -49,7 +49,7 @@ extern "C" {
 
 #ifndef CONF_HOST
 //! set IR transmitter range
-/*! \param range 0: short range, 1: long range
+/*! \param far 0: short range, 1: long range
     toggles port 4 bit 0
 */
 extern inline void lnp_logical_range(int far) {

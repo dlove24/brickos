@@ -1,5 +1,5 @@
 /*! \file   conio.c
-    \brief  console input / output
+    \brief  Implementation: console input / output
     \author Markus L. Noga <markus@noga.de>
 
     \warning If CONF_LCD_REFRESH is set in config.h, the kernel will refresh

@@ -1,5 +1,5 @@
 /*! \file program.c
-		\brief	program data structures and functions
+		\brief	Implementation: program data structures and functions
 		\author Markus L. Noga <markus@noga.de>
 */
 

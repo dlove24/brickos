@@ -1,5 +1,5 @@
 /*! \file   dsound.c
-    \brief  direct sound access
+    \brief  Implementation: direct sound control
     \author Markus L. Noga <markus@noga.de>
 */
     

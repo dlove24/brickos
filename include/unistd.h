@@ -1,5 +1,5 @@
 /*! \file   include/unistd.h
-    \brief  reduced UNIX standard library
+    \brief  Interface: reduced UNIX standard library
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -40,26 +40,25 @@ extern "C" {
 ///////////////////////////////////////////////////////////////////////
 
 //
-// execute an image
-// args: start address of code to execute
-//       stack size for new task.
-// retval: -1: fail, else tid
+//!  start task executing (with passed paramters)
+//    called from user code
+//  retval: -1: fail, else tid
 //
 extern tid_t execi(int (*code_start) (int, char **), int argc, char **argv,
 		   priority_t priority, size_t stack_size);
 
 //
-// exit task, returning code.
+//!  exit task, returning code
 //
 extern void exit(int code) __attribute__((noreturn));
 
 //
-// yield the rest of the current timeslice
+//!  current task yields the rest of timeslice
 //
 extern void yield(void);
 
 //
-// suspend task until wakeup function is non-null
+//! suspend task until wakeup function is non-null
 // wakeup function is called in task scheduler context
 // retval: wakeup() return value
 //
@@ -97,12 +96,12 @@ extern inline wakeup_t wait_event(wakeup_t(*wakeup) (wakeup_t), wakeup_t data)
 #define msleep(s)	delay(s)
 #endif
 
-//! kill a task
+//! kill specified (tid) task
 // FIXME: this belongs in a different header
 //
 extern void kill(tid_t tid);
 
-//! kill all tasks with priority lower or equal than p, excluding self.
+//! kill all tasks with priority less than or equal equal to p, excluding self.
 extern void killall(priority_t p);
 
 #ifdef  __cplusplus

@@ -1,5 +1,5 @@
 /*! \file   include/rom/lcd.h
-    \brief  ROM LCD control
+    \brief  ROM Interface: RCX LCD control
     \author Markus L. Noga <markus@noga.de>
 
     \warning If CONF_LCD_REFRESH is set in config.h, the kernel will

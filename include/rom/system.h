@@ -1,5 +1,5 @@
 /*! \file   include/rom/system.h
-    \brief  ROM system control functions
+    \brief  ROM Interface: RCX system control functions
     \author Markus L. Noga <markus@noga.de>
  */
 

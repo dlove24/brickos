@@ -1,5 +1,5 @@
 /*! \file   lnp.c
-    \brief  link networking protocol
+    \brief  Implementation: link networking protocol
     \author Markus L. Noga <markus@noga.de>
 */
 

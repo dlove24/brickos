@@ -1,5 +1,5 @@
 /*! \file include/semaphore.h
-    \brief  POSIX 1003.1b semaphores for task synchronization.
+    \brief  Interface: POSIX 1003.1b semaphores for task synchronization
     \author Markus L. Noga <markus@noga.de>
  */
 

@@ -1,5 +1,5 @@
 /*! \file   include/dmotor.h
-    \brief  direct motor access
+    \brief  Interface: direct motor control
     \author Markus L. Noga <markus@noga.de>
  */
 
@@ -101,9 +101,9 @@ extern MotorState	dm_a,	//!< motor A state
 ** motor_*_dir() functions will display direction arrows, so
 ** define them in kernel/dmotor.c
 */
-extern void motor_a_dir(MotorDirection dir);
-extern void motor_b_dir(MotorDirection dir);
-extern void motor_c_dir(MotorDirection dir);
+extern void motor_a_dir(MotorDirection dir);	//!< set motor A direction to dir
+extern void motor_b_dir(MotorDirection dir);	//!< set motor B direction to dir
+extern void motor_c_dir(MotorDirection dir);	//!< set motor C direction to dir
 
 #else
 

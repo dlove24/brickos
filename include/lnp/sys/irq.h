@@ -1,5 +1,5 @@
-/*! \file   include/sys/irq.h
-    \brief  RCX redirected IRQ vectors
+/*! \file   include/lnp/sys/irq.h
+    \brief  Internal LNP Interface: RCX redirected IRQ vectors
     \author Markus L. Noga <markus@noga.de>
 
     Lego Mindstorms RCX IRQ redirection vector table

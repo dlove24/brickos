@@ -1,5 +1,5 @@
 /*! \file   include/dsensor.h
-    \brief  direct sensor access
+    \brief  Interface: direct reading of sensors
     \author Markus L. Noga <markus@noga.de>
  */
 

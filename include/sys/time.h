@@ -1,5 +1,5 @@
 /*! \file   include/sys/time.h
-    \brief  Internal system time functions
+    \brief  Internal Interface: system time functions
     \author Markus L. Noga <markus@noga.de>
 */
 

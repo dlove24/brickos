@@ -1,5 +1,5 @@
 /*! \file   dsensor.c
-    \brief  direct sensor access
+    \brief  Implementation: direct sensor access
     \author Markus L. Noga <markus@noga.de>
 */
 
@@ -218,6 +218,7 @@ void ds_rotation_handler() {
 //! sensor A/D conversion IRQ handler
 //
 extern void ds_handler(void);
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 __asm__("
 .text
 .align 1
@@ -283,6 +284,7 @@ settle:
 
    rts
 ");
+#endif // DOXYGEN_SHOULD_SKIP_THIS
 
 
 //! initialize sensor a/d conversion
