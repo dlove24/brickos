@@ -390,7 +390,7 @@ int main (int argc, char **argv)
 #if defined(_WIN32)
 	    "      --tty=usb    assume tower connected to USB\n"
 #else
-	    "                   (if device name contains \"usb\", use USB mode\n"
+	    "                   (if device name contains \"usb\", use USB mode)\n"
 #endif
 	    "  -h, --help       display this help and exit\n"
 	    ;
