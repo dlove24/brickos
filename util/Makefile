@@ -10,11 +10,9 @@
 #	- Removed firmdl3.c compile for *nix
 #
 
-#
-# Winnt executables are in the form "*.exe"
-#
-
-include Makefile.common
+# specify environment before including the common stuff
+BUILDING_HOST_UTILS = true
+include ../Makefile.common
 
 # Define here the executable files to be build
 EXECUTABLES    = fontdesign 

@@ -10,7 +10,7 @@
 #	- Conditional make variable definitions based on $OSTYPE
 #
 
-#
+# ----------------------------------------------------------------------------
 #  Define our default install locations
 #
 prefix = /usr/local
@@ -47,6 +47,50 @@ ifndef OSTYPE
 	# Last resort if uname is unavailable
 	OSTYPE=$(shell uname)
 endif
+
+
+ifdef BUILDING_HOST_UTILS
+# ----------------------------------------------------------------------------
+#   defines for build of native compiled utilities
+# ----------------------------------------------------------------------------
+#
+# Linux, IRIX
+#
+CC = cc
+
+CFLAGS=-O2 -Wall
+
+ifneq (,$(strip $(findstring $(OSTYPE),cygwin32 cygwin WindowsNT Windows_NT) $(findstring CYGWIN,$(OSTYPE))))
+#
+# Put Windows/Cygnwin defines here
+# --------------------------
+	EXT=.exe
+	CC =gcc
+	CFLAGS+=-D_WIN32
+# --------------------------
+endif
+
+ifneq (,$(findstring $(OSTYPE),MSDOS msdosdjgpp MS-DOS))
+#
+# Put DJGPP defines here
+# --------------------------
+	EXT=.exe
+	CC=gccw32
+	CFLAGS+=-D_WIN32
+# --------------------------
+endif
+
+MAKEDEPEND	=$(CC) -M
+
+#
+# ----------------------------------------------------------------------------
+
+else  # ifndef BUILDING_HOST_UTILS
+
+# ----------------------------------------------------------------------------
+#   defines for build of cross-compiled parts: brickOS, demos
+# ----------------------------------------------------------------------------
+#
 
 # Hitachi H8 tool prefix
 
@@ -132,7 +176,8 @@ ifndef BRICKOS_ROOT
 
 endif
 
-# ---------------------------------------------------------------------------
+
+
 # safe to leave everything below untouched
 # ---------------------------------------------------------------------------
 #
@@ -210,3 +255,8 @@ MAKEDEPEND	=$(CC) -M $(CINC)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 %.o: %.C
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+#
+# ----------------------------------------------------------------------------
+
+endif  # ifndef BUILDING_HOST_UTILS

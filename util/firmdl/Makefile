@@ -16,13 +16,16 @@
 # Portions created by Kekoa Proudfoot are Copyright (C) 1998, 1999
 # Kekoa Proudfoot. All Rights Reserved.
 
+# specify environment before including the common stuff
+BUILDING_HOST_UTILS = true
+include ../../Makefile.common
+
 FIRMDL3 = firmdl3$(EXT)
 MKIMG = mkimg$(EXT)
 MAN1 = firmdl3.1
 
 ALL_TARGETS = ../$(FIRMDL3) $(MKIMG) 
 
-include ../Makefile.common
 
 all: fastdl.h $(ALL_TARGETS)
 	@# nothing to do here but do it silently

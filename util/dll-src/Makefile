@@ -8,7 +8,9 @@
 #	  see http://www.lugnet.com/robotics/rcx/legos/?n=498 for details
 #
 
-include ../Makefile.common
+# specify environment before including the common stuff
+BUILDING_HOST_UTILS = true
+include ../../Makefile.common
 
 INSTALL_DIR = ..
 EXE1 = dll$(EXT)
