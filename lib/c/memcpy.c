@@ -45,24 +45,24 @@ void memcpy(void* dest,void* src,size_t size) {
     int dummy;
 __asm__ __volatile__(
 #ifdef CONF_ROM_MEMCPY
-        "
-; memcpy == [r1,r1+r2) -> [r0,r0+r2)
-; rom == [r0,r1) -> [r2,r2+r1-r0)
-        mov.w r0,r3
-        mov.w r1,r0
-        add.w r2,r1
-        mov.w r3,r2
-        jmp @rom_memcpy
+        "\n\
+; memcpy == [r1,r1+r2) -> [r0,r0+r2)\n\
+; rom == [r0,r1) -> [r2,r2+r1-r0)\n\
+        mov.w r0,r3\n\
+        mov.w r1,r0\n\
+        add.w r2,r1\n\
+        mov.w r3,r2\n\
+        jmp @rom_memcpy\n\
 	"
 #else
-	"
-         0:cmp %1,%2
-           beq 1f
-            mov.b @%1+,%0l
-            mov.b %0l,@%3
-            adds #1,%3
-           bra 0b
-         1:
+	"\n\
+         0:cmp %1,%2\n\
+           beq 1f\n\
+            mov.b @%1+,%0l\n\
+            mov.b %0l,@%3\n\
+            adds #1,%3\n\
+           bra 0b\n\
+         1:\n\
 	"
 #endif
 	: "=&r" (dummy) 			// output

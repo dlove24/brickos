@@ -23,43 +23,43 @@
  * Contributor(s): Kekoa Proudfoot <kekoa@graphics.stanford.edu>
  */
 
-__asm__	("
-	.section .text
-
-	.global	___ucmpsi2
-
-___ucmpsi2:
-
-	sub.w	r3,r1
-	subx.b	r2l,r0l
-	subx.b	r2h,r0h
-
-	blo		else_0
-
-		beq		else_1
-
-			; First operand greater than second operand
-
-			mov.w	#1,r0
-			rts
-
-		else_1:
-
-			; First operand equal to second operand
-
-			sub.w	r0,r0
-			rts
-
-		endif_1:
-
-	else_0:
-
-		; First operand less than second operand
-
-		mov.w	#-1,r0
-		rts
-
-	endif_0:
-
-	; Not reached
+__asm__	("\n\
+	.section .text\n\
+\n\
+	.global	___ucmpsi2\n\
+\n\
+___ucmpsi2:\n\
+\n\
+	sub.w	r3,r1\n\
+	subx.b	r2l,r0l\n\
+	subx.b	r2h,r0h\n\
+\n\
+	blo		else_0\n\
+\n\
+		beq		else_1\n\
+\n\
+			; First operand greater than second operand\n\
+\n\
+			mov.w	#1,r0\n\
+			rts\n\
+\n\
+		else_1:\n\
+\n\
+			; First operand equal to second operand\n\
+\n\
+			sub.w	r0,r0\n\
+			rts\n\
+\n\
+		endif_1:\n\
+\n\
+	else_0:\n\
+\n\
+		; First operand less than second operand\n\
+\n\
+		mov.w	#-1,r0\n\
+		rts\n\
+\n\
+	endif_0:\n\
+\n\
+	; Not reached\n\
 ");

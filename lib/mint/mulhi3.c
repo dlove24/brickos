@@ -30,20 +30,20 @@
 */
 int __mulhi3(int a,int b);
 
-__asm__ ("
-.section .text
-.global ___mulhi3
-___mulhi3:
-      ; param   r0,r1
-      ; return  r0
-      ; clobber r2
-    
-      mov.w    r0,r2
-      mulxu.b  r1h,r2
-      mov.b    r0h,r2h
-      mulxu.b  r1l,r0
-      add.b    r2l,r0h
-      mulxu.b  r2h,r1
-      add.b    r1l,r0h
-      rts
+__asm__ ("\n\
+.section .text\n\
+.global ___mulhi3\n\
+___mulhi3:\n\
+      ; param   r0,r1\n\
+      ; return  r0\n\
+      ; clobber r2\n\
+    \n\
+      mov.w    r0,r2\n\
+      mulxu.b  r1h,r2\n\
+      mov.b    r0h,r2h\n\
+      mulxu.b  r1l,r0\n\
+      add.b    r2l,r0h\n\
+      mulxu.b  r2h,r1\n\
+      add.b    r1l,r0h\n\
+      rts\n\
 ");
