@@ -28,6 +28,13 @@ Joseph Woolley (jawoolley@users.sourceforge.net)
   Added kernel tasks to animate man and show/hide
    battery indicator.
 
+Stephen M Moraco (stephen@debian.org)
+  Rewrite make system to handle installs and
+  document builds.
+  Upgrade inline documentation in support of our
+  always publishing brickOS API docs to our website.
+
+
 V0.2.6
 _________
 
