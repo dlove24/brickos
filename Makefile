@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.19 2002/10/24 03:18:16 stephmo Exp $
+###  $Id: Makefile,v 1.20 2004/02/17 01:39:07 stephmo Exp $
 ###  FILE: Makefile - make all parts of the brickOS distribution
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -62,7 +62,7 @@ html-c: Doxyfile-c-report
 
 realclean::
 	rm -rf doc/html-c doc/rtf-c
-	rm -f Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag *.out
+	rm -f -- Doxyfile-c.log Doxyfile-c.rpt .Doxyfile-c-doneflag *.out
 
 brickos-html-c-dist.tar.gz: html-c 
 	cd doc;tar --gzip -cf $@ html-c;mv $@ ..;cd -
@@ -98,7 +98,7 @@ html-c++: Doxyfile-c++-report
 
 realclean::
 	rm -rf doc/html-c++ doc/rtf-c++
-	rm -f Doxyfile-c++.log Doxyfile-c++.rpt .Doxyfile-c++-doneflag *.out
+	rm -f -- Doxyfile-c++.log Doxyfile-c++.rpt .Doxyfile-c++-doneflag *.out
 
 brickos-html-c++-dist.tar.gz: html-c++
 	cd doc;tar --gzip -cf $@ html-c++;mv $@ ..;cd -
@@ -134,7 +134,7 @@ html-kern: Doxyfile-kern-report
 
 realclean::
 	rm -rf doc/html-kern doc/rtf-kern
-	rm -f Doxyfile-kern.log Doxyfile-kern.rpt .Doxyfile-kern-doneflag *.out
+	rm -f -- Doxyfile-kern.log Doxyfile-kern.rpt .Doxyfile-kern-doneflag *.out
 
 brickos-html-kern-dist.tar.gz: html-kern
 	cd doc;tar --gzip -cf $@ html-kern;mv $@ ..;cd -

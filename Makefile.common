@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.22 2004/01/26 03:10:29 stephmo Exp $
+###  $Id: Makefile.common,v 1.23 2004/02/17 01:39:07 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -11,6 +11,8 @@
 prefix = /usr/local
 exec_prefix = ${prefix}
 PACKAGE = brickos
+
+inst_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
 sbindir = ${exec_prefix}/sbin
@@ -24,12 +26,16 @@ libdir = ${exec_prefix}/lib
 mandir = ${prefix}/man
 includedir = ${prefix}/include
 
+instbindir = ${inst_prefix}/bin
+instincdir = ${inst_prefix}/include/${PACKAGE}
+instlibdir = ${inst_prefix}/lib/${PACKAGE}
+
 pkgdatadir = $(datadir)/${PACKAGE}
-pkglibdir = $(libdir)/${PACKAGE}
-pkgincludedir = $(includedir)/${PACKAGE}
 pkgdocdir = $(docdir)/${PACKAGE}
-pkghtmldir = $(pkgdocdir)/html
 pkgexampledir = $(pkgdocdir)/examples
+pkgincludedir = $(includedir)/${PACKAGE}
+pkghtmldir = $(pkgdocdir)/html
+pkglibdir = $(libdir)/${PACKAGE}
 
 
 #

@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile,v 1.19 2004/02/16 22:15:12 stephmo Exp $
+###  $Id: Makefile,v 1.20 2004/02/17 01:39:07 stephmo Exp $
 ###  FILE: boot/Makefile - make the brickOS kernel
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -42,12 +42,12 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 	@cat ../demo/Makefile | sed -e 's/\.\.\/Makefile/$$\(LIBDIR\)\/Makefile/g' | \
 	                       sed -e 's/\.\.\/include/$$\(INCDIR\)/g' | \
 	                       sed -e 's:KERNEL\=\.\..boot.brickOS:KERNEL = $$\(LIBDIR\)/brickOS:' | \
-	                       sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
+	                       sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${instlibdir}:' | \
 						   sed -e 's/.BRICKOS_ROOT..util/(LIBDIR)/g' >../demo/Makefile.dist
 	@cat ../demo/c++/Makefile | sed -e 's/\.\..\.\..Makefile/$$\(LIBDIR\)\/Makefile/g' | \
 	                            sed -e 's/..BRICKOS_ROOT..include/$$\(INCDIR\)/g' | \
 	                            sed -e 's:KERNEL \= .*:KERNEL = $$\(LIBDIR\)/brickOS:' | \
-	                            sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${pkglibdir}:' | \
+	                            sed -e 's:\# \#LIBDIR\#.*:LIBDIR \= ${instlibdir}:' | \
 						        sed -e 's/..ROOTDIR.util/(LIBDIR)/g' >../demo/c++/Makefile.dist
 	cp -f ../demo/Makefile.dist ${pkgexampledir}/demo/Makefile
 	cp -f ../demo/Makefile.dist ${pkgexampledir}/Makefile
@@ -72,12 +72,12 @@ install-stamp: ${pkgincludedir} ${pkgexampledir} ${pkglibdir} \
 		 	        sed -e 's/.BRICKOS_ROOT..util/(LIBDIR)/g' >../Makefile.user.dist
 	cp -f ../Makefile.user.dist ${pkglibdir}/Makefile.user
 	@echo "" >>../Makefile.common.dist
-	@echo "INCDIR = ${pkgincludedir}" >>../Makefile.common.dist
-	@echo "BINDIR = ${bindir}" >>../Makefile.common.dist
-	@echo "LIBDIR = ${pkglibdir}" >>../Makefile.common.dist
+	@echo "INCDIR = ${instincdir}" >>../Makefile.common.dist
+	@echo "BINDIR = ${instbindir}" >>../Makefile.common.dist
+	@echo "LIBDIR = ${instlibdir}" >>../Makefile.common.dist
 	@echo "" >>../Makefile.common.dist
 	@echo "### --------------------------------------------------------------------------" >>../Makefile.common.dist
-	@echo "###                         End of FILE: Makefile.common" >>../Makefile.common.dist
+	@echo "###       'Installed copy' end of FILE: Makefile.common" >>../Makefile.common.dist
 	@echo "### ==========================================================================" >>../Makefile.common.dist
 	cp -f ../Makefile.common.dist ${pkglibdir}/Makefile.common
 	@find ${pkgexampledir} -type f -exec chmod 444 {} \;
