@@ -1,8 +1,9 @@
-##
-## brickOS - the independent LEGO Mindstorms OS
-## Makefile - allows you to keep the upper hand
-## (c) 1998 by Markus L. Noga <markus@noga.de>
-##
+### ==========================================================================
+###  $Id: Makefile,v 1.12 2002/10/15 07:02:06 stephmo Exp $
+###  FILE: Makefile - make all parts of the brickOS distribution
+###  brickOS - the independent LEGO Mindstorms OS
+### --------------------------------------------------------------------------
+###   (This is the top-level Makefile.  All actions are performed from here)
 
 #  distribution name (all lower-case by convention)
 PACKAGE = brickos
@@ -14,6 +15,10 @@ VERSION = $(shell cat VERSION)
 export BRICKOS_ROOT=$(shell cd . && pwd)/
 
 
+# ------------------------------------------------------------
+#  No user customization below here...
+# ------------------------------------------------------------
+
 #
 #  makefile to build the brickOS operating system and demo files
 # 
@@ -22,21 +27,17 @@ SUBDIRS=util lib boot demo doc
 all install::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) -C $$i $@ || exit 2 ; done
 
-depend clean realclean::
+depend tag clean realclean::
 	@for i in $(SUBDIRS) ; do $(MAKE) $(MFLAGS) NODEPS=yes -C $$i $@ || exit 2 ; done
 
-clean::
-	rm -rf *.o *.map *.coff *.srec *.dis* *~ *.bak *.tgz *.s tags
-
-c++:
-	$(MAKE) -C demo c++
-
 realclean:: clean
+	rm -f tags TAGS
+
+doc docs-install::
+	$(MAKE) $(MFLAGS) -C doc $@
 
 
-# ------------------------------------------------------------
-#  No user customization below here...
-# ------------------------------------------------------------
+#  API generation support using Doxygen
 #
 #  when we get a new version of doxygen, run this target once
 #
@@ -46,8 +47,11 @@ upgrade-doxygen:
 	doxygen -u Doxyfile
 
 #
-#  doc/html-c subdirectory
+#  doc/html-c subdirectory: make C docs
 #
+
+pkghtmldir = /usr/local/share/doc/brickos/html
+
 html-c: Doxyfile-c-report
 
 realclean::
@@ -58,6 +62,9 @@ brickos-html-c-dist.tar.gz: html-c
 	cd doc;tar --gzip -cf $@ html-c;mv $@ ..;cd -
 
 html-c-dist: brickos-html-c-dist.tar.gz
+
+html-c-install: html-c
+	cp -r doc/html-c ${pkghtmldir}
 
 Doxyfile-c.log: Doxyfile-c
 	doxygen $? >$@ 2>&1
@@ -79,7 +86,7 @@ Doxyfile-c-report: .Doxyfile-c-doneflag
 	-ls -ltr *.out 2>/dev/null
 
 #
-#  doc/html-c++ subdirectory
+#  doc/html-c++ subdirectory: make C++ docs
 #
 html-c++: Doxyfile-c++-report
 
@@ -91,6 +98,9 @@ brickos-html-c++-dist.tar.gz: html-c++
 	cd doc;tar --gzip -cf $@ html-c++;mv $@ ..;cd -
 
 html-c++-dist: brickos-html-c++-dist.tar.gz
+
+html-c++-install: html-c++
+	cp -r doc/html-c++ ${pkghtmldir}
 
 Doxyfile-c++.log: 
 	doxygen  Doxyfile-c++ >$@ 2>&1
@@ -112,7 +122,7 @@ Doxyfile-c++-report: .Doxyfile-c++-doneflag
 	-ls -ltr *.out 2>/dev/null
 
 #
-#  doc/html-kern subdirectory
+#  doc/html-kern subdirectory: make kernel developer docs
 #
 html-kern: Doxyfile-kern-report
 
@@ -124,6 +134,9 @@ brickos-html-kern-dist.tar.gz: html-kern
 	cd doc;tar --gzip -cf $@ html-kern;mv $@ ..;cd -
 
 html-kern-dist: brickos-html-kern-dist.tar.gz
+
+html-kern-install: html-kern
+	cp -r doc/html-kern ${pkghtmldir}
 
 Doxyfile-kern.log: 
 	doxygen  Doxyfile >$@ 2>&1
@@ -147,19 +160,28 @@ Doxyfile-kern-report: .Doxyfile-kern-doneflag
 #
 #  make all API documentation
 #
-html: html-c html-c++ html-kern
+api-doc: html-c html-c++ html-kern
+
+docs: doc api-doc
 
 #
-#  make distribution files of all API documentation
+#  make distribution files for all API documentation
 #
-html-dist: html-c-dist html-c++-dist html-kern-dist
+api-dist: html-c-dist html-c++-dist html-kern-dist
 
-# tags
-tag:
-	ctags --format=1 kernel/*.c include/*.h include/*/*.h
+#
+#  install all API documentation
+#
+docs-install:: html-c-install html-c++-install html-kern-install
 
-.PHONY: all depend clean realclean html tag c++ html html-c html-c++ html-kern html-dist 
+#  NOTE: --format=1 is not supported on Linux ([ce]tags in emacs2[01] packages)
+#   please set in your own environment
+tag::
+	-ctags kernel/*.c include/*.h include/*/*.h
+	-etags kernel/*.c include/*.h include/*/*.h
 
+
+.PHONY: all depend tag clean realclean html tag c++ html html-c html-c++ html-kern html-dist 
 
 # ------------------------------------------------------------
 #  Components of this release to be packaged
@@ -231,6 +253,6 @@ distdir: $(DISTFILES)
 	@find $(DISTDIR) -type f -name '.cvs*' -exec rm -f {} \; 
 	@find $(DISTDIR) -type f -name '.dep*' -exec rm -f {} \; 
 
-# ------------------------------------------------------------
-#          End of top-level brickOS Makefile
-# ------------------------------------------------------------
+### --------------------------------------------------------------------------
+###                      End of top-level brickOS Makefile
+### ==========================================================================
