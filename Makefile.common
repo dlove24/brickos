@@ -1,5 +1,5 @@
 ### ==========================================================================
-###  $Id: Makefile.common,v 1.18 2004/01/25 04:34:51 stephmo Exp $
+###  $Id: Makefile.common,v 1.19 2004/01/25 04:56:16 stephmo Exp $
 ###  FILE: Makefile.common - definitions common to most brickOS Makefiles
 ###  brickOS - the independent LEGO Mindstorms OS
 ### --------------------------------------------------------------------------
@@ -35,13 +35,13 @@ pkgexampledir = $(pkgdocdir)/examples
 #
 #  BEGIN-configuration insert (do not remove this line)
 # -------------------------------------------------------
-TOOLPREFIX=/usr/bin/h8300hms-
+TOOLPREFIX=/usr/h8300-hitachi-hms/bin/h8300-hitachi-hms-
 SED_SFLAG=
 EXT=
 CC=cc
 CFLAGS=-O2 -Wall
 MAKEDEPEND=$(CC) -M
-BRICKOS_ROOT=/home/stephen/sourceforge/brickos/brickos
+BRICKOS_ROOT=
 # -------------------------------------------------------
 #  END-configuration insert  (do not remove this line)
 #
