@@ -16,33 +16,48 @@ echo ""
 #  check for known files in known locations, first,
 #    so can avoid expensive search
 #
-#  (known PATHs in which h8*gcc may be found)
+#   known PATHs in which h8*gcc may be found
 TOOL_PATH[0]="/usr/local/bin";
-TOOL_PATH[1]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
-TOOL_PATH[2]="/usr/h8300-hitachi-hms/bin";
+TOOL_PATH[1]="/usr/h8300-hitachi-hms/bin";
+TOOL_PATH[2]="/usr/local/crossgcc/h8300-hitachi-hms/bin";
+
+#   known PREFIXs of h8*gcc
+TOOL_PREFIX[0]="h8300-hms-";
+TOOL_PREFIX[1]="h8300-hitachi-hms-";
 
 HMSFULL=""
-index=0
+pathIndex=0
 #  for each path, do...
-while test $index -lt ${#TOOL_PATH[*]}
+while test $pathIndex -lt ${#TOOL_PATH[*]}
 do
-  GCCBASE="${TOOL_PATH[$index]}/h8300-hitachi-hms-gcc"
-  #  for each suffix (.exe and empty str), do...
-  for EXT in ".exe" "";
+  prefixIndex=0
+  #  for each basename prefix. do...
+  while test $prefixIndex -lt ${#TOOL_PREFIX[*]}
   do
-    GCCFSPEC="${GCCBASE}$EXT"
-    if test -f "$GCCFSPEC"
+    GCCBASE="${TOOL_PATH[$pathIndex]}/${TOOL_PREFIX[$prefixIndex]}gcc"
+    #  for each suffix (.exe and empty str), do...
+    for EXT in ".exe" ""
+    do
+      GCCFSPEC="${GCCBASE}$EXT"
+      if test -f "$GCCFSPEC"
+      then
+        HMSFULL="$GCCFSPEC"
+        break  #  have answer, exit inner loop
+      fi
+    done
+    if test -n "$HMSFULL"
     then
-      HMSFULL="$GCCFSPEC"
-      break;  #  have answer, exit inner loop
+      break  #  have answer, exit middle
     fi
+    prefixIndex="`expr $prefixIndex + 1`"  #  increment our prefixIndex
   done
   if test -n "$HMSFULL"
   then
-    break;  #  have answer, exit outer loop
+    break  #  have answer, exit outer loop
   fi
-  index="`expr $index + 1`";  #  increment our index
+  pathIndex="`expr $pathIndex + 1`"  #  increment our pathIndex
 done
+
 
 #
 #  if didn't find in expected location...
