@@ -1,4 +1,4 @@
-2002-10-11  Stephen M Moraco <stephmo@users.sourceforge.net>
+2002-10-15  Stephen M Moraco <stephmo@users.sourceforge.net>
 
   * 2nd pass at cleaning up Makefiles
     - added build/install of all docs as targets separate
@@ -285,4 +285,4 @@
 
   * creating this file after 0.2.5 release
 --
-$Id: ChangeLog,v 1.13 2002/10/15 07:09:38 stephmo Exp $
+$Id: ChangeLog,v 1.14 2002/10/15 14:51:58 stephmo Exp $
