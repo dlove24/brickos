@@ -16,7 +16,7 @@ MEMORY {
   ram      : o = 0x8000, l = 0x6f30
   lcddata  : o = 0xef30, l = 0x0020   /* display memory */
   ram2     : o = 0xef50, l = 0x00b0
-  ram3     : o = 0xf002, l = 0x0b7e
+  ram3     : o = 0xf000, l = 0x0b80
   romdata  : o = 0xfd80, l = 0x0040   /* port shadows, interrupt vectors */
   ram4     : o = 0xfe00, l = 0x0100
 
@@ -49,7 +49,7 @@ SECTIONS {
     
   .text :	{
     ___text = . ;
-    *(.text) 	      /* must start with text for clean entry */			
+    *(.text) 	      /* must start with text for clean entry */
     *(.rodata)
     *(.strings)
     *(.vectors)       /* vectors region (dummy) */
@@ -74,7 +74,13 @@ SECTIONS {
     __edata = . ;
   } > ram
 
-  .bss : {
+  .text.hi : {
+    ___text_hi = . ;
+    *(.text.hi)
+    ___etext_hi = . ;
+  } > ram3 AT>ram
+
+  .bss ___data_end : {
     ___bss     = . ;
     _bss_start = . ; 
     *(.bss)
@@ -82,13 +88,7 @@ SECTIONS {
     ___bss_end = ALIGN(2) ;
     _mm_start  = ALIGN(2) ;    /* start memory management here */
     _end       = ALIGN(2) ;  
-  } >ram
-
-  .text.hi : AT (_bss_start) {
-    ___text_hi = . ;
-    *(.text.hi)
-    ___etext_hi = . ;
-  } > ram3
+  } AT>ram
 
   .lcddata : {
     _display_memory =  0xef43 - 0xef30 ; 

@@ -184,7 +184,7 @@ subentry:
         mov.w   @(6,r7),r1
         not.b   r2l             ; negate exponent difference
         not.b   r2h
-        adds.w  #1,r2
+        adds    #1,r2
 
     endif_2:
 

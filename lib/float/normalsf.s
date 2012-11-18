@@ -51,7 +51,7 @@ ___normalizesf:
 
         ; Decrement exponent
 
-        subs.w  #1,r4
+        subs    #1,r4
 
         ; Repeat
 

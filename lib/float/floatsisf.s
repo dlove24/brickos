@@ -135,7 +135,7 @@ ufloatentry:
 
         ; Increase exponent
 
-        adds.w  #1,r4           ; add one to exponent
+        adds    #1,r4           ; add one to exponent
 
         bra     endif_1
 

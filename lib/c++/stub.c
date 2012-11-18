@@ -96,3 +96,9 @@ __pure_virtual()
   __terminate();
 }
 
+void
+__cxa_pure_virtual()
+{
+  __terminate();
+}
+

@@ -118,7 +118,7 @@ ___expandsf:
 
                 ; Decrement exponent
 
-                subs.w  #1,r4
+                subs    #1,r4
 
                 ; Is one bit set?  (one bit is in 1 << 23 or 00800000 position)
 

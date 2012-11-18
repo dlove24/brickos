@@ -192,7 +192,7 @@ fix:
 
     ; Subtract bias + 31 from exponent
 
-    add.b   #-158,r4l           ; subtract bias + 31 from exponent
+    add.b   #256-158,r4l        ; subtract bias + 31 from exponent
     addx.b  #-1,r4h
 
     ; Is exponent < 0 ?

@@ -197,7 +197,7 @@ fixoverflow:
 
         ; Increase exponent
 
-        adds.w  #1,r4           ; add one to exponent
+        adds    #1,r4           ; add one to exponent
 
     endif_5:
 
