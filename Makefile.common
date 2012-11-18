@@ -41,13 +41,13 @@ pkglibdir = $(libdir)/${PACKAGE}
 #
 #  BEGIN-configuration insert (do not remove this line)
 # -------------------------------------------------------
-TOOLPREFIX=
+TOOLPREFIX=/usr/bin/h8300-hms-
 SED_SFLAG=
 EXT=
 CC=cc
 CFLAGS=-O2 -Wall
 MAKEDEPEND=$(CC) -M
-BRICKOS_ROOT=
+BRICKOS_ROOT=/home/david/Projects/brickos
 # -------------------------------------------------------
 #  END-configuration insert  (do not remove this line)
 #
