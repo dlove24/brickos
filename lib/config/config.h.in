@@ -1,0 +1,133 @@
+/**
+*** Copyright (c) 2011 David Love <david@homeunix.org.uk>
+***
+*** Permission to use, copy, modify, and/or distribute this software for any
+*** purpose with or without fee is hereby granted, provided that the above
+*** copyright notice and this permission notice appear in all copies.
+***
+*** THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+*** WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+*** MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+*** ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+*** WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+*** ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+*** OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+***
+*** \file config.h
+*** \brief Provides defines for platform, compiler and header options from CMake
+***
+*** \author David Love
+*** \date December 2011
+**/
+
+/**
+*** Platform Checks
+**/
+
+/* Look for the machine type on Apple platforms at compile (not configure). Apple platforms
+** allow multiple architectures to exit simultaneously, so we can't check at configure
+**
+** See: http://www.cmake.org/pipermail/cmake/2009-June/030126.html
+**/
+
+#if defined(__APPLE__)
+#  if defined(__i386__)
+#    undef HAVE_64_BIT
+#    undef HAVE_BIG_ENDIAN
+#  elif defined(__ppc__)
+#    undef HAVE_64_BIT
+#    define HAVE_BIG_ENDIAN
+#  elif defined(__x86_64__)
+#    define HAVE_64_BIT
+#    undef HAVE_BIG_ENDIAN
+#  elif defined(__ppc64__)
+#    define HAVE_64_BIT
+#    define HAVE_BIG_ENDIAN
+#  else
+      // oops
+#    error "Unknown architecture!"
+#  endif
+#else
+#cmakedefine HAVE_64_BIT
+#cmakedefine HAVE_BIG_ENDIAN
+#endif
+
+/**
+*** Function Declarations
+**/
+
+/* Look for the vsnprintf function, used by the bstring library */
+#cmakedefine BSTRLIB_VSNP_OK 1
+
+/* Look for functions from the C Standard Library */
+#cmakedefine HAVE_MALLOC 1
+#cmakedefine HAVE_REALLOC 1
+
+/* Look for various platform defines. This are usually present, but may
+ * be missing (especially on MS Windows)
+ */
+
+#cmakedefine HAVE_FILENO 1
+#cmakedefine HAVE_GETOPT 1
+#cmakedefine HAVE_LOCALTIME_R 1
+#cmakedefine HAVE_PIPE 1
+#cmakedefine HAVE_PUTENV 1
+#cmakedefine HAVE_SETENV 1
+#cmakedefine HAVE_SETENV 1
+#cmakedefine HAVE_SLEEP 1
+#cmakedefine HAVE_STRDUP 1
+#cmakedefine HAVE_STRSIGNAL 1
+#cmakedefine HAVE_UNSETENV 1
+
+/**
+*** Header Declarations
+**/
+
+/* Look for assertions */
+#cmakedefine HAVE_ASSERT_H 1
+
+/* Look for the C99 declaration of the standard types */
+#cmakedefine HAVE_STDINT_H 1
+
+/* Look for the C99 integer types: needed for the bit matrix amongst other things */
+#cmakedefine HAVE_INTTYPES_H 1
+
+/* Look for the header files defining the constants for type lengths */
+#cmakedefine HAVE_FLOAT_H 1
+#cmakedefine HAVE_LIMITS_H 1
+#cmakedefine HAVE_VALUES_H 1
+
+/* Look for the standard library files, needed for access to the C library */
+#cmakedefine HAVE_CTYPE_H 1
+#cmakedefine HAVE_STDLIB_H 1
+#cmakedefine HAVE_STDIO_H 1
+
+/* Look for the standard string library, used for handling C style strings 
+ * NOTE: Should only be used for legacy, external code. New code should
+ * prefer the BString library
+ */
+#cmakedefine HAVE_CTYPE_H 1
+#cmakedefine HAVE_STRING_H 1
+#cmakedefine HAVE_STRINGS_H 1
+
+/* Look for the getopt library. If this is not available, routines
+ * should use the provided implementation of the ArgTable library.
+ * Even better, just use the ArgTable library...
+ */
+#cmakedefine HAVE_GETOPT_H 1
+
+/* Look for the C routines for formatted output conversions */
+#cmakedefine HAVE_STDARG_H 1
+
+/* Look for various POSIX functions */
+#cmakedefine HAVE_UNISTD_H 1
+#cmakedefine HAVE_SYS_WAIT_H 1
+
+/* Look for the POSIX thread library */
+#cmakedefine HAVE_PTHREAD_H 1
+
+/**
+*** Library Constants
+**/
+
+
